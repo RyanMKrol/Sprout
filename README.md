@@ -1,10 +1,11 @@
 # Sprout 🌱
 
-An iOS app for tracking plant care. You add the plants you own, report how each one looks
-(healthy or unhealthy), and Sprout proposes and maintains a **per-plant watering schedule** —
-adapting it from general watering guidance, local weather (hot/cold spells), and the health
-you report — then reminds you when a plant is due, at the time of day you prefer (e.g. an
-evening when you're likely home).
+An iOS app for tracking plant care. You add the plants you own; Sprout proposes a **per-plant
+watering schedule** seeded from a bundled database of common UK houseplants, then personalises
+it from quick **check-ins** — a soil knuckle-test (dry / moist / wet) and a glance at the
+leaves (drooping?) — and from local weather (hot/cold spells). It reminds you when a plant is
+due, at the time of day you prefer (e.g. an evening when you're likely home), and always
+explains *why* the schedule is what it is.
 
 > **How this project is built:** Sprout is developed by the autonomous **Ralph build harness**
 > — a single sequential loop that builds the [`TASKS.md`](./TASKS.md) backlog one
@@ -16,11 +17,13 @@ evening when you're likely home).
 ## Planned features
 
 - Add and manage the plants you own.
-- Report each plant's health (healthy / unhealthy).
-- A suggested watering schedule per plant, derived from general care guidance.
-- Schedule adaptation from observed health and **local weather**.
+- A **bundled local database** of ~300 common UK houseplants seeding each plant's watering needs.
+- Quick **check-ins** (soil moisture knuckle-test + leaf droop) that adapt the schedule and give
+  an in-the-moment indication ("skip — soil's still wet, back in 3 days" / "water now").
+- A per-plant watering schedule that personalises over time and adjusts for **local weather**.
 - Watering-due **notifications**, delivered at a user-preferred time window.
-- Settings for notification timing and per-plant preferences.
+- A plain-language **"why this schedule"** explanation on every plant.
+- Settings for notification timing, units, and weather.
 
 ## Building & running
 
@@ -42,8 +45,26 @@ evening when you're likely home).
 
 ## Implementation status
 
+See [`TASKS.md`](./TASKS.md) for the full specs. Status (the checkbox in `TASKS.md` is the
+source of truth):
+
 | Task | Status | Description |
 |---|---|---|
 | T001 | ⏳ pending | Project scaffold + local Definition of Done passes on an empty build |
+| T002 | ⏳ pending | Verification harness — XCUITest target + simulator screenshot helper 🚦 |
+| T003 | ⏳ pending | Domain model types (Plant, CareProfile, CheckIn) |
+| T004 | ⏳ pending | Load & validate the bundled ~300-plant UK care database |
+| T005 | ⏳ pending | SwiftData persistence + repository protocol |
+| T006 | ⏳ pending | My Plants list + empty state |
+| T007 | ⏳ pending | Add / Edit Plant (species picker) |
+| T008 | ⏳ pending | Plant Detail + check-in history |
+| T009 | ⏳ pending | Schedule engine — effective interval (pure) |
+| T010 | ⏳ pending | Adaptive update from a check-in (pure) |
+| T011 | ⏳ pending | Check-in flow UI (soil / leaves / watered) 🚦 |
+| T012 | ⏳ pending | "Why this schedule" explanation text |
+| T013 | ⏳ pending | Local watering notifications |
+| T014 | ⏳ pending | Settings — preferred reminder time, units, weather toggle |
+| T015 | ⏳ pending | Weather provider (Open-Meteo + CoreLocation) |
+| T016 | ⏳ pending | Feed weather into the schedule engine |
 
-_The backlog beyond T001 is still being drafted — run `/ralph-loop-add-to-backlog` to grow it._
+🚦 = human-review gate before dependents proceed.
