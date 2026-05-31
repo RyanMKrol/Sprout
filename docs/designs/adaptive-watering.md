@@ -13,11 +13,11 @@ tests. Inject "now" (a `Clock`/date provider); never read the wall clock inside 
 
 ## Care database (bundled JSON, decoded in T004)
 
-A **local, bundled** dataset of the **~300 most common UK houseplants** — produced by a
-**one-time research effort** (sources + methodology in
-[`docs/research/uk-houseplants.md`](../research/uk-houseplants.md)) and shipped in the app, so
-there is **no live lookup**. UK-targeted, grounded in authoritative guidance (Royal
-Horticultural Society and reputable growers).
+A **local, bundled** dataset of the **~300 most common UK houseplants** — built **by the loop**
+across tasks **T101–T130** (10 thoroughly-researched plants each; method, batch plan, and
+per-plant provenance in [`docs/research/uk-houseplants.md`](../research/uk-houseplants.md)) and
+shipped in the app, so there is **no live lookup**. UK-targeted, grounded in authoritative
+guidance (Royal Horticultural Society and reputable growers).
 
 > **The numbers are adaptive *seeds*, not gospel.** `baseIntervalDays` only needs to be a
 > sensible starting point for a species/category — the per-plant `adj` learned from check-ins

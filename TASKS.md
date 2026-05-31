@@ -82,7 +82,7 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 
 **Phase 1 — Domain & data**
 - [ ] T003 Domain model types (Plant, CareProfile, CheckIn) — pure Swift
-- [ ] T004 Load & validate the bundled ~300-plant UK care database
+- [ ] T004 Care database loader, schema & validator (data grows via T101–T130)
 - [ ] T005 SwiftData persistence + repository protocol
 
 **Phase 2 — Core screens**
@@ -103,6 +103,41 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 **Phase 5 — Weather adaptation**
 - [ ] T015 Weather provider (Open-Meteo + CoreLocation)
 - [ ] T016 Feed weather into the schedule engine
+
+**Phase 6 — Care database build-out (30 × 10 plants → ~300)**
+> Each batch researches & adds 10 new unique UK houseplants per `docs/research/uk-houseplants.md`.
+> Depends only on T004, so this whole phase can be moved earlier if you want the data sooner.
+- [ ] T101 Care DB batch 01 — add 10 UK houseplants (pothos / Epipremnum)
+- [ ] T102 Care DB batch 02 — add 10 UK houseplants (Philodendron)
+- [ ] T103 Care DB batch 03 — add 10 UK houseplants (Monstera / Syngonium)
+- [ ] T104 Care DB batch 04 — add 10 UK houseplants (Anthurium / Aglaonema / peace lily)
+- [ ] T105 Care DB batch 05 — add 10 UK houseplants (Alocasia / Caladium)
+- [ ] T106 Care DB batch 06 — add 10 UK houseplants (ZZ / Dracaena / Cordyline)
+- [ ] T107 Care DB batch 07 — add 10 UK houseplants (Sansevieria)
+- [ ] T108 Care DB batch 08 — add 10 UK houseplants (Echeveria / rosette succulents)
+- [ ] T109 Care DB batch 09 — add 10 UK houseplants (Crassula / Sedum / Sempervivum)
+- [ ] T110 Care DB batch 10 — add 10 UK houseplants (Haworthia / Gasteria / Aloe)
+- [ ] T111 Care DB batch 11 — add 10 UK houseplants (Kalanchoe / trailing succulents)
+- [ ] T112 Care DB batch 12 — add 10 UK houseplants (cacti I)
+- [ ] T113 Care DB batch 13 — add 10 UK houseplants (cacti II / Euphorbia)
+- [ ] T114 Care DB batch 14 — add 10 UK houseplants (ferns)
+- [ ] T115 Care DB batch 15 — add 10 UK houseplants (Calathea / Maranta)
+- [ ] T116 Care DB batch 16 — add 10 UK houseplants (Ctenanthe / Fittonia / Pilea)
+- [ ] T117 Care DB batch 17 — add 10 UK houseplants (Peperomia)
+- [ ] T118 Care DB batch 18 — add 10 UK houseplants (Begonia)
+- [ ] T119 Care DB batch 19 — add 10 UK houseplants (Tradescantia / Ceropegia)
+- [ ] T120 Care DB batch 20 — add 10 UK houseplants (spider plant / Aspidistra)
+- [ ] T121 Care DB batch 21 — add 10 UK houseplants (palms)
+- [ ] T122 Care DB batch 22 — add 10 UK houseplants (Ficus)
+- [ ] T123 Care DB batch 23 — add 10 UK houseplants (Schefflera / Dieffenbachia / Pachira)
+- [ ] T124 Care DB batch 24 — add 10 UK houseplants (Hoya)
+- [ ] T125 Care DB batch 25 — add 10 UK houseplants (orchids)
+- [ ] T126 Care DB batch 26 — add 10 UK houseplants (bromeliads / air plants)
+- [ ] T127 Care DB batch 27 — add 10 UK houseplants (flowering: African violet / cyclamen)
+- [ ] T128 Care DB batch 28 — add 10 UK houseplants (carnivorous)
+- [ ] T129 Care DB batch 29 — add 10 UK houseplants (herbs / edibles / citrus)
+- [ ] T130 Care DB batch 30 — add 10 UK houseplants (catch-all to ~300)
+- [ ] T131 Care database complete — ~300 plants, deduped & reviewed 🚦 Gate
 
 ---
 
@@ -158,17 +193,19 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 - **Done-when:** the types compile, are `Codable`/`Equatable` where needed, and unit tests
   cover construction + invariants (e.g. `min ≤ base ≤ max`); the module imports no UI/persistence.
 
-### T004 — Load & validate the bundled ~300-plant UK care database
+### T004 — Care database loader, schema & validator (data grows via T101–T130)
 - **Depends on:** T003
-- **Scope:** `Sprout/Model/CareDatabase.swift`, `SproutTests/CareDatabase*`
+- **Scope:** `Sprout/Resources/care_database.json`, `Sprout/Model/CareDatabase.swift`,
+  `SproutTests/CareDatabase*`
 - **Design:** docs/designs/adaptive-watering.md
-- **Do:** Wire up `Sprout/Resources/care_database.json` — the bundled ~300-plant UK dataset
-  produced by the one-time research effort (provenance: `docs/research/uk-houseplants.md`) — with
-  a loader that decodes it into `[CareProfile]` for the species picker, plus search/sort. The
-  dataset file is committed to the repo before this task runs; **this task does not re-research it.**
-- **Done-when:** the bundled JSON decodes into ~300 `CareProfile`s; unit tests assert the count is
-  in range, spot-check several known species' intervals + moisture preferences, and verify **every**
-  record satisfies `min ≤ base ≤ max` and a valid `moisture`; the picker can list/search them.
+- **Do:** Create `care_database.json` (starting as a small **valid seed** of ~5 example plants)
+  and a loader that decodes it into `[CareProfile]` with search/sort for the species picker.
+  Implement a **reusable validator** — used here *and* by every T101–T130 batch — enforcing valid
+  `moisture`, `min ≤ base ≤ max`, and unique species. The full ~300 plants are added by the
+  Phase 6 batches (T101–T130); **this task does not research plants**, it builds the pipeline.
+- **Done-when:** the JSON decodes; the loader + validator are unit-tested (a valid file passes; a
+  deliberately malformed/duplicate row fails); the picker lists/searches whatever plants are
+  present. (Final count is checked by T131.)
 
 ### T005 — SwiftData persistence + repository protocol
 - **Depends on:** T003
@@ -285,3 +322,219 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 - **Done-when:** unit tests cover the forecast → factor mapping (hot → `<1`, cold → `>1`) and an
   end-to-end recompute; the explanation mentions weather when it moved the interval; screenshot
   recorded.
+
+### T101 — Care DB batch 01 — add 10 UK houseplants ()
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 01** (category: ) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T102 — Care DB batch 02 — add 10 UK houseplants (pothos / Epipremnum)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 02** (category: pothos / Epipremnum) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T103 — Care DB batch 03 — add 10 UK houseplants (Philodendron)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 03** (category: Philodendron) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T104 — Care DB batch 04 — add 10 UK houseplants (Monstera / Syngonium)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 04** (category: Monstera / Syngonium) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T105 — Care DB batch 05 — add 10 UK houseplants (Anthurium / Aglaonema / peace lily)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 05** (category: Anthurium / Aglaonema / peace lily) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T106 — Care DB batch 06 — add 10 UK houseplants (Alocasia / Caladium)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 06** (category: Alocasia / Caladium) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T107 — Care DB batch 07 — add 10 UK houseplants (ZZ / Dracaena / Cordyline)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 07** (category: ZZ / Dracaena / Cordyline) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T108 — Care DB batch 08 — add 10 UK houseplants (Sansevieria)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 08** (category: Sansevieria) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T109 — Care DB batch 09 — add 10 UK houseplants (Echeveria / rosette succulents)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 09** (category: Echeveria / rosette succulents) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T110 — Care DB batch 10 — add 10 UK houseplants (Crassula / Sedum / Sempervivum)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 10** (category: Crassula / Sedum / Sempervivum) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T111 — Care DB batch 11 — add 10 UK houseplants (Haworthia / Gasteria / Aloe)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 11** (category: Haworthia / Gasteria / Aloe) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T112 — Care DB batch 12 — add 10 UK houseplants (Kalanchoe / trailing succulents)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 12** (category: Kalanchoe / trailing succulents) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T113 — Care DB batch 13 — add 10 UK houseplants (cacti I)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 13** (category: cacti I) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T114 — Care DB batch 14 — add 10 UK houseplants (cacti II / Euphorbia)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 14** (category: cacti II / Euphorbia) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T115 — Care DB batch 15 — add 10 UK houseplants (ferns)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 15** (category: ferns) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T116 — Care DB batch 16 — add 10 UK houseplants (Calathea / Maranta)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 16** (category: Calathea / Maranta) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T117 — Care DB batch 17 — add 10 UK houseplants (Ctenanthe / Fittonia / Pilea)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 17** (category: Ctenanthe / Fittonia / Pilea) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T118 — Care DB batch 18 — add 10 UK houseplants (Peperomia)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 18** (category: Peperomia) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T119 — Care DB batch 19 — add 10 UK houseplants (Begonia)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 19** (category: Begonia) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T120 — Care DB batch 20 — add 10 UK houseplants (Tradescantia / Ceropegia)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 20** (category: Tradescantia / Ceropegia) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T121 — Care DB batch 21 — add 10 UK houseplants (spider plant / Aspidistra)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 21** (category: spider plant / Aspidistra) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T122 — Care DB batch 22 — add 10 UK houseplants (palms)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 22** (category: palms) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T123 — Care DB batch 23 — add 10 UK houseplants (Ficus)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 23** (category: Ficus) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T124 — Care DB batch 24 — add 10 UK houseplants (Schefflera / Dieffenbachia / Pachira)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 24** (category: Schefflera / Dieffenbachia / Pachira) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T125 — Care DB batch 25 — add 10 UK houseplants (Hoya)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 25** (category: Hoya) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T126 — Care DB batch 26 — add 10 UK houseplants (orchids)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 26** (category: orchids) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T127 — Care DB batch 27 — add 10 UK houseplants (bromeliads / air plants)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 27** (category: bromeliads / air plants) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T128 — Care DB batch 28 — add 10 UK houseplants (flowering: African violet / cyclamen)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 28** (category: flowering: African violet / cyclamen) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T129 — Care DB batch 29 — add 10 UK houseplants (carnivorous)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 29** (category: carnivorous) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T130 — Care DB batch 30 — add 10 UK houseplants (herbs / edibles / citrus)
+- **Depends on:** T004
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Design:** docs/research/uk-houseplants.md
+- **Do:** Research **batch 30** (category: herbs / edibles / citrus) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
+- **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
+
+### T131 — Care database complete — ~300 plants, deduped & reviewed 🚦 Gate
+- **Depends on:** T101, T102, T103, T104, T105, T106, T107, T108, T109, T110, T111, T112, T113, T114, T115, T116, T117, T118, T119, T120, T121, T122, T123, T124, T125, T126, T127, T128, T129, T130
+- **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`, `SproutTests/CareDatabase*`
+- **Do:** Verify the assembled dataset end to end: ~300 unique species, no duplicate scientific names, every record valid; reconcile the Provenance index against the JSON and fill any gaps.
+- **Done-when:** the file holds **≥ 290 unique** species; the T004 validator passes on the whole dataset; the Provenance index has a row per plant; README status updated. **🚦 A human reviews the final dataset before it is considered complete.**

@@ -53,7 +53,7 @@ source of truth):
 | T001 | ⏳ pending | Project scaffold + local Definition of Done passes on an empty build |
 | T002 | ⏳ pending | Verification harness — XCUITest target + simulator screenshot helper 🚦 |
 | T003 | ⏳ pending | Domain model types (Plant, CareProfile, CheckIn) |
-| T004 | ⏳ pending | Load & validate the bundled ~300-plant UK care database |
+| T004 | ⏳ pending | Care database loader, schema & validator |
 | T005 | ⏳ pending | SwiftData persistence + repository protocol |
 | T006 | ⏳ pending | My Plants list + empty state |
 | T007 | ⏳ pending | Add / Edit Plant (species picker) |
@@ -66,5 +66,8 @@ source of truth):
 | T014 | ⏳ pending | Settings — preferred reminder time, units, weather toggle |
 | T015 | ⏳ pending | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ⏳ pending | Feed weather into the schedule engine |
+| T101–T130 | ⏳ pending | Care DB build-out — 30 batches × 10 researched UK houseplants (→ ~300) |
+| T131 | ⏳ pending | Care database complete — deduped & reviewed 🚦 |
 
-🚦 = human-review gate before dependents proceed.
+🚦 = human-review gate before dependents proceed. Full specs + the per-batch plant categories
+are in [`TASKS.md`](./TASKS.md) and [`docs/research/uk-houseplants.md`](./docs/research/uk-houseplants.md).
