@@ -149,12 +149,11 @@ A task is **done** only when **all** of the following hold. The loop will **not*
 > builder runs in its worktree (items 1–3). The loop fast-forwards `main` once those pass; there
 > is no remote run to watch. See `CLAUDE.md` "Tooling notes".
 
-1. **Static + unit.** The project's **format check, linter, and unit tests** all pass on a
-   clean tree, run **locally** in the worktree. **Sprout's commands:**
-   - **Format:** `swiftformat --lint .`
-   - **Lint:** `swiftlint --strict`
-   - **Test (builds + runs unit tests; no separate build step):**
-     `xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO`
+1. **Builds + unit tests.** On a clean tree, run **locally** in the worktree (XcodeGen + Xcode
+   Simulator; no lint/format step, no XCUITest — see `CLAUDE.md`). **Sprout's commands:**
+   - **Build + run + screenshot:** `./build_run.sh` reaches `** BUILD SUCCEEDED **` (also
+     installs, launches, and saves `screenshots/latest.png`).
+   - **XCTest:** `xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 17 Pro'`
 2. **Integration / end-to-end tests.** The task's relevant integration tests are run when
    their preconditions are met. Tests that need credentials, funds, or external resources the
    agent doesn't have are **recorded as `failed:blocked` (needs-human), never silently

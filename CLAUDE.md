@@ -135,8 +135,9 @@ them, don't abandon the task:**
 
 ## Tooling notes
 
-- **Stack:** Swift / SwiftUI iOS app, built as an Xcode project (`Sprout.xcodeproj`, scheme
-  `Sprout`) and exercised with `xcodebuild` against a **local iOS Simulator** (Xcode 26.x).
+- **Stack:** Swift / **SwiftUI + SwiftData** iOS app (deployment target iOS 18.0), generated with
+  **XcodeGen** from `project.yml` and run on a **local iOS Simulator** (Xcode 26.x). This mirrors
+  the proven setup of the sibling **Basket** project (`../basket`).
 
 ### Local-only verification — there is no GitHub CI
 
@@ -145,32 +146,30 @@ as a git remote, it never runs any compute. The merge gate is the **local Defini
 the builder runs in its worktree before the loop fast-forwards `main`. There is no remote CI to
 watch; "green" means the local checks below pass.
 
-- **Definition of Done commands** (mirror of `docs/HARNESS.md` §5 — run them locally, in order):
-  - **Format:** `swiftformat --lint .`
-  - **Lint:** `swiftlint --strict`
-  - **Test (builds + runs unit tests; no separate build step):**
-    `xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO`
-- One-time local setup: `brew install swiftlint swiftformat`. (`xcodebuild`/`xcrun` ship with Xcode.)
+**Definition of Done** (mirror of `docs/HARNESS.md` §5):
 
-### Empirical `Verify:` — drive the Simulator and read a screenshot
+1. **Builds + runs + screenshots clean:** `./build_run.sh` reaches `** BUILD SUCCEEDED **` — it
+   regenerates the project, builds for the simulator, installs, launches, and saves
+   `screenshots/latest.png`.
+2. **Tests pass (XCTest on the simulator):**
+   `xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 17 Pro'`
+3. **Docs in lockstep** (same commit): `TASKS.md` box, `README.md` row, `docs/LIMITATIONS.md`.
 
-For any task whose `Verify:` field names a UI behaviour, **observe it for real** and record what
-you saw in `worklog/TNNN.md`. This is fully scriptable head-lessly — no external product needed:
+There is **no** swiftlint/swiftformat step and **no** XCUITest — keep code clean by convention,
+and verify behaviour with **XCTest + the screenshot**. The `.xcodeproj` is **generated**: add
+files under `Sources/` and run `xcodegen generate`; **never hand-edit** the `.xcodeproj`.
 
-```sh
-DEV='platform=iOS Simulator,name=iPhone 17'
-xcrun simctl boot 'iPhone 17' 2>/dev/null || true          # boot the sim (idempotent)
-xcodebuild build -project Sprout.xcodeproj -scheme Sprout -destination "$DEV" \
-  -derivedDataPath .build CODE_SIGNING_ALLOWED=NO
-APP=$(find .build/Build/Products -name 'Sprout.app' -maxdepth 3 | head -1)
-xcrun simctl install booted "$APP"
-xcrun simctl launch booted <bundle-id>                     # e.g. com.ryankrol.Sprout
-xcrun simctl io booted screenshot worklog/TNNN-verify.png  # capture current screen
-```
+- One-time setup: `brew install xcodegen`, plus an iOS **simulator runtime matching the SDK**
+  (else `xcodebuild test` / asset-catalog compile fail — fix with `xcodebuild -downloadPlatform iOS`).
 
-Then **Read `worklog/TNNN-verify.png`** to confirm the UI matches the task's intent (right
-screen, expected elements, no error state), and note the observation in `worklog/TNNN.md`. Tasks
-that need this carry `Verify: simulator-screenshot` in TASKS.md.
+### Empirical `Verify:` — read the screenshot `build_run.sh` captures
+
+For any task whose `Verify:` field is `simulator-screenshot`, **observe it for real**: run
+`./build_run.sh` (optionally `./build_run.sh "iPhone 17 Pro" -seedDemoData YES` to launch into a
+populated state), then **Read `screenshots/latest.png`** and confirm the UI matches the task's
+intent (right screen, expected elements, no error state). Record what you saw in `worklog/TNNN.md`.
+For a flow that needs a specific screen/state, drive it via a **debug launch argument / env var**
+(the `-seedDemoData` hook from T002), not manual taps.
 - Tasks marked **🔒 needs-human** require the user (credentials, provisioning, anything
   spending real money or touching production). Do not attempt the human-gated portion
   yourself; prepare everything around it and hand off.

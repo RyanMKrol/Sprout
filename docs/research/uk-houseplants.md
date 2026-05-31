@@ -1,6 +1,6 @@
 # Research — UK common houseplant watering database
 
-Provenance + method for `Sprout/Resources/care_database.json`, the bundled local dataset of the
+Provenance + method for `Sources/Resources/care_database.json`, the bundled local dataset of the
 **~300 most common UK houseplants**. Built **by the loop**, 10 plants per task (T101–T130), each
 plant given a genuine look-up. T131 reviews the finished set. Schema + how the numbers are used:
 [`../designs/adaptive-watering.md`](../designs/adaptive-watering.md).

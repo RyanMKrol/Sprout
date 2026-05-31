@@ -3,23 +3,18 @@ worklog/.result
 worklog/STATUS.md
 worklog/*.log
 
-# ─── Xcode / Swift build artifacts ───────────────────────────────────────────
+# XcodeGen output — regenerated from project.yml, never committed.
+*.xcodeproj/
+
+# Build artifacts
 build/
 DerivedData/
-*.xcuserstate
-xcuserdata/
-*.xcscmblueprint
-*.xccheckout
-*.moved-aside
-*.hmap
-*.ipa
-*.dSYM
-*.dSYM.zip
-
-# Swift Package Manager
 .swiftpm/
 .build/
-Package.resolved
+*.xcresult
 
-# ─── macOS ───────────────────────────────────────────────────────────────────
+# Screenshots scratch (build_run.sh writes screenshots/latest.png)
+screenshots/
+
+# macOS
 .DS_Store

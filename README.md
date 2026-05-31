@@ -27,21 +27,23 @@ explains *why* the schedule is what it is.
 
 ## Building & running
 
-- **Requirements:** macOS with Xcode (iOS Simulator), plus `swiftlint` and `swiftformat`
-  (`brew install swiftlint swiftformat`).
-- **Open:** `open Sprout.xcodeproj` and run the `Sprout` scheme on an iOS Simulator.
+The project is **generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen)** from
+`project.yml` — the `.xcodeproj` is not committed. (Mirrors the sibling `../basket` project.)
+
+- **Requirements:** macOS + Xcode (iOS Simulator) and `brew install xcodegen`. An iOS simulator
+  runtime matching the SDK (else `xcodebuild test` fails — `xcodebuild -downloadPlatform iOS`).
+- **Build / run / screenshot:** `./build_run.sh` — regenerate → build → install → launch →
+  save `screenshots/latest.png`. Open in Xcode with `xcodegen generate && open Sprout.xcodeproj`.
 - **Definition of Done (run locally — there is no remote CI):**
   ```sh
-  swiftformat --lint .
-  swiftlint --strict
-  xcodebuild test -project Sprout.xcodeproj -scheme Sprout \
-    -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
+  ./build_run.sh                                   # ** BUILD SUCCEEDED ** + screenshot
+  xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout \
+    -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
   ```
-- **Empirical UI check:** boot the Simulator, install/launch the app, and capture a screenshot
-  with `xcrun simctl io booted screenshot out.png` — see `CLAUDE.md` "Tooling notes".
+  No swiftlint/swiftformat and no XCUITest — behaviour is verified by XCTest + the screenshot.
 
-> Until **T001** lands, `Sprout.xcodeproj` does not exist yet — the commands above are the
-> target state that T001 establishes.
+> Until **T001** lands, `Sources/` and the generated `.xcodeproj` don't exist yet — the commands
+> above are the target state that T001 establishes (following `project.yml` / `build_run.sh`).
 
 ## Implementation status
 
@@ -51,7 +53,7 @@ source of truth):
 | Task | Status | Description |
 |---|---|---|
 | T001 | ⏳ pending | Project scaffold + local Definition of Done passes on an empty build |
-| T002 | ⏳ pending | Verification harness — XCUITest target + simulator screenshot helper |
+| T002 | ⏳ pending | Verification baseline — demo-seed hook + screenshot convention |
 | T003 | ⏳ pending | Domain model types (Plant, CareProfile, CheckIn) |
 | T004 | ⏳ pending | Care database loader, schema & validator |
 | T005 | ⏳ pending | SwiftData persistence + repository protocol |
