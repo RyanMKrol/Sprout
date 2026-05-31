@@ -144,14 +144,17 @@ task. There is never more than one task to recover.
 A task is **done** only when **all** of the following hold. The loop will **not** merge to
 `main` until every check is green.
 
-1. **Static + unit.** Your project's **format check, linter, and unit tests** all pass on a
-   clean tree. *(Define the exact commands once here and mirror them verbatim in
-   `.github/workflows/ci.yml` — CI is the authoritative gate, so anything not run in CI is
-   not enforced.)* **Sprout's commands (must match `.github/workflows/ci.yml`):**
+> **Sprout runs LOCAL-ONLY (`REQUIRE_CI=0`, no GitHub Actions).** Item 4 below ("Remote CI is
+> green") does **not** apply — the authoritative gate is the **local** Definition of Done the
+> builder runs in its worktree (items 1–3). The loop fast-forwards `main` once those pass; there
+> is no remote run to watch. See `CLAUDE.md` "Tooling notes".
+
+1. **Static + unit.** The project's **format check, linter, and unit tests** all pass on a
+   clean tree, run **locally** in the worktree. **Sprout's commands:**
    - **Format:** `swiftformat --lint .`
    - **Lint:** `swiftlint --strict`
    - **Test (builds + runs unit tests; no separate build step):**
-     `xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGNING_ALLOWED=NO`
+     `xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO`
 2. **Integration / end-to-end tests.** The task's relevant integration tests are run when
    their preconditions are met. Tests that need credentials, funds, or external resources the
    agent doesn't have are **recorded as `failed:blocked` (needs-human), never silently

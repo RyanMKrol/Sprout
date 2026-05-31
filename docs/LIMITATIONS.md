@@ -42,16 +42,27 @@ keep them here so the design's compromises live in one place alongside your proj
 
 > Add your project's own trade-offs and limitations below as they arise.
 
-- **CI runs on `macos-latest` (required for iOS).**
-  *Why:* `xcodebuild` + the iOS Simulator only exist on macOS runners.
-  *Impact:* macOS GitHub-hosted minutes are billed at ~10× Linux and runs are slower; the
-  per-task CI gate costs more wall-clock and money than a typical Linux project.
-  *Revisit:* if CI minutes become a constraint — move pure-logic tests to a SwiftPM
-  `swift test` job on Linux and reserve the macOS job for the UI/app target.
+- **No remote CI — the merge gate is local-only (`REQUIRE_CI=0`, no GitHub Actions).**
+  *Why:* iOS verification needs `xcodebuild` + the iOS Simulator (and, for UI, on-screen
+  observation), which the user prefers to run on their own Mac rather than pay for macOS CI
+  runners; GitHub is used only as a git remote.
+  *Impact:* "green" is whatever the **local** machine validates. There is no independent
+  off-machine check, and the always-green-`main` guarantee only holds for the loop host. The
+  loop still `git push`es to `origin/main`, so a remote/another machine could pull an
+  unverified `main` if it never ran the local DoD.
+  *Revisit:* re-add `.github/workflows/ci.yml` and set `REQUIRE_CI=1` if the project gains
+  collaborators or needs an independent gate.
 
-- **CI test destination pins a specific simulator (`iPhone 16, OS=latest`).**
+- **Empirical UI verification depends on a booted local Simulator + screenshot reading.**
+  *Why:* it's the cheapest faithful "does the screen look right" check without remote infra.
+  *Impact:* the builder must run with a working Xcode/Simulator and reads a PNG to judge the
+  UI — non-deterministic vs. a coded assertion, and only as good as the screen it captures.
+  *Revisit:* add XCUITest UI tests for the flows worth asserting deterministically; keep
+  screenshots for spot-checks.
+
+- **Local test destination pins a specific simulator (`iPhone 17`).**
   *Why:* `xcodebuild test` needs a concrete destination, not a generic one.
-  *Impact:* if the `macos-latest` image stops shipping that simulator/runtime, the Test step
+  *Impact:* if that simulator/runtime is removed from the local Xcode install, the Test step
   breaks until the destination is updated.
-  *Revisit:* T001 should confirm the destination resolves on the current runner image; pin an
-  explicit Xcode/runtime version here if drift becomes a problem.
+  *Revisit:* update the `-destination` in `CLAUDE.md` §Tooling, `README.md`, and
+  `docs/HARNESS.md` §5 together if you change Xcode/simulator versions.

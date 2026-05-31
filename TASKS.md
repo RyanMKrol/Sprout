@@ -22,12 +22,13 @@ file*. Each iteration the loop:
    tree, and reconciles the delta against the task's `Done-when:` before coding.
 3. **Implements only the outstanding delta**, within the task's `Scope:`, and verifies
    prerequisites are real (deps present in code, not just a ticked box).
-4. **Passes the Definition of Done** ([`docs/HARNESS.md`](./docs/HARNESS.md) §5): the
-   project's format/lint/test, integration/empirical checks where the task's `Verify:` asks
-   for it, and **green GitHub CI** — flipping the index box and the `README.md` row in the
-   **same commit**.
-5. **Branches off `main`, pushes; the loop merges on green CI** and records the result. On
-   failure it appends a `worklog/TNNN.md` entry (what failed, why, what's left) and stops.
+4. **Passes the LOCAL Definition of Done** ([`docs/HARNESS.md`](./docs/HARNESS.md) §5): the
+   project's format/lint/test plus the empirical simulator-screenshot check where the task's
+   `Verify:` asks for it — flipping the index box and the `README.md` row in the **same
+   commit**. (This project is local-only: `REQUIRE_CI=0`, no GitHub Actions.)
+5. **Branches off `main`, pushes; the loop fast-forwards `main`** once the local DoD passes,
+   and records the result. On failure it appends a `worklog/TNNN.md` entry (what failed, why,
+   what's left) and stops.
 
 Rules:
 - **One task per iteration.** Do not batch.
@@ -74,24 +75,28 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 
 > The checkbox is the **only** source of done/not-done. Group by phase as the backlog grows.
 
-- [ ] T001 Project scaffold + CI green on an empty build
+- [ ] T001 Project scaffold + local Definition of Done passes on an empty build
 
 ---
 
 ## Tasks
 
-### T001 — Project scaffold + CI green on an empty build
+### T001 — Project scaffold + local Definition of Done passes on an empty build
 - **Depends on:** (none)
 - **Scope:** `Sprout.xcodeproj`, `Sprout/` app sources, `SproutTests/`, `.swiftlint.yml`,
-  `.swiftformat`, `.github/workflows/ci.yml`, `README.md`
+  `.swiftformat`, `README.md`
+- **Verify:** simulator-screenshot
 - **Do:** Create a minimal SwiftUI iOS app named **Sprout** as an Xcode project with a
   `Sprout` app target and a `SproutTests` unit-test target containing one trivial passing
-  test. Add baseline `.swiftlint.yml` and `.swiftformat` configs and make the existing sources
-  pass `swiftformat --lint .` and `swiftlint --strict`. Confirm the CI workflow's `xcodebuild
-  test` destination (`platform=iOS Simulator,name=iPhone 16,OS=latest`) resolves on the
-  `macos-latest` runner image; if it doesn't, pin a destination/Xcode version that does and
-  update `ci.yml`, `README.md`, `CLAUDE.md`, and `docs/HARNESS.md` §5 to match.
-- **Done-when:** `README.md` documents how to open/build/run and the exact DoD commands; the
-  three CI steps (format, lint, test) all pass on `main`; the Definition of Done commands in
-  `docs/HARNESS.md` §5 match what CI runs; the T001 index box and README status row are
-  flipped to done in the same commit.
+  test. Add baseline `.swiftlint.yml` and `.swiftformat` configs and make the sources pass
+  `swiftformat --lint .` and `swiftlint --strict`. Confirm the test `-destination`
+  (`platform=iOS Simulator,name=iPhone 17`) resolves against the local Xcode install; if not,
+  pick a simulator that exists and update `CLAUDE.md`, `README.md`, and `docs/HARNESS.md` §5
+  together. Empirically verify per the `Verify:` recipe in `CLAUDE.md`: boot the simulator,
+  build/install/launch the app, capture `worklog/T001-verify.png`, and confirm the default
+  SwiftUI screen renders.
+- **Done-when:** `swiftformat --lint .`, `swiftlint --strict`, and `xcodebuild test` (iPhone 17
+  simulator) all pass locally on a clean tree; the screenshot observation is recorded in
+  `worklog/T001.md`; `README.md` documents how to open/build/run with the exact local DoD
+  commands; the DoD commands in `docs/HARNESS.md` §5 match; the T001 index box and README
+  status row are flipped to done in the same commit.

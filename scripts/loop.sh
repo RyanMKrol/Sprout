@@ -185,8 +185,8 @@ Obey CLAUDE.md, TASKS.md, and docs/HARNESS.md exactly. You run head-less and una
    `Done-when:`. Trust the code over the worklog. Stay within the task's `Scope:` files.
 2. DEFINITION OF DONE (docs/HARNESS.md §6 — all must hold before you report `done`):
    a. Run the project's full verification suite exactly as defined in CLAUDE.md /
-      docs/HARNESS.md §6 (format, lint, tests, build). These MIRROR CI — if CI runs it,
-      run it locally first. Every check must pass.
+      docs/HARNESS.md §6 (format, lint, tests). This project is LOCAL-ONLY (REQUIRE_CI=0,
+      no GitHub Actions) — the local suite IS the gate. Every check must pass.
    b. Run the task's relevant integration / end-to-end tests when their preconditions are
       met. Tests that need credentials, funds, or external resources you don't have: leave
       them as they are and record `failed:blocked` if the task's core needs them — never
@@ -198,10 +198,9 @@ Obey CLAUDE.md, TASKS.md, and docs/HARNESS.md exactly. You run head-less and una
    status row, and add any new trade-off/limitation to docs/LIMITATIONS.md.
 4. COMMIT `<TASK>: <summary>` (INCLUDING `worklog/<TASK>.md` with a dated entry: what you did,
    checks run, what remains). Then push THIS branch: `git push -u origin HEAD`. Do NOT merge
-   into `main` — the loop watches GitHub CI and fast-forwards main on green. If a previous
-   push's CI for this branch failed, run `gh run view --log-failed` and fix the cause first.
+   into `main` — once the LOCAL Definition of Done passes, the loop fast-forwards main itself.
 5. As your FINAL action, OVERWRITE `worklog/.result` with exactly ONE line:
-     done <TASK> <branch>                 # built, committed, pushed — ready for CI + merge
+     done <TASK> <branch>                 # built, committed, pushed — ready to integrate
      failed:soft <TASK> <reason>          # transient / partial — retry is worthwhile
      failed:blocked <TASK> <reason>       # needs-human / unmet prereq — do NOT retry
      waiting <TASK> <unmet-deps>          # a dependency is not merged yet

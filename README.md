@@ -8,8 +8,10 @@ evening when you're likely home).
 
 > **How this project is built:** Sprout is developed by the autonomous **Ralph build harness**
 > — a single sequential loop that builds the [`TASKS.md`](./TASKS.md) backlog one
-> fully-verified task at a time, gated on green GitHub CI. See [`docs/HARNESS.md`](./docs/HARNESS.md)
-> for the design and [`CLAUDE.md`](./CLAUDE.md) for the working conventions.
+> fully-verified task at a time. Verification is **local-only** (no GitHub CI): each task must
+> pass the local format/lint/test suite and, for UI work, an iOS-Simulator screenshot check
+> before the loop integrates it. See [`docs/HARNESS.md`](./docs/HARNESS.md) for the design and
+> [`CLAUDE.md`](./CLAUDE.md) for the working conventions.
 
 ## Planned features
 
@@ -25,13 +27,15 @@ evening when you're likely home).
 - **Requirements:** macOS with Xcode (iOS Simulator), plus `swiftlint` and `swiftformat`
   (`brew install swiftlint swiftformat`).
 - **Open:** `open Sprout.xcodeproj` and run the `Sprout` scheme on an iOS Simulator.
-- **Definition of Done (mirrors `.github/workflows/ci.yml`):**
+- **Definition of Done (run locally — there is no remote CI):**
   ```sh
   swiftformat --lint .
   swiftlint --strict
   xcodebuild test -project Sprout.xcodeproj -scheme Sprout \
-    -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGNING_ALLOWED=NO
+    -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
   ```
+- **Empirical UI check:** boot the Simulator, install/launch the app, and capture a screenshot
+  with `xcrun simctl io booted screenshot out.png` — see `CLAUDE.md` "Tooling notes".
 
 > Until **T001** lands, `Sprout.xcodeproj` does not exist yet — the commands above are the
 > target state that T001 establishes.
@@ -40,6 +44,6 @@ evening when you're likely home).
 
 | Task | Status | Description |
 |---|---|---|
-| T001 | ⏳ pending | Project scaffold + CI green on an empty build |
+| T001 | ⏳ pending | Project scaffold + local Definition of Done passes on an empty build |
 
 _The backlog beyond T001 is still being drafted — run `/ralph-loop-add-to-backlog` to grow it._
