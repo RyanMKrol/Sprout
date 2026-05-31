@@ -33,9 +33,8 @@ file*. Each iteration the loop:
 Rules:
 - **One task per iteration.** Do not batch.
 - **Finish completely.** Never mark `done` with a failing `Done-when:` or partial scope.
-- Tasks tagged **🔒 needs-human** need a one-time manual step (credentials, provisioning);
-  author + validate as far as possible, then record `failed:blocked` — do **not** mark done.
-  Tasks tagged **🚦 Gate** additionally need an explicit human review of the deliverable.
+- This backlog uses **no** mid-loop review gates — it runs unattended. The one human checkpoint
+  is the final review task **T200**, which prepares a key-decision packet for sign-off at the end.
 
 ### Work log & retries
 
@@ -64,22 +63,22 @@ There are no tracks, waves, or parallel worktrees — the loop walks the backlog
 **dependency order**, one task at a time ([`docs/HARNESS.md`](./docs/HARNESS.md)). A task
 becomes eligible once its `Depends on:` are merged into `main`.
 
-**Gates (the loop must not skip them).** A task marked **🚦 Gate** needs its `Done-when:` met
-**and** an explicit human review of the deliverable before any dependent task proceeds. A
-task marked **🔒 needs-human** needs a one-time human step (credentials, provisioning, a live
-go/no-go) and is recorded `failed:blocked`, never auto-completed.
+**No mid-loop gates.** This backlog is built to run unattended for days, so it uses no review
+stops — every key judgement is the builder's to make. They are all gathered for you to review at
+the end by the final task **T200**, after which the backlog is complete and ready for your
+sign-off and tweaks.
 
 ---
 
 ## Status index
 
-> The checkbox is the **only** source of done/not-done. Markers: **🚦 Gate** (a human reviews
-> the deliverable before dependents proceed) · **🔒 needs-human** (one-time manual step).
+> The checkbox is the **only** source of done/not-done. **This backlog runs unattended — no
+> mid-loop gates.** The single human touchpoint is the final task **T200**, which compiles a
+> review packet of the key decisions for you to check and tweak once everything is built.
 
 **Phase 0 — Foundations**
 - [ ] T001 Project scaffold + local Definition of Done passes on an empty build
-- [ ] T002 Verification harness — XCUITest target + simulator screenshot helper 🚦 Gate
-
+- [ ] T002 Verification harness — XCUITest target + simulator screenshot helper
 **Phase 1 — Domain & data**
 - [ ] T003 Domain model types (Plant, CareProfile, CheckIn) — pure Swift
 - [ ] T004 Care database loader, schema & validator (data grows via T101–T130)
@@ -93,7 +92,7 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 **Phase 3 — Check-ins & adaptive scheduling**
 - [ ] T009 Schedule engine — effective interval (pure)
 - [ ] T010 Adaptive update from a check-in (pure)
-- [ ] T011 Check-in flow UI (soil / leaves / watered → recommendation) 🚦 Gate
+- [ ] T011 Check-in flow UI (soil / leaves / watered → recommendation)
 - [ ] T012 "Why this schedule" explanation text
 
 **Phase 4 — Reminders & settings**
@@ -137,8 +136,10 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 - [ ] T128 Care DB batch 28 — add 10 UK houseplants (carnivorous)
 - [ ] T129 Care DB batch 29 — add 10 UK houseplants (herbs / edibles / citrus)
 - [ ] T130 Care DB batch 30 — add 10 UK houseplants (catch-all to ~300)
-- [ ] T131 Care database complete — ~300 plants, deduped & reviewed 🚦 Gate
+- [ ] T131 Care database complete — ~300 plants, deduped & reviewed
 
+**Phase 7 — Final review**
+- [ ] T200 Compile key-decision review packet for human sign-off
 ---
 
 ## Tasks
@@ -170,8 +171,7 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
   commands; the DoD commands in `docs/HARNESS.md` §5 match; the T001 index box and README
   status row are flipped to done in the same commit.
 
-### T002 — Verification harness — XCUITest target + simulator screenshot helper 🚦 Gate
-- **Depends on:** T001
+### T002 — Verification harness — XCUITest target + simulator screenshot helper- **Depends on:** T001
 - **Scope:** `SproutUITests/`, `scripts/shot.sh`, `CLAUDE.md`
 - **Verify:** simulator-screenshot
 - **Do:** Add a `SproutUITests` XCUITest target with a smoke test that launches the app,
@@ -181,7 +181,6 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 - **Done-when:** `xcodebuild test` runs **both** the unit and UI test targets green on the
   iPhone 17 simulator; `scripts/shot.sh` produces a PNG the agent reads back; the
   XCUITest-plus-screenshot recipe is documented in `CLAUDE.md` for later tasks to reuse.
-  **🚦 A human reviews that this verification approach is trustworthy before dependents build on it.**
 
 ### T003 — Domain model types (Plant, CareProfile, CheckIn) — pure Swift
 - **Depends on:** T001
@@ -263,8 +262,7 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
   wet → skip+lengthen, dry-early → shorten, droopy+wet → lengthen + overwater indication) and the
   `[0.5, 2.0]` `adj` clamp; `recommendation` is a structured value, not a brittle string.
 
-### T011 — Check-in flow UI (soil / leaves / watered → recommendation) 🚦 Gate
-- **Depends on:** T008, T010, T005
+### T011 — Check-in flow UI (soil / leaves / watered → recommendation)- **Depends on:** T008, T010, T005
 - **Scope:** `Sprout/Views/CheckIn*`, `Sprout/ViewModels/CheckIn*`, `SproutUITests/*`
 - **Verify:** simulator-screenshot
 - **Do:** From a plant, run the check-in (soil `Dry/Moist/Wet`, leaves `Fine/Droopy`,
@@ -272,7 +270,7 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
   updated next-due.
 - **Done-when:** a due plant can be checked in; schedule/recommendation update **and** persist;
   a XCUITest drives a full check-in and asserts the next-due/recommendation changed; screenshot
-  recorded. **🚦 A human reviews the core check-in UX before later phases build on it.**
+  recorded.
 
 ### T012 — "Why this schedule" explanation text
 - **Depends on:** T009, T008
@@ -533,8 +531,22 @@ go/no-go) and is recorded `failed:blocked`, never auto-completed.
 - **Do:** Research **batch 30** (category: herbs / edibles / citrus) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
 - **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
 
-### T131 — Care database complete — ~300 plants, deduped & reviewed 🚦 Gate
-- **Depends on:** T101, T102, T103, T104, T105, T106, T107, T108, T109, T110, T111, T112, T113, T114, T115, T116, T117, T118, T119, T120, T121, T122, T123, T124, T125, T126, T127, T128, T129, T130
+### T131 — Care database complete — ~300 plants, deduped & reviewed- **Depends on:** T101, T102, T103, T104, T105, T106, T107, T108, T109, T110, T111, T112, T113, T114, T115, T116, T117, T118, T119, T120, T121, T122, T123, T124, T125, T126, T127, T128, T129, T130
 - **Scope:** `Sprout/Resources/care_database.json`, `docs/research/uk-houseplants.md`, `SproutTests/CareDatabase*`
 - **Do:** Verify the assembled dataset end to end: ~300 unique species, no duplicate scientific names, every record valid; reconcile the Provenance index against the JSON and fill any gaps.
-- **Done-when:** the file holds **≥ 290 unique** species; the T004 validator passes on the whole dataset; the Provenance index has a row per plant; README status updated. **🚦 A human reviews the final dataset before it is considered complete.**
+- **Done-when:** the file holds **≥ 290 unique** species; the T004 validator passes on the whole dataset; the Provenance index has a row per plant; README status updated.
+
+### T200 — Compile key-decision review packet for human sign-off
+- **Depends on:** T007, T011, T014, T016, T131
+- **Scope:** `docs/REVIEW.md`, `README.md`
+- **Do:** With the whole backlog built, compile `docs/REVIEW.md` — a single packet of the key
+  judgement calls made along the way, each with **where it lives** and **how to tweak it**: the
+  adaptive-engine constants (nudge factors, the `adj` clamp, `recheckDays`), the schedule formula
+  and the weather→`weatherFactor` mapping, notification defaults (the preferred-time window), the
+  verification approach (XCUITest + `simctl` screenshots), the check-in UX, and any **low-confidence
+  care-database entries** (species whose interval/moisture was a judgement call). Call out
+  anything you were genuinely unsure about.
+- **Done-when:** `docs/REVIEW.md` lists each key decision with a file/line pointer and the knob to
+  change it, plus an explicit **"low-confidence / please check"** section; `README.md` links to it.
+  This is the final task — when it merges, the backlog is complete and ready for your end-to-end
+  review and tweaks.
