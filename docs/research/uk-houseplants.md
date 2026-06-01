@@ -89,7 +89,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 26 ✅ | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
 | 27 ✅ | T127 | Flowering — African violet, cyclamen, kalanchoe blossfeldiana, Streptocarpus, Sinningia, Exacum, Nematanthus, Clivia, Gardenia (anthurium already in batch 04) |
 | 28 ✅ | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
-| 29 | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
+| 29 ✅ | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
 | 30 | T130 | Catch-all — remaining common UK houseplants to reach ~300 (Aeschynanthus, Hypoestes, Coleus, Oxalis, Maranta gaps…) |
 
 ## Provenance index (the loop appends here, one row per plant)
@@ -379,3 +379,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | White Trumpet Pitcher | Sarracenia leucophylla | staysMoist | 2 / 1–4 | Genus anchor (Sarracenia, cf. S. purpurea) — tall white-topped trumpet; stand in rainwater and keep the compost saturated through the growing season, reduce in winter |
 | Mexican Butterwort | Pinguicula moranensis | staysMoist | 4 / 2–7 | Genus anchor (Mexican Pinguicula) — keep the compost moist with rainwater in active growth but tolerates the surface drying more than bog carnivores and wants a much drier succulent winter rest → slightly longer interval |
 | Cobra Lily | Darlingtonia californica | staysMoist | 2 / 1–5 | Genus anchor (bog carnivore, cf. Sarracenia) — cobra-headed pitcher needing cool, constantly wet roots; keep saturated with cool rainwater and never let it dry out (wider max for the cooler-rest period) |
+| Basil | Ocimum basilicum | staysMoist | 3 / 2–5 | RHS — thirsty culinary annual; keep the compost consistently moist and never let it dry out (wilts and bolts fast when dry), water from below to keep foliage dry → short, moisture-loving interval |
+| Mint | Mentha spicata | staysMoist | 3 / 2–6 | RHS — vigorous moisture-loving herb; keep the compost damp at all times and never allow it to dry out, water freely in growth → short interval like basil |
+| Chilli Pepper | Capsicum annuum | evenlyMoist | 4 / 3–7 | RHS — water regularly and consistently while growing/fruiting, keeping the compost evenly moist; let the surface just dry between waterings, avoid both drought (drops flowers/fruit) and waterlogging |
+| Parsley | Petroselinum crispum | evenlyMoist | 4 / 2–7 | RHS — keep the compost moist and water regularly so it never dries out (runs to seed if stressed); water when the surface starts to dry |
+| Chives | Allium schoenoprasum | evenlyMoist | 4 / 3–7 | RHS — keep the compost moist in growth, watering when the surface starts to dry; water freely in warm spells, never let it dry out fully |
+| Coffee Plant | Coffea arabica | evenlyMoist | 6 / 4–9 | RHS / Hortology — keep the compost evenly moist in growth, watering when the top 2–3 cm dry; dislikes both drying out fully and waterlogging, reduce in winter |
+| Calamondin Orange | Citrus × microcarpa | evenlyMoist | 7 / 5–12 | RHS — indoor citrus; water when the top few cm of compost are dry, keeping it evenly moist spring–summer and much drier in winter; never leave standing in water, use rain/soft water |
+| Meyer Lemon | Citrus × meyeri | evenlyMoist | 7 / 5–12 | RHS / genus anchor (Citrus, cf. calamondin) — water when the top few cm dry, keep evenly moist in growth and reduce in winter; well-drained, never waterlogged |
+| Rosemary | Salvia rosmarinus (syn. Rosmarinus officinalis) | driesOut | 8 / 5–14 | RHS — drought-tolerant Mediterranean shrub; let the compost dry out between waterings and water sparingly, resents wet/waterlogged roots → long interval |
+| Thyme | Thymus vulgaris | driesOut | 8 / 5–14 | RHS — Mediterranean sub-shrub that thrives on the dry side; let the compost dry between waterings, water sparingly, never waterlog → long interval like rosemary |

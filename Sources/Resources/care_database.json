@@ -1993,5 +1993,75 @@
     "minIntervalDays": 1,
     "maxIntervalDays": 5,
     "moisture": "staysMoist"
+  },
+  {
+    "species": "Basil",
+    "baseIntervalDays": 3,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 5,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Mint",
+    "baseIntervalDays": 3,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Chilli Pepper",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Parsley",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Chives",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Coffee Plant",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Calamondin Orange",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Meyer Lemon",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Rosemary",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 14,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Thyme",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 14,
+    "moisture": "driesOut"
   }
 ]
