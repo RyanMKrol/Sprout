@@ -82,7 +82,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 19 ✅ | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
 | 20 ✅ | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
 | 21 ✅ | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
-| 22 | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
+| 22 ✅ | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
 | 23 | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
 | 24 | T124 | Hoya — common wax plants |
 | 25 | T125 | Orchids — Phalaenopsis & common houseplant orchids |
@@ -309,3 +309,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Bamboo Palm | Chamaedorea seifrizii | evenlyMoist | 7 / 5–11 | Genus anchor (Chamaedorea) — reed-stemmed palm; keep evenly moist, letting only the surface dry; sits on the palm anchor |
 | Lady Palm | Rhapis excelsa | evenlyMoist | 9 / 6–14 | RHS — tough, slow fan palm that tolerates some drying; water when the top few cm are dry → longer interval than the palm anchor |
 | Pygmy Date Palm | Phoenix roebelenii | evenlyMoist | 8 / 6–12 | RHS / Hortology — compact date palm; keep evenly moist in growth, allowing the top 2–3 cm to dry between waterings |
+| Rubber Plant | Ficus elastica | evenlyMoist | 9 / 6–14 | RHS — water when the top 2–3 cm of compost are dry (roughly weekly in summer, less in winter); never leave standing in water. Fig genus anchor (evenlyMoist, base 9, 6–14) |
+| Fiddle-Leaf Fig | Ficus lyrata | evenlyMoist | 9 / 6–14 | RHS / Hortology — let the top few cm dry, then water thoroughly; dislikes both drought and waterlogging. Sits on the fig anchor |
+| Weeping Fig | Ficus benjamina | evenlyMoist | 8 / 6–12 | RHS — keep evenly moist in growth; erratic watering (or letting it dry too far) triggers leaf drop → slightly shorter, steadier interval than the fig anchor |
+| Ginseng Ficus | Ficus microcarpa | evenlyMoist | 7 / 5–11 | Genus anchor (Ficus) + Hortology — sold as bonsai in a small, fast-draining pot that dries quicker → shorter interval; keep evenly moist, letting the surface dry |
+| Variegated Rubber Plant 'Tineke' | Ficus elastica 'Tineke' | evenlyMoist | 10 / 7–15 | Genus anchor (Ficus elastica) — cream/green variegated cultivar with less chlorophyll → slower growth, slightly longer interval; same let-top-dry cadence |
+| Burgundy Rubber Plant | Ficus elastica 'Abidjan' | evenlyMoist | 9 / 6–14 | Genus anchor (Ficus elastica) — dark-leaved cultivar; standard rubber-plant cadence, water when the top 2–3 cm are dry |
+| Creeping Fig | Ficus pumila | staysMoist | 6 / 4–9 | RHS — thin-leaved trailing fig that resents drying out; keep the compost consistently moist (not soggy) → shorter interval under the moisture-loving anchor |
+| Audrey Fig | Ficus benghalensis | evenlyMoist | 9 / 6–14 | Hortology / RHS — banyan fig grown for velvety leaves; water when the top few cm dry, then drench. Sits on the fig anchor |
+| Mistletoe Fig | Ficus deltoidea | evenlyMoist | 8 / 6–12 | Genus anchor (Ficus) + Hortology — compact fig that likes steady moisture in growth; let the surface dry, never waterlogged → slightly shorter than the fig anchor |
+| Triangle Fig | Ficus triangularis | evenlyMoist | 9 / 6–13 | Genus anchor (Ficus) — triangular-leaved fig; standard fig cadence, water when the top 2–3 cm of compost are dry |

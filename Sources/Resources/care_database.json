@@ -1503,5 +1503,75 @@
     "minIntervalDays": 6,
     "maxIntervalDays": 12,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Rubber Plant",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Fiddle-Leaf Fig",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Weeping Fig",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Ginseng Ficus",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Variegated Rubber Plant 'Tineke'",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 15,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Burgundy Rubber Plant",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Creeping Fig",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Audrey Fig",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Mistletoe Fig",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Triangle Fig",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 13,
+    "moisture": "evenlyMoist"
   }
 ]
