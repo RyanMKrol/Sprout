@@ -87,7 +87,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 24 ✅ | T124 | Hoya — common wax plants |
 | 25 ✅ | T125 | Orchids — Phalaenopsis & common houseplant orchids |
 | 26 ✅ | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
-| 27 | T127 | Flowering — African violet, cyclamen, anthurium (if new), kalanchoe blossfeldiana |
+| 27 ✅ | T127 | Flowering — African violet, cyclamen, kalanchoe blossfeldiana, Streptocarpus, Sinningia, Exacum, Nematanthus, Clivia, Gardenia (anthurium already in batch 04) |
 | 28 | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
 | 29 | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
 | 30 | T130 | Catch-all — remaining common UK houseplants to reach ~300 (Aeschynanthus, Hypoestes, Coleus, Oxalis, Maranta gaps…) |
@@ -359,3 +359,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Fingernail Plant | Neoregelia spectabilis | evenlyMoist | 8 / 5–12 | Genus anchor (Neoregelia, cf. N. carolinae) — open-rosette tank bromeliad; keep the cup filled and let the medium dry between waterings, same cadence as the species |
 | Sky Plant | Tillandsia ionantha | evenlyMoist | 7 / 5–10 | RHS — soil-less mesic air plant; soak/dunk roughly weekly and shake out the excess, misting between soaks in dry rooms (the "interval" is the soak cadence; no compost to keep moist) |
 | Pink Quill | Tillandsia cyanea | evenlyMoist | 7 / 5–10 | RHS — the Tillandsia usually grown in a pot; keep the compost lightly moist and water with soft/rainwater when the surface starts to dry, ~weekly in growth, never waterlogged |
+| African Violet | Saintpaulia ionantha | evenlyMoist | 6 / 4–9 | RHS — keep the compost evenly moist and water from below with tepid water, letting the surface dry slightly between waterings; never wet the leaves/crown nor leave it soggy |
+| Cyclamen | Cyclamen persicum | evenlyMoist | 5 / 3–8 | RHS — water from below when the surface starts to dry, keeping the compost moist while in growth/flower; avoid wetting the crown/tuber and never let it stand in water |
+| Flaming Katy | Kalanchoe blossfeldiana | driesOut | 12 / 9–21 | RHS / Gardeners' World — succulent flowering kalanchoe; soak-and-dry, water only when the soil has dried out (~every 2 weeks), reduce in winter; thick leaves store water, rots if kept wet |
+| Calandiva Kalanchoe | Kalanchoe blossfeldiana 'Calandiva' | driesOut | 12 / 9–21 | Genus anchor (Kalanchoe blossfeldiana) — double-flowered Calandiva cultivar, same succulent soak-and-dry cadence as Flaming Katy |
+| Cape Primrose | Streptocarpus hybrid | evenlyMoist | 8 / 5–12 | RHS — gesneriad; let the top of the compost dry a little between waterings and water from below, never waterlogged; more drought-tolerant than its African-violet cousin → slightly longer interval |
+| Florist's Gloxinia | Sinningia speciosa | evenlyMoist | 5 / 3–8 | RHS — tuberous gesneriad; keep the compost evenly moist while in growth/flower, water from below with tepid water to keep the velvety leaves dry; reduce sharply as it dies back |
+| Persian Violet | Exacum affine | evenlyMoist | 5 / 3–8 | RHS / Gardeners' World — keep the compost consistently moist and never let it dry out fully while in flower; water carefully to avoid wetting the foliage |
+| Goldfish Plant | Nematanthus gregarius | evenlyMoist | 7 / 5–12 | Genus anchor (epiphytic gesneriad, cf. Aeschynanthus) — semi-succulent glossy leaves; keep evenly moist in growth and let the top inch dry between waterings, ease off in winter |
+| Kaffir Lily | Clivia miniata | driesOut | 12 / 8–21 | RHS — water moderately in growth but keep nearly dry over the cool winter rest that triggers flowering; fleshy water-storing roots tolerate drying → long interval, rots if kept wet |
+| Cape Jasmine | Gardenia jasminoides | staysMoist | 5 / 3–8 | RHS — keep the (lime-free) compost consistently moist with soft/rainwater and never let it dry out; high humidity, never waterlogged → short, moisture-loving interval |

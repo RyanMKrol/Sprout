@@ -1853,5 +1853,75 @@
     "minIntervalDays": 5,
     "maxIntervalDays": 10,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "African Violet",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Cyclamen",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Flaming Katy",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Calandiva Kalanchoe",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Cape Primrose",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Florist's Gloxinia",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Persian Violet",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Goldfish Plant",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Kaffir Lily",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Cape Jasmine",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
   }
 ]
