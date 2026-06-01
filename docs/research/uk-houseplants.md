@@ -81,7 +81,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 18 ✅ | T118 | Begonia — rex, maculata, rhizomatous |
 | 19 ✅ | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
 | 20 ✅ | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
-| 21 | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
+| 21 ✅ | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
 | 22 | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
 | 23 | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
 | 24 | T124 | Hoya — common wax plants |
@@ -299,3 +299,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Ming Fern | Asparagus retrofractus | evenlyMoist | 8 / 5–14 | Genus anchor (Asparagus) — woody-stemmed, very drought-tolerant with thick water-storing roots; let the top few cm dry well between waterings → longer interval |
 | Cast Iron Plant | Aspidistra elatior | driesOut | 12 / 8–21 | RHS — famously tough; water moderately and let the top half of the compost dry out between waterings (every 2–3 weeks), reduce in winter; rots if kept waterlogged |
 | Variegated Cast Iron Plant | Aspidistra elatior 'Variegata' | driesOut | 13 / 9–21 | Genus anchor (Aspidistra elatior) — white-striped cultivar with less chlorophyll → slower growth, slightly longer interval; same let-it-dry, never-soggy cadence as the species |
+| Parlour Palm | Chamaedorea elegans | evenlyMoist | 7 / 5–10 | RHS — keep the compost evenly moist in growth, watering when the surface starts to dry; never waterlogged. Sits on the palm genus anchor (base 7, 5–10) |
+| Areca Palm | Dypsis lutescens | evenlyMoist | 6 / 4–9 | RHS / Hortology — thirsty palm that likes consistently moist (not soggy) compost; let only the very top dry → slightly shorter interval than the palm anchor |
+| Kentia Palm | Howea forsteriana | evenlyMoist | 9 / 6–14 | RHS — tolerant, slow-growing palm that copes with some drying out; water when the top 2–3 cm are dry → longer interval than the palm anchor |
+| Majesty Palm | Ravenea rivularis | evenlyMoist | 6 / 4–9 | Hortology / RHS — a riverbank species that likes plentiful, consistent moisture; keep evenly moist → shorter interval than the palm anchor |
+| Ponytail Palm | Beaucarnea recurvata | driesOut | 18 / 12–30 | RHS — not a true palm; a swollen-caudex succulent that stores water and must dry out fully between drinks → long interval, treated under the sansevieria/caudex anchor |
+| Sago Palm | Cycas revoluta | driesOut | 14 / 10–24 | RHS — a cycad, not a palm; water moderately and let the top half of the compost dry between waterings, much reduced in winter; rots if kept wet |
+| Cat Palm | Chamaedorea cataractarum | evenlyMoist | 6 / 4–9 | Genus anchor (Chamaedorea) + Hortology — moisture-loving clumping palm from stream banks; keep evenly moist → slightly shorter interval than the palm anchor |
+| Bamboo Palm | Chamaedorea seifrizii | evenlyMoist | 7 / 5–11 | Genus anchor (Chamaedorea) — reed-stemmed palm; keep evenly moist, letting only the surface dry; sits on the palm anchor |
+| Lady Palm | Rhapis excelsa | evenlyMoist | 9 / 6–14 | RHS — tough, slow fan palm that tolerates some drying; water when the top few cm are dry → longer interval than the palm anchor |
+| Pygmy Date Palm | Phoenix roebelenii | evenlyMoist | 8 / 6–12 | RHS / Hortology — compact date palm; keep evenly moist in growth, allowing the top 2–3 cm to dry between waterings |
