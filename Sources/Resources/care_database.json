@@ -1013,5 +1013,75 @@
     "minIntervalDays": 3,
     "maxIntervalDays": 7,
     "moisture": "staysMoist"
+  },
+  {
+    "species": "Prayer Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Herringbone Prayer Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Rabbit's Tracks Prayer Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Rose Painted Calathea",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Peacock Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Pinstripe Calathea",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Rattlesnake Plant",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Zebra Plant Calathea",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Calathea Orbifolia",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Furry Feather Calathea",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
   }
 ]

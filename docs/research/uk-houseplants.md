@@ -75,7 +75,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
 | 13 ✅ | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
 | 14 ✅ | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
-| 15 | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
+| 15 ✅ | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
 | 16 | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
 | 17 | T117 | Peperomia — common cultivars |
 | 18 | T118 | Begonia — rex, maculata, rhizomatous |
@@ -239,3 +239,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Crocodile Fern | Microsorum musifolium | staysMoist | 5 / 3–8 | Genus anchor (tropical epiphytic Microsorum) — broad textured fronds; keep soil consistently moist with high humidity, never let it dry out |
 | Lemon Button Fern | Nephrolepis cordifolia | staysMoist | 4 / 2–6 | Genus anchor (Nephrolepis, cf. Boston Fern) — dwarf Boston relative; keep consistently moist, same thirsty cadence as its larger cousin |
 | Cretan Brake Fern | Pteris cretica | staysMoist | 4 / 3–7 | Genus anchor (ribbon/brake fern, Pteris) — keep soil consistently moist and never let it dry out fully; tolerates a touch more variability than maidenhair |
+| Prayer Plant | Maranta leuconeura | staysMoist | 4 / 3–6 | RHS / Garden Betty — water moderately keeping soil consistently lightly moist (water when top ~25% dry, roughly weekly in spring/summer), never waterlogged; reduce in winter, likes high humidity |
+| Herringbone Prayer Plant | Maranta leuconeura var. erythroneura | staysMoist | 4 / 3–6 | Genus anchor (Maranta, cf. M. leuconeura) — red-veined herringbone cultivar, same keep-lightly-moist prayer-plant cadence as the species |
+| Rabbit's Tracks Prayer Plant | Maranta leuconeura var. kerchoveana | staysMoist | 4 / 3–6 | Genus anchor (Maranta, cf. M. leuconeura) — green rabbit's-tracks cultivar, same keep-lightly-moist prayer-plant cadence as the species |
+| Rose Painted Calathea | Goeppertia roseopicta (syn. Calathea roseopicta) | staysMoist | 4 / 3–6 | Genus anchor (Calathea/Goeppertia) — fussy prayer plant; keep evenly moist (never dry, never soggy), water ~weekly with filtered/rainwater, sensitive to tap-water salts |
+| Peacock Plant | Goeppertia makoyana (syn. Calathea makoyana) | staysMoist | 4 / 3–6 | Genus anchor (Calathea/Goeppertia) — thin peacock-patterned leaves; keep consistently lightly moist, water ~weekly, never let dry out fully |
+| Pinstripe Calathea | Goeppertia ornata (syn. Calathea ornata) | staysMoist | 4 / 3–6 | Genus anchor (Calathea/Goeppertia) — pink-pinstriped foliage; keep evenly moist with rain/distilled water, water when top barely dries, prone to leaf-edge browning if dry |
+| Rattlesnake Plant | Goeppertia insignis (syn. Calathea lancifolia) | staysMoist | 5 / 3–7 | Genus anchor (Calathea/Goeppertia) — one of the more forgiving calatheas; keep evenly moist but tolerates the top inch drying slightly → marginally longer base/max |
+| Zebra Plant Calathea | Goeppertia zebrina (syn. Calathea zebrina) | staysMoist | 4 / 3–6 | Genus anchor (Calathea/Goeppertia) — velvety zebra-striped leaves; keep consistently lightly moist, water ~weekly, never waterlogged nor bone-dry |
+| Calathea Orbifolia | Goeppertia orbifolia (syn. Calathea orbifolia) | staysMoist | 4 / 3–7 | Garden Betty / Smart Garden Guide — keep top inch slightly damp (never bone-dry or soggy), water ~weekly and reduce to every 2–3 weeks in winter; use filtered/distilled/rainwater to avoid tip browning |
+| Furry Feather Calathea | Goeppertia rufibarba (syn. Calathea rufibarba) | staysMoist | 5 / 3–7 | Genus anchor (Calathea/Goeppertia) — wavy fuzzy leaves, one of the tougher calatheas; keep evenly moist but tolerates the surface drying a touch → marginally longer base/max |
