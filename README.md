@@ -86,6 +86,18 @@ source of truth):
 | T213 | ✅ done | Rooms UI + room assignment |
 | T214 | ✅ done | Tile home page (Plants/Rooms/Water) + show photos |
 | T215 | ✅ done | Guided watering walkthrough (two modes) |
+| T216 | ⏳ pending | Developer settings — delete all plants & rooms |
+| T217 | ⏳ pending | Rename "Name" field label to "Nickname" |
+| T218 | ⏳ pending | My Plants swipe-to-delete + edit rework (drop species) |
+| T219 | ⏳ pending | Edit flow: change a plant's photo |
+| T220 | ⏳ pending | Room light model — direct/indirect sliders → brightness + tooltips |
+| T221 | ⏳ pending | Room-first "Add plants" flow |
+| T222 | ⏳ pending | Square-tile home redesign + split Water / Full check-in |
+| T223 | ⏳ pending | Fix multi-add photo prompt (decline + connected presentation) |
+| T224 | ⏳ pending | Care DB audit + source research → gap list |
+| T225 | ⏳ pending | Care DB gap-fill batch 1 (incl. Monstera adansonii) |
+| T226 | ⏳ pending | Care DB gap-fill batch 2 (→ ~320) |
+| T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet (`docs/REVIEW.md`) of the key decisions for you to check and tweak once everything is
