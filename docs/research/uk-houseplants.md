@@ -86,7 +86,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 23 ✅ | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
 | 24 ✅ | T124 | Hoya — common wax plants |
 | 25 ✅ | T125 | Orchids — Phalaenopsis & common houseplant orchids |
-| 26 | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
+| 26 ✅ | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
 | 27 | T127 | Flowering — African violet, cyclamen, anthurium (if new), kalanchoe blossfeldiana |
 | 28 | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
 | 29 | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
@@ -349,3 +349,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Jewel Orchid | Ludisia discolor | evenlyMoist | 6 / 4–9 | RHS / Gardeners' World — terrestrial orchid grown for its velvety foliage; keep the compost evenly moist (never soggy), watering when the surface starts to dry |
 | Pansy Orchid | Miltoniopsis hybrid | staysMoist | 5 / 3–8 | American Orchid Society / RHS — fine roots and no water-storing pseudobulbs to speak of; keep evenly moist at all times, never allowing it to dry out → short, moisture-loving interval |
 | Zygopetalum Orchid | Zygopetalum hybrid | evenlyMoist | 7 / 5–10 | American Orchid Society / RHS — keep evenly moist during active growth, watering ~weekly and letting the surface barely dry; reduce a little once growth matures |
+| Scarlet Star | Guzmania lingulata | evenlyMoist | 7 / 5–10 | RHS — keep the central cup/rosette topped up with soft water and the compost lightly moist, letting the surface dry between waterings; never waterlogged. Tank-bromeliad anchor (evenlyMoist, base 7, 5–10) |
+| Guzmania Empire | Guzmania 'Empire' | evenlyMoist | 7 / 5–10 | Genus anchor (Guzmania, cf. G. lingulata) — keep the cup filled and the medium lightly moist, same ~weekly tank-bromeliad cadence as the species |
+| Urn Plant | Aechmea fasciata | evenlyMoist | 9 / 6–14 | RHS — silvery scurfy water-storing leaves; keep the central urn filled but water the compost sparingly, only when the top has dried → longer interval than the tank anchor |
+| Amazonian Zebra Plant | Aechmea chantinii | evenlyMoist | 8 / 6–12 | Genus anchor (Aechmea, cf. A. fasciata) — banded tank bromeliad; keep the cup topped up, let the medium dry appreciably between waterings → slightly longer than the anchor |
+| Flaming Sword | Vriesea splendens | evenlyMoist | 7 / 5–10 | RHS — keep the central cup filled with soft/rainwater and the compost lightly moist, letting the surface dry between waterings; never soggy. Tank-bromeliad anchor cadence |
+| Vriesea Astrid | Vriesea 'Astrid' | evenlyMoist | 7 / 5–10 | Genus anchor (Vriesea, cf. V. splendens) — keep the cup filled and the medium lightly moist, same ~weekly tank-bromeliad cadence as the species |
+| Blushing Bromeliad | Neoregelia carolinae | evenlyMoist | 8 / 5–12 | RHS / Hortology — flat open rosette grown for its coloured centre; keep the cup topped up with soft water and the compost lightly moist, letting the top dry between waterings |
+| Fingernail Plant | Neoregelia spectabilis | evenlyMoist | 8 / 5–12 | Genus anchor (Neoregelia, cf. N. carolinae) — open-rosette tank bromeliad; keep the cup filled and let the medium dry between waterings, same cadence as the species |
+| Sky Plant | Tillandsia ionantha | evenlyMoist | 7 / 5–10 | RHS — soil-less mesic air plant; soak/dunk roughly weekly and shake out the excess, misting between soaks in dry rooms (the "interval" is the soak cadence; no compost to keep moist) |
+| Pink Quill | Tillandsia cyanea | evenlyMoist | 7 / 5–10 | RHS — the Tillandsia usually grown in a pot; keep the compost lightly moist and water with soft/rainwater when the surface starts to dry, ~weekly in growth, never waterlogged |

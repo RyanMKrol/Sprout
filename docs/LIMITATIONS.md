@@ -435,3 +435,15 @@ keep them here so the design's compromises live in one place alongside your proj
   per-plant `adj` personalise from there), not precisely sourced prescriptions.
   *Revisit:* tighten any cultivar's numbers if a more specific source surfaces; T131 reviews the
   full set.
+
+- **Care DB (T126): bromeliads/air plants stretch the soil-moisture model — the interval is a soak/cup cadence, not a "let the compost dry" cadence.**
+  *Why:* the schema's `moisture` + interval band assume a potting medium that dries between
+  waterings. Tank bromeliads (Guzmania, Aechmea, Vriesea, Neoregelia) are watered primarily via the
+  central cup/rosette, and Tillandsia air plants (Sky Plant, Pink Quill) have little or no compost at
+  all — `T. ionantha` is soaked/misted rather than potted. All ten were recorded as `evenlyMoist`
+  with a ~weekly base (Aechmea slightly longer for its water-storing scurfy leaves), the interval
+  reinterpreted as the **soak/refill cadence** and the rationale noted in the Provenance index.
+  *Impact:* the engine treats these like any evenly-moist potted plant; for true soil-less air plants
+  the "water the soil" framing in any UI copy is a loose fit, though the cadence itself is sound.
+  *Revisit:* if a future schema gains a watering-method field (cup / soak / soil), remap these; T131
+  reviews the full set.

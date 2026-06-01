@@ -1783,5 +1783,75 @@
     "minIntervalDays": 5,
     "maxIntervalDays": 10,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Scarlet Star",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Guzmania Empire",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Urn Plant",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Amazonian Zebra Plant",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Flaming Sword",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Vriesea Astrid",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Blushing Bromeliad",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Fingernail Plant",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Sky Plant",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Pink Quill",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
   }
 ]
