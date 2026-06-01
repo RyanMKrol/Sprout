@@ -167,7 +167,7 @@ sign-off and tweaks.
 - [x] T219 Edit flow: change a plant's photo
 - [x] T220 Room light model — direct/indirect sun sliders → inferred brightness + info tooltips
 - [x] T221 Room-first "Add plants" flow (choose/add room, then add its plants)
-- [ ] T222 Square-tile home redesign + split "Water" and "Full check-in" tiles
+- [x] T222 Square-tile home redesign + split "Water" and "Full check-in" tiles
 - [ ] T223 Fix multi-add photo prompt — explicit decline + connected presentation
 - [ ] T224 Care DB audit + source research (Patch / Reddit / web) → gap list
 - [ ] T225 Care DB gap-fill batch 1 — ~15 missing common species (incl. Monstera adansonii)

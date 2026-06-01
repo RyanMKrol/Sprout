@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// The **home** landing screen (T214): three large tiles — My Plants, Rooms, and
-/// "Water your plants" — plus a Settings gear. It owns the app's `NavigationStack`;
-/// `PlantListView` and `RoomsView` are pushed as destinations (they no longer carry
-/// their own stacks). The Water tile shows how many plants are due.
+/// The **home** landing screen (T222): a playful 2-column grid of **square tiles** —
+/// My Plants, Rooms, Add plants (launches the T221 room-first flow), and two distinct
+/// watering tiles, **Water your plants** (plants due now) and **Full check-in** (every
+/// plant) — plus a Settings gear. It owns the app's `NavigationStack`; `PlantListView`
+/// and `RoomsView` are pushed as destinations (they no longer carry their own stacks).
 struct HomeView: View {
     @StateObject private var listViewModel: PlantListViewModel
     private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
@@ -17,13 +18,22 @@ struct HomeView: View {
 
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
-    @State private var waterChooserPresented = false
     @State private var guided: GuidedWateringCoordinator?
     @State private var guidedPresented = false
     @State private var didDeepLink = false
+    // Add-plants flow + its "take photos?" follow-up (T208 pattern), launched from the
+    // home Add tile.
+    @State private var addFlowPresented = false
+    @State private var pendingPhotoPlants: [Plant] = []
+    @State private var photoPromptPresented = false
+    @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
+    @State private var photoPresented = false
 
     /// Push destinations for the tiles.
     private enum Route: Hashable { case plants, rooms }
+
+    /// Two square tiles per row.
+    private let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
 
     init(
         listViewModel: PlantListViewModel,
@@ -50,22 +60,34 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
-                VStack(spacing: 16) {
+                LazyVGrid(columns: columns, spacing: 16) {
                     HomeTile(title: "My Plants", systemImage: "leaf.fill",
-                             subtitle: plantsSubtitle, tint: .green) {
+                             subtitle: HomeTileText.plantsSubtitle(count: listViewModel.items.count),
+                             tint: .green) {
                         path.append(Route.plants)
                     }
                     HomeTile(title: "Rooms", systemImage: "house.fill",
                              subtitle: "Light & humidity", tint: .brown) {
                         path.append(Route.rooms)
                     }
+                    HomeTile(title: "Add plants", systemImage: "plus.circle.fill",
+                             subtitle: "Pick a room, add its plants", tint: .teal) {
+                        addFlowPresented = true
+                    }
                     HomeTile(title: "Water your plants", systemImage: "drop.fill",
-                             subtitle: waterSubtitle, tint: .blue) {
-                        waterChooserPresented = true
+                             subtitle: HomeTileText.waterSubtitle(dueCount: listViewModel.dueCount),
+                             tint: .blue) {
+                        startGuided(.due)
+                    }
+                    HomeTile(title: "Full check-in", systemImage: "checklist",
+                             subtitle: HomeTileText.checkInSubtitle(total: listViewModel.items.count),
+                             tint: .indigo) {
+                        startGuided(.all)
                     }
                 }
                 .padding()
             }
+            .background(Color(.systemGroupedBackground), ignoresSafeAreaEdges: .all)
             .navigationTitle("Sprout")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -93,12 +115,35 @@ struct HomeView: View {
         .sheet(isPresented: $settingsPresented) {
             SettingsView(viewModel: makeSettings())
         }
-        .confirmationDialog("Water your plants", isPresented: $waterChooserPresented, titleVisibility: .visible) {
-            Button("Plants due now (\(listViewModel.dueCount))") { startGuided(.due) }
-            Button("Full check-in (\(listViewModel.items.count))") { startGuided(.all) }
-            Button("Cancel", role: .cancel) {}
+        .sheet(isPresented: $addFlowPresented, onDismiss: offerPhotosIfJustCreated) {
+            if let makeBasket {
+                AddFlowView(viewModel: makeBasket()) { result in
+                    if case let .created(plants) = result { pendingPhotoPlants = plants }
+                    addFlowPresented = false
+                }
+            }
+        }
+        .confirmationDialog(
+            "Take a photo of each new plant?",
+            isPresented: $photoPromptPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Take Photos") {
+                photoTargets = pendingPhotoPlants.map(PhotoCaptureCoordinator.Target.init(plant:))
+                pendingPhotoPlants = []
+                photoPresented = true
+            }
+            Button("Not Now", role: .cancel) { pendingPhotoPlants = [] }
         } message: {
-            Text("Go through the plants that need water, or check in on every plant.")
+            Text("You can walk through your new plants one at a time.")
+        }
+        .fullScreenCover(isPresented: $photoPresented) {
+            if let makePhotoCapture {
+                PhotoCaptureView(coordinator: makePhotoCapture(photoTargets)) {
+                    photoPresented = false
+                    listViewModel.load()
+                }
+            }
         }
         .fullScreenCover(isPresented: $guidedPresented) {
             if let guided {
@@ -114,14 +159,14 @@ struct HomeView: View {
         }
     }
 
-    private var plantsSubtitle: String {
-        let n = listViewModel.items.count
-        return n == 0 ? "Add your first plant" : "\(n) \(n == 1 ? "plant" : "plants")"
-    }
-
-    private var waterSubtitle: String {
-        let n = listViewModel.dueCount
-        return n == 0 ? "Nothing due — you're on top of it" : "\(n) due now"
+    /// After the add-flow sheet closes: refresh the list, and if the user just created
+    /// plants, offer to photograph them (T208). Runs in `onDismiss` so the prompt appears
+    /// only once the sheet has fully gone.
+    private func offerPhotosIfJustCreated() {
+        listViewModel.load()
+        if makePhotoCapture != nil, !pendingPhotoPlants.isEmpty {
+            photoPromptPresented = true
+        }
     }
 
     /// Build the guided coordinator for `mode` and present the walkthrough.
@@ -131,9 +176,9 @@ struct HomeView: View {
     }
 
     /// Screenshot deep-link (T002 convention). `home`/`list` (default) lands on the
-    /// tiles; `plants`/`add`/`basket`/`addflow`/`camera`/`photoprompt`/`edit` push the list
+    /// grid; `plants`/`add`/`basket`/`addflow`/`camera`/`photoprompt`/`edit` push the list
     /// (which handles its own sheet deep-links — `addflow` opens the room-first add flow);
-    /// `rooms` pushes Rooms; `settings` opens the settings sheet.
+    /// `rooms` pushes Rooms; `settings` opens the settings sheet; `water` starts a check-in.
     private func deepLinkIfRequested() {
         guard !didDeepLink else { return }
         didDeepLink = true
@@ -148,12 +193,29 @@ struct HomeView: View {
         case "water":
             startGuided(.all)
         default:
-            break // "home" / "list" → the tiles
+            break // "home" / "list" → the grid
         }
     }
 }
 
-/// A large, tappable home tile: icon, title, optional subtitle.
+/// Pure tile-subtitle text, factored out so the home grid's copy is unit-testable
+/// without instantiating the SwiftUI view (T222).
+enum HomeTileText {
+    static func plantsSubtitle(count: Int) -> String {
+        count == 0 ? "Add your first plant" : "\(count) \(count == 1 ? "plant" : "plants")"
+    }
+
+    static func waterSubtitle(dueCount: Int) -> String {
+        dueCount == 0 ? "Nothing due right now" : "\(dueCount) due now"
+    }
+
+    static func checkInSubtitle(total: Int) -> String {
+        total == 0 ? "No plants yet" : "Check every plant"
+    }
+}
+
+/// A playful **square** home tile: a tinted icon badge over a bold title and an optional
+/// subtitle, filling a grid cell with a 1:1 aspect ratio (T222).
 private struct HomeTile: View {
     let title: String
     let systemImage: String
@@ -163,24 +225,33 @@ private struct HomeTile: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 32))
+                    .font(.system(size: 30))
                     .foregroundStyle(tint)
                     .frame(width: 56, height: 56)
-                    .background(tint.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
+                    .background(tint.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
+                Spacer(minLength: 0)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(.title3.bold()).foregroundStyle(.primary)
+                    Text(title)
+                        .font(.title3.bold())
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                     if let subtitle {
-                        Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                        Text(subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
                     }
                 }
-                Spacer()
-                Image(systemName: "chevron.right").foregroundStyle(.tertiary)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .aspectRatio(1, contentMode: .fit)
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 18))
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)

@@ -601,3 +601,15 @@ keep them here so the design's compromises live in one place alongside your proj
   (or factor directly off the weighted score) and, once no old stores remain, drop the legacy `sunlight`
   field. To wire the new inputs through the room editor's add path, `RoomsViewModel` gained an additive
   `add(name:directSun:indirectSun:humidity:)` overload alongside the retained legacy `add(...:sunlight:...)`.
+
+- **Square-tile home (T222): the "take photos?" prompt logic now lives in two places.**
+  *Why:* T222 added an **Add plants** tile that presents the T221 room-first add flow directly from
+  the home grid (so adding no longer requires navigating into My Plants first). To keep the T208
+  behaviour — offer to photograph just-created plants once the add sheet closes — `HomeView` mirrors
+  the `onDismiss` → confirmation-dialog → `PhotoCaptureView` sequence that already exists in
+  `PlantListView` (the list's "+" toolbar add path is retained). *Impact:* the same ~25 lines of
+  prompt/state wiring exist in both views; a change to that flow must be made in both. The dialog is
+  still the bare `confirmationDialog` (the "disconnected floating dialog" T223 is slated to rework),
+  so T223 now has two presentation sites to update. *Revisit:* T223 — when reworking the multi-add
+  photo prompt into a connected sheet, extract the shared offer-photos flow into one reusable
+  component/modifier so both entry points drive a single implementation.
