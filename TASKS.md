@@ -82,7 +82,7 @@ sign-off and tweaks.
 **Phase 1 — Domain & data**
 - [x] T003 Domain model types (Plant, CareProfile, CheckIn) — pure Swift
 - [x] T004 Care database loader, schema & validator (data grows via T101–T130)
-- [ ] T005 SwiftData persistence + repository protocol
+- [x] T005 SwiftData persistence + repository protocol
 
 **Phase 2 — Core screens**
 - [ ] T006 My Plants list + empty state

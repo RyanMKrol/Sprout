@@ -109,6 +109,25 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* wrap the array in `{ "version": n, "plants": [...] }` if the schema ever changes; add a
   distinct scientific-name field if display-name collisions become a real risk (checked again at T131).
 
+- **Persistence (T005): `PlantRepository.update` rewrites only scalar fields, not check-ins.**
+  *Why:* check-ins are an append-only history persisted via `addCheckIn(_:toPlant:)`; making
+  `update` diff/replace the whole `checkIns` array would duplicate that path and risk dropping
+  or duplicating records on a partial domain object. So `update` copies nickname/species and the
+  learned scheduling state (`adj`/`lastWatered`/`nextDue`) and leaves the stored check-ins
+  untouched.
+  *Impact:* mutating or removing an existing `CheckIn` through `update(_:)` has no effect — only
+  the scalar fields round-trip. Editing/deleting individual check-ins isn't supported yet.
+  *Revisit:* add explicit `updateCheckIn`/`removeCheckIn` methods (or reconcile the array in
+  `update`) if a check-in-edit feature is needed.
+
+- **Persistence (T005): SwiftData enum columns (`SoilMoisture`/`LeafState`) are unversioned.**
+  *Why:* storing the domain `Codable` enums directly on `StoredCheckIn` keeps the mapping
+  trivial (no manual raw-string columns) and matches the domain types 1:1.
+  *Impact:* renaming or removing an enum case is a breaking store change with no migration
+  anchor; an old on-disk value for a deleted case would fail to decode. Acceptable while the
+  enums are stable and the only persistent store is the user's local device.
+  *Revisit:* add a `SchemaMigrationPlan` / `VersionedSchema` if the model evolves after release.
+
 - **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
   *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
   Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,

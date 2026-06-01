@@ -56,7 +56,7 @@ source of truth):
 | T002 | ✅ done | Verification baseline — demo-seed hook + screenshot convention |
 | T003 | ✅ done | Domain model types (Plant, CareProfile, CheckIn) |
 | T004 | ✅ done | Care database loader, schema & validator |
-| T005 | ⏳ pending | SwiftData persistence + repository protocol |
+| T005 | ✅ done | SwiftData persistence + repository protocol |
 | T006 | ⏳ pending | My Plants list + empty state |
 | T007 | ⏳ pending | Add / Edit Plant (species picker) |
 | T008 | ⏳ pending | Plant Detail + check-in history |
