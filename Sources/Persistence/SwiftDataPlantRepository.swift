@@ -42,6 +42,12 @@ final class SwiftDataPlantRepository: PlantRepository {
         try context.save()
     }
 
+    func deleteAllPlants() throws {
+        let plants = try context.fetch(FetchDescriptor<StoredPlant>())
+        for plant in plants { context.delete(plant) }
+        try context.save()
+    }
+
     func addCheckIn(_ checkIn: CheckIn, toPlant plantID: UUID) throws {
         guard let stored = try fetch(id: plantID) else {
             throw PlantRepositoryError.notFound(plantID)
@@ -86,6 +92,17 @@ final class SwiftDataPlantRepository: PlantRepository {
         )
         for plant in assigned { plant.roomID = nil }
         context.delete(stored)
+        try context.save()
+    }
+
+    func deleteAllRooms() throws {
+        // Detach every plant from its room (plants are kept), then delete the rooms.
+        let assigned = try context.fetch(
+            FetchDescriptor<StoredPlant>(predicate: #Predicate { $0.roomID != nil })
+        )
+        for plant in assigned { plant.roomID = nil }
+        let rooms = try context.fetch(FetchDescriptor<StoredRoom>())
+        for room in rooms { context.delete(room) }
         try context.save()
     }
 

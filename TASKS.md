@@ -161,7 +161,7 @@ sign-off and tweaks.
 - [x] T215 Guided watering walkthrough (two modes, photo + report → water/skip)
 
 **Phase 10 — Overnight polish: data reset, home redesign, edit/delete, room light, care DB → ~320**
-- [ ] T216 Developer settings — delete all plants & rooms (full data reset)
+- [x] T216 Developer settings — delete all plants & rooms (full data reset)
 - [ ] T217 Rename "Name" field label to "Nickname" everywhere
 - [ ] T218 My Plants: swipe-to-delete + edit rework (drop species; keep nickname + room)
 - [ ] T219 Edit flow: change a plant's photo

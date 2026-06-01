@@ -140,7 +140,11 @@ struct ContentView: View {
     /// Build the Settings view model (T014): persisted preferences plus the shared
     /// repository so a reminder-time change reschedules every plant's reminder.
     private func makeSettings() -> SettingsViewModel {
-        SettingsViewModel(store: UserDefaultsSettingsStore(), repository: repository)
+        SettingsViewModel(
+            store: UserDefaultsSettingsStore(),
+            repository: repository,
+            onDataReset: { [listViewModel] in listViewModel.load() }
+        )
     }
 
     /// The schedule multiplier for a plant, derived from its room's environment
@@ -181,10 +185,12 @@ private struct EmptyPlantRepository: PlantRepository {
     func add(_ plant: Plant) throws {}
     func update(_ plant: Plant) throws {}
     func delete(id: UUID) throws {}
+    func deleteAllPlants() throws {}
     func addCheckIn(_ checkIn: CheckIn, toPlant plantID: UUID) throws {}
     func allRooms() throws -> [Room] { [] }
     func room(id: UUID) throws -> Room? { nil }
     func addRoom(_ room: Room) throws {}
     func updateRoom(_ room: Room) throws {}
     func deleteRoom(id: UUID) throws {}
+    func deleteAllRooms() throws {}
 }

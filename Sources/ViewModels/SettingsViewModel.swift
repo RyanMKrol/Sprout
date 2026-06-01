@@ -82,6 +82,9 @@ final class SettingsViewModel: ObservableObject {
     /// real scheduler against a stub center; defaults to the production scheduler.
     private let makeScheduler: (Int) -> NotificationScheduling
     private let calendar: Calendar
+    /// Called after the developer data reset (T216) wipes plants + rooms, so the
+    /// host can refresh the list/home. A no-op by default (and in tests).
+    private let onDataReset: () -> Void
 
     init(
         store: SettingsStore = UserDefaultsSettingsStore(),
@@ -89,7 +92,8 @@ final class SettingsViewModel: ObservableObject {
         makeScheduler: @escaping (Int) -> NotificationScheduling = { hour in
             WateringNotificationScheduler(reminderHour: hour)
         },
-        calendar: Calendar = .current
+        calendar: Calendar = .current,
+        onDataReset: @escaping () -> Void = {}
     ) {
         let settings = store.load()
         self.reminderHour = settings.reminderHour
@@ -97,6 +101,7 @@ final class SettingsViewModel: ObservableObject {
         self.repository = repository
         self.makeScheduler = makeScheduler
         self.calendar = calendar
+        self.onDataReset = onDataReset
     }
 
     /// The reminder time as a `Date` for the view's `DatePicker` (hour-and-minute):
@@ -136,6 +141,16 @@ final class SettingsViewModel: ObservableObject {
         for plant in plants {
             await scheduler.scheduleReminder(for: plant)
         }
+    }
+
+    /// Developer reset (T216): delete **every** plant and room from the store, then
+    /// notify the host (`onDataReset`) so the list/home refresh to their empty state.
+    /// Repository errors degrade to a no-op rather than crashing settings.
+    func deleteAllData() {
+        guard let repository else { onDataReset(); return }
+        try? repository.deleteAllPlants()
+        try? repository.deleteAllRooms()
+        onDataReset()
     }
 
     /// The current preferences as a value, for persistence.

@@ -137,6 +137,36 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(requests.allSatisfy { ($0.trigger as? UNCalendarNotificationTrigger)?.dateComponents.hour == 18 })
     }
 
+    // MARK: - developer data reset (T216)
+
+    func testDeleteAllDataWipesPlantsAndRoomsAndNotifies() async {
+        let (store, _) = ephemeralStore(suite: "sprout.settings.tests.reset")
+        let repository = try! PlantStore.inMemory()
+        try! repository.add(plant(nextDue: nil))
+        try! repository.addRoom(Room(name: "Studio"))
+
+        var didReset = false
+        let vm = SettingsViewModel(
+            store: store,
+            repository: repository,
+            onDataReset: { didReset = true }
+        )
+
+        vm.deleteAllData()
+
+        XCTAssertTrue(try! repository.allPlants().isEmpty)
+        XCTAssertTrue(try! repository.allRooms().isEmpty)
+        XCTAssertTrue(didReset, "host should be notified to refresh after a reset")
+    }
+
+    func testDeleteAllDataWithoutRepositoryStillNotifies() {
+        let (store, _) = ephemeralStore(suite: "sprout.settings.tests.reset.norepo")
+        var didReset = false
+        let vm = SettingsViewModel(store: store, onDataReset: { didReset = true })
+        vm.deleteAllData()
+        XCTAssertTrue(didReset)
+    }
+
     // MARK: - reminderTime projection
 
     func testReminderTimeReflectsTheStoredHour() {

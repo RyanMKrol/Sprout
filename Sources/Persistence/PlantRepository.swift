@@ -33,6 +33,10 @@ protocol PlantRepository {
     /// - Throws: `PlantRepositoryError.notFound` if no such plant exists.
     func delete(id: UUID) throws
 
+    /// Delete **every** plant (and, cascading, their check-ins). A no-op on an
+    /// empty store. Used by the Settings developer reset (T216).
+    func deleteAllPlants() throws
+
     /// Append a check-in to an existing plant.
     /// - Throws: `PlantRepositoryError.notFound` if no such plant exists.
     func addCheckIn(_ checkIn: CheckIn, toPlant plantID: UUID) throws
@@ -56,4 +60,9 @@ protocol PlantRepository {
     /// (plants are never deleted with their room).
     /// - Throws: `PlantRepositoryError.notFound` if no such room exists.
     func deleteRoom(id: UUID) throws
+
+    /// Delete **every** room. Plants are kept; their `roomID` is cleared so they
+    /// fall back to a neutral environment. A no-op on an empty store. Used by the
+    /// Settings developer reset (T216).
+    func deleteAllRooms() throws
 }

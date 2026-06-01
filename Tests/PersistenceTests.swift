@@ -161,6 +161,45 @@ final class PersistenceTests: XCTestCase {
         XCTAssertThrowsError(try repo.deleteRoom(id: UUID()))
     }
 
+    // MARK: bulk reset (T216)
+
+    func testDeleteAllPlantsAndRoomsEmptiesStore() throws {
+        let room = Room(name: "Studio")
+        try repo.addRoom(room)
+        try repo.addRoom(Room(name: "Bedroom"))
+        var a = makePlant(nickname: "A")
+        a.roomID = room.id
+        try repo.add(a)
+        try repo.add(makePlant(nickname: "B"))
+
+        try repo.deleteAllPlants()
+        try repo.deleteAllRooms()
+
+        XCTAssertTrue(try repo.allPlants().isEmpty)
+        XCTAssertTrue(try repo.allRooms().isEmpty)
+    }
+
+    func testDeleteAllRoomsKeepsPlantsButClearsRoomID() throws {
+        let room = Room(name: "Studio")
+        try repo.addRoom(room)
+        var a = makePlant(nickname: "A")
+        a.roomID = room.id
+        try repo.add(a)
+
+        try repo.deleteAllRooms()
+
+        XCTAssertTrue(try repo.allRooms().isEmpty)
+        XCTAssertEqual(try repo.allPlants().count, 1, "plants survive a room wipe")
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: a.id)).roomID)
+    }
+
+    func testDeleteAllOnEmptyStoreIsNoOp() throws {
+        try repo.deleteAllPlants()
+        try repo.deleteAllRooms()
+        XCTAssertTrue(try repo.allPlants().isEmpty)
+        XCTAssertTrue(try repo.allRooms().isEmpty)
+    }
+
     func testPlantNotFoundReturnsNil() throws {
         XCTAssertNil(try repo.plant(id: UUID()))
     }

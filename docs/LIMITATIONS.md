@@ -549,3 +549,11 @@ keep them here so the design's compromises live in one place alongside your proj
   the "water the soil" framing in any UI copy is a loose fit, though the cadence itself is sound.
   *Revisit:* if a future schema gains a watering-method field (cup / soak / soil), remap these; T131
   reviews the full set.
+
+- **Developer reset (T216): the "Delete all plants & rooms" action ships in every build, not gated to DEBUG.**
+  *Why:* the task asks for a Settings "Developer" section as the manual data-refresh for the additive,
+  no-migration schema. It lives in the production Settings screen behind a confirmation dialog rather
+  than a `#if DEBUG` gate, so it's reachable on a real install. *Impact:* a user can wipe all their
+  data from Settings (two taps + a confirm) with no undo and no backup/export — the data is gone.
+  *Revisit:* when a real onboarding/account model or data export lands, move this behind a debug flag
+  (or remove it) and offer a safer "start over" with export-first.
