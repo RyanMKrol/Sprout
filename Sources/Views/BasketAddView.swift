@@ -27,6 +27,7 @@ struct BasketAddView: View {
     var body: some View {
         NavigationStack {
             List {
+                roomSection
                 basketSection
                 speciesSection
             }
@@ -43,6 +44,22 @@ struct BasketAddView: View {
                         }
                     }
                     .disabled(!viewModel.canCommit)
+                }
+            }
+            .onAppear { viewModel.loadRooms() }
+        }
+    }
+
+    /// Room picker — assigns the whole batch to a room (drives the initial cadence).
+    @ViewBuilder
+    private var roomSection: some View {
+        if !viewModel.availableRooms.isEmpty {
+            Section("Room") {
+                Picker("Room", selection: $viewModel.selectedRoom) {
+                    Text("None").tag(Room?.none)
+                    ForEach(viewModel.availableRooms) { room in
+                        Text(room.name).tag(Room?.some(room))
+                    }
                 }
             }
         }

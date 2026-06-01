@@ -37,7 +37,7 @@ enum RoomHumidity: String, Codable, CaseIterable, Equatable, Sendable {
 ///
 /// Pure value type: no SwiftUI / SwiftData imports. T211 maps this onto a SwiftData
 /// `@Model`; `RoomEnvironment` turns its properties into a schedule factor.
-struct Room: Codable, Equatable, Identifiable, Sendable {
+struct Room: Codable, Equatable, Hashable, Identifiable, Sendable {
     var id: UUID
     var name: String
     var sunlight: SunlightLevel

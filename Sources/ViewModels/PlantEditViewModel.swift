@@ -41,6 +41,10 @@ final class PlantEditViewModel: ObservableObject {
     @Published var selectedSpecies: String = ""
     /// The species-picker search query; filters `speciesResults`.
     @Published var speciesQuery: String = ""
+    /// The room the plant is assigned to (T213). `nil` → no room (neutral schedule).
+    @Published var selectedRoomID: UUID?
+    /// Rooms available to assign to (loaded from the repository).
+    @Published private(set) var availableRooms: [Room] = []
     /// `true` if *edit* mode was asked to edit a plant the repository doesn't have.
     @Published private(set) var loadFailed: Bool = false
 
@@ -55,11 +59,13 @@ final class PlantEditViewModel: ObservableObject {
         self.mode = mode
         self.repository = repository
         self.careDatabase = careDatabase
+        availableRooms = (try? repository.allRooms()) ?? []
         if case let .edit(plantID) = mode {
             if let plant = (try? repository.plant(id: plantID)) ?? nil {
                 editingPlant = plant
                 nickname = plant.nickname
                 selectedSpecies = plant.species
+                selectedRoomID = plant.roomID
             } else {
                 loadFailed = true
             }
@@ -126,11 +132,12 @@ final class PlantEditViewModel: ObservableObject {
         if var plant = editingPlant {
             plant.nickname = trimmedNickname
             plant.species = profile.species
+            plant.roomID = selectedRoomID
             try repository.update(plant)
             editingPlant = plant
             return plant
         } else {
-            let plant = Plant(nickname: trimmedNickname, species: profile.species)
+            let plant = Plant(nickname: trimmedNickname, species: profile.species, roomID: selectedRoomID)
             try repository.add(plant)
             return plant
         }

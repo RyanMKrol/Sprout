@@ -27,6 +27,17 @@ struct PlantEditView: View {
                         .textInputAutocapitalization(.words)
                 }
 
+                if !viewModel.availableRooms.isEmpty {
+                    Section("Room") {
+                        Picker("Room", selection: $viewModel.selectedRoomID) {
+                            Text("None").tag(UUID?.none)
+                            ForEach(viewModel.availableRooms) { room in
+                                Text(room.name).tag(UUID?.some(room.id))
+                            }
+                        }
+                    }
+                }
+
                 Section("Species") {
                     TextField("Search species", text: $viewModel.speciesQuery)
                         .textInputAutocapitalization(.never)

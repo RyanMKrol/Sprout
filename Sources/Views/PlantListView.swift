@@ -27,10 +27,14 @@ struct PlantListView: View {
     /// Builds the Settings view model (T014). When `nil`, the settings button is
     /// hidden — keeps the list usable on its own (e.g. in early tests).
     private let makeSettings: (() -> SettingsViewModel)?
+    /// Builds the Rooms view model (T213). When `nil`, the rooms button is hidden.
+    /// (T214 moves room access to the home page; this toolbar entry is interim.)
+    private let makeRooms: (() -> RoomsViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
+    @State private var roomsPresented = false
     @State private var didDeepLink = false
     /// Targets for the sequential photo flow + whether it's presented (T207/T208).
     @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
@@ -47,7 +51,8 @@ struct PlantListView: View {
         makePhotoCapture: (([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator)? = nil,
         makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
         makeCheckIn: ((UUID) -> CheckInViewModel)? = nil,
-        makeSettings: (() -> SettingsViewModel)? = nil
+        makeSettings: (() -> SettingsViewModel)? = nil,
+        makeRooms: (() -> RoomsViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
@@ -56,6 +61,7 @@ struct PlantListView: View {
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
         self.makeSettings = makeSettings
+        self.makeRooms = makeRooms
     }
 
     var body: some View {
@@ -95,6 +101,15 @@ struct PlantListView: View {
                         }
                     }
                 }
+                if makeRooms != nil {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            roomsPresented = true
+                        } label: {
+                            Label("Rooms", systemImage: "house")
+                        }
+                    }
+                }
                 if makeBasket != nil {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
@@ -128,6 +143,11 @@ struct PlantListView: View {
         .sheet(isPresented: $settingsPresented) {
             if let makeSettings {
                 SettingsView(viewModel: makeSettings())
+            }
+        }
+        .sheet(isPresented: $roomsPresented) {
+            if let makeRooms {
+                NavigationStack { RoomsView(viewModel: makeRooms()) }
             }
         }
         .confirmationDialog(
@@ -203,6 +223,8 @@ struct PlantListView: View {
             photoPromptPresented = true
         case "settings" where makeSettings != nil:
             settingsPresented = true
+        case "rooms" where makeRooms != nil:
+            roomsPresented = true
         case "detail", "checkin":
             if makeDetail != nil, let first = viewModel.items.first {
                 path.append(first.id)

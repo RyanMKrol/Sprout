@@ -36,8 +36,14 @@ struct ContentView: View {
             makePhotoCapture: makePhotoCapture,
             makeDetail: makeDetail,
             makeCheckIn: makeCheckIn,
-            makeSettings: makeSettings
+            makeSettings: makeSettings,
+            makeRooms: makeRooms
         )
+    }
+
+    /// Build the Rooms view model (T213) against the shared repository.
+    private func makeRooms() -> RoomsViewModel {
+        RoomsViewModel(repository: repository)
     }
 
     /// Build the photo-capture source. The real `AVFoundationCamera` only runs on a

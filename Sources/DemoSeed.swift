@@ -80,11 +80,28 @@ enum DemoSeed {
         #endif
     }
 
-    /// A fresh in-memory repository pre-loaded with `plants`, for seeded
+    /// Demo rooms (T213), with fixed ids so plants can reference them. Empty outside
+    /// DEBUG / when inactive.
+    static var rooms: [Room] {
+        #if DEBUG
+        guard isActive else { return [] }
+        return [
+            Room(id: livingRoomID, name: "Living Room", sunlight: .direct, humidity: .dry),
+            Room(id: bathroomID, name: "Bathroom", sunlight: .low, humidity: .moist),
+        ]
+        #else
+        return []
+        #endif
+    }
+
+    /// A fresh in-memory repository pre-loaded with `rooms` + `plants`, for seeded
     /// screenshots. DEBUG-only; callers fall back to an empty store when inactive.
     static func seededRepository() throws -> PlantRepository {
         let repository = try PlantStore.inMemory()
         #if DEBUG
+        for room in rooms {
+            try repository.addRoom(room)
+        }
         for plant in plants {
             try repository.add(plant)
         }
@@ -93,6 +110,9 @@ enum DemoSeed {
     }
 
     #if DEBUG
+    private static let livingRoomID = UUID(uuidString: "00000000-0000-0000-0000-0000000000A1")!
+    private static let bathroomID = UUID(uuidString: "00000000-0000-0000-0000-0000000000B2")!
+
     /// A clearly-hot 5-day forecast (≈30 °C daily mean) so `weatherFactor` lands
     /// well below 1.0 — enough to shorten Peace Lily's 6-day cadence to 5.
     private static var warmSpellForecast: WeatherForecast {
@@ -123,9 +143,9 @@ enum DemoSeed {
             // lands on her. With a neutral learned `adj` and a real check-in history,
             // the demo warm-spell `weatherFactor` (T016) becomes the dominant cause —
             // her detail screen shows "shortened … because of a warm spell".
-            Plant(nickname: "Lily", species: "Peace Lily", adj: Plant.defaultAdj, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
-            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0)),
-            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2)),
+            Plant(nickname: "Lily", species: "Peace Lily", adj: Plant.defaultAdj, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory, roomID: livingRoomID),
+            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0), roomID: livingRoomID),
+            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2), roomID: bathroomID),
             Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3)),
             Plant(nickname: "Spike", species: "Snake Plant", nextDue: day(6)),
         ]
