@@ -80,7 +80,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 17 ✅ | T117 | Peperomia — common cultivars |
 | 18 ✅ | T118 | Begonia — rex, maculata, rhizomatous |
 | 19 ✅ | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
-| 20 | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
+| 20 ✅ | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
 | 21 | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
 | 22 | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
 | 23 | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
@@ -289,3 +289,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Turtle Vine | Callisia repens | evenlyMoist | 8 / 5–12 | Genus anchor (Callisia, inch-plant relative) — small semi-succulent creeping leaves store some water; keep lightly moist but let the top inch dry, more forgiving of missed waterings than Tradescantia |
 | Basket Plant | Callisia fragrans | evenlyMoist | 9 / 6–14 | Genus anchor (Callisia) — larger fleshy rosette/runner storing water; let the top 2–3 cm dry between waterings, more drought-tolerant → longer interval than the small turtle vine |
 | String of Hearts | Ceropegia woodii | driesOut | 14 / 10–21 | RHS / The Sill — semi-succulent trailing chain of hearts with water-storing tubers; soak-and-dry, water every 2–3 weeks only when the soil is dry, very prone to root rot if kept wet |
+| Spider Plant | Chlorophytum comosum 'Vittatum' | evenlyMoist | 7 / 5–10 | RHS — water moderately in growth, keeping the compost lightly moist; thick fleshy tuberous roots store water so it tolerates the top inch drying, reduce in winter |
+| Bonnie Spider Plant | Chlorophytum comosum 'Bonnie' | evenlyMoist | 7 / 5–10 | Genus anchor (Chlorophytum comosum) — curly-leaved spider plant cultivar; same water-storing-root, keep-lightly-moist cadence as the species |
+| Variegated Spider Plant | Chlorophytum comosum 'Variegatum' | evenlyMoist | 7 / 5–10 | Genus anchor (Chlorophytum comosum) — white-margined cultivar; water when the top inch dries (~weekly), tuberous roots store water, reduce in winter |
+| Fire Flash | Chlorophytum orchidastrum | evenlyMoist | 7 / 5–12 | Genus anchor (Chlorophytum) — clumping orange-stemmed "Mandarin Plant"; keep evenly moist in growth, let the top inch dry between waterings; less tuberous than C. comosum but still forgiving |
+| Asparagus Fern | Asparagus densiflorus 'Sprengeri' | evenlyMoist | 7 / 5–12 | RHS — not a true fern; keep the compost moist in growth and water when the top inch dries; fleshy water-storing tuberous roots tolerate occasional drying, reduce watering in winter |
+| Foxtail Fern | Asparagus densiflorus 'Myers' | evenlyMoist | 8 / 6–14 | Genus anchor (Asparagus densiflorus) — dense plumed stems on chunky water-storing tubers; more drought-tolerant than 'Sprengeri', let the top 2–3 cm dry → slightly longer interval |
+| Lace Fern | Asparagus setaceus | evenlyMoist | 6 / 4–10 | Genus anchor (Asparagus, cf. A. densiflorus) — fine feathery climber that likes more consistent moisture and humidity than the tuberous types; water when the surface starts to dry → shorter interval |
+| Ming Fern | Asparagus retrofractus | evenlyMoist | 8 / 5–14 | Genus anchor (Asparagus) — woody-stemmed, very drought-tolerant with thick water-storing roots; let the top few cm dry well between waterings → longer interval |
+| Cast Iron Plant | Aspidistra elatior | driesOut | 12 / 8–21 | RHS — famously tough; water moderately and let the top half of the compost dry out between waterings (every 2–3 weeks), reduce in winter; rots if kept waterlogged |
+| Variegated Cast Iron Plant | Aspidistra elatior 'Variegata' | driesOut | 13 / 9–21 | Genus anchor (Aspidistra elatior) — white-striped cultivar with less chlorophyll → slower growth, slightly longer interval; same let-it-dry, never-soggy cadence as the species |
