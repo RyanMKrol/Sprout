@@ -69,7 +69,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 06 ✅ | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
 | 07 ✅ | T107 | Sansevieria / snake plants & cultivars |
 | 08 ✅ | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
-| 09 | T109 | Crassula (jade), Sedum, Sempervivum |
+| 09 ✅ | T109 | Crassula (jade), Sedum, Sempervivum |
 | 10 | T110 | Haworthia, Gasteria, Aloe |
 | 11 | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
@@ -179,3 +179,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Ghost Plant | Graptopetalum paraguayense | driesOut | 13 / 9–24 | Succulent Plant Care / Garden Beast — especially drought-resistant, soak-and-dry; can wait until leaves slightly shrivel → wider max |
 | Ghost Plant Debbie | × Graptoveria 'Debbie' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — Graptopetalum × Echeveria hybrid rosette, standard soak-and-dry cadence |
 | Moonstones | Pachyphytum oviferum | driesOut | 12 / 9–21 | Succulents Box / World of Succulents — soak-and-dry, every ~1–2 weeks in growth; plump leaves store water, water when they soften/wrinkle |
+| Jade Plant | Crassula ovata | driesOut | 14 / 10–24 | Soltech / Joy Us Garden — soak-and-dry; water every 2–3 weeks in warm months, ~monthly in winter; thick water-storing leaves, overwatering is the #1 killer |
+| Gollum Jade | Crassula ovata 'Gollum' | driesOut | 14 / 10–24 | Genus anchor (C. ovata cultivar) — tubular-leaved jade, same soak-and-dry cadence as the species |
+| Silver Dollar Jade | Crassula arborescens | driesOut | 14 / 10–24 | Genus anchor (jade, Crassula) — thick rounded water-storing leaves, same soak-and-dry cadence as C. ovata |
+| String of Buttons | Crassula perforata | driesOut | 12 / 9–18 | Succulent Plant Care / Living House — soak-and-dry; water every 10–14 days in spring/autumn (7–10 in summer), let soil dry fully, root rot if overwatered |
+| Watch Chain | Crassula muscosa | driesOut | 12 / 9–18 | Genus anchor (Crassula leaf succulent) — fine stacked foliage, soak-and-dry cadence like other small crassulas |
+| Burro's Tail | Sedum morganianum | driesOut | 14 / 10–24 | Healthy Houseplants / Joy Us Garden — water when soil fully dry, ~every 2–3 weeks; plump leaves store water and pucker when thirsty |
+| Jelly Bean Plant | Sedum rubrotinctum | driesOut | 13 / 10–21 | Genus anchor (Sedum leaf succulent) — bean-like water-storing leaves, soak-and-dry like S. morganianum |
+| Coppertone Stonecrop | Sedum nussbaumerianum | driesOut | 13 / 9–21 | Genus anchor (Sedum leaf succulent) — fleshy rosettes store water, soak-and-dry cadence |
+| Common Houseleek | Sempervivum tectorum | driesOut | 14 / 10–24 | Almanac / Gardenia — water every 1–2 weeks in growth (let dry ~an inch deep), every 4–6 weeks in winter; exceptionally drought-tolerant, rots if kept wet |
+| Cobweb Houseleek | Sempervivum arachnoideum | driesOut | 14 / 10–24 | Genus anchor (Sempervivum) — alpine rosette storing water in cobwebbed leaves, same infrequent soak-and-dry cadence as S. tectorum |

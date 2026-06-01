@@ -593,5 +593,75 @@
     "minIntervalDays": 9,
     "maxIntervalDays": 21,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Jade Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Gollum Jade",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Silver Dollar Jade",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "String of Buttons",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 18,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Watch Chain",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 18,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Burro's Tail",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Jelly Bean Plant",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Coppertone Stonecrop",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Common Houseleek",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Cobweb Houseleek",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
   }
 ]
