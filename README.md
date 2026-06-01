@@ -73,7 +73,7 @@ source of truth):
 | T200 | ⏳ pending | Final review — compile key decisions for sign-off |
 | T201 | ✅ done | Photo blob on the model (`Plant`/`StoredPlant.photoData` + `PlantPhoto` encode) |
 | T202 | ✅ done | Random nickname provider (curated English names) |
-| T203 | ⏳ pending | Basket add view model (multi-add + auto-naming) |
+| T203 | ✅ done | Basket add view model (multi-add + auto-naming) |
 | T204 | ⏳ pending | Basket add view + "+" rewiring (basket replaces single-add) |
 | T205 | ⏳ pending | Camera seam + stub + camera permission |
 | T206 | ⏳ pending | Photo-capture coordinator (sequential capture) |

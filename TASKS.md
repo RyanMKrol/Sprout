@@ -144,7 +144,7 @@ sign-off and tweaks.
 **Phase 8 — Streamlined add plants (basket multi-add + photo capture)**
 - [x] T201 Photo blob on the model (Plant/StoredPlant.photoData + PlantPhoto encode)
 - [x] T202 Random nickname provider (curated English names + injectable RNG)
-- [ ] T203 Basket add view model (multi-add state, auto-naming, batch commit)
+- [x] T203 Basket add view model (multi-add state, auto-naming, batch commit)
 - [ ] T204 Basket add view + "+" rewiring (basket replaces single-add)
 - [ ] T205 Camera seam + stub + camera permission
 - [ ] T206 Photo-capture coordinator (sequential capture→save→advance)

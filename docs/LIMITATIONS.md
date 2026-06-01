@@ -173,6 +173,15 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* grow the pool or switch to a generator if users routinely add hundreds at once, or add
   locale-aware name lists.
 
+- **Basket commit (T203) inserts plants with a per-row `repository.add` loop, not a batch save.**
+  *Why:* keeps the `PlantRepository` protocol (and all its stubs/fakes) unchanged — no new
+  `addAll(_:)` method. The loop returns the created plants in basket order for the photo flow.
+  *Impact:* N `context.save()` calls per confirm; partial-failure semantics are all-or-throw (a
+  mid-loop failure leaves the already-added plants persisted and rethrows). Fine for the handful of
+  plants a basket realistically holds.
+  *Revisit:* add a single-save `addAll(_:)` to the repository if large baskets show latency, and make
+  the commit transactional.
+
 - **Add/Edit Plant (T007) captures only nickname + species — `location`, `pot size`, and `photo` are deferred.**
   *Why:* T007's `Scope:` is `Sources/Views/PlantEdit*` + `Sources/ViewModels/PlantEdit*` + `Tests/*`. Persisting
   location/pot size/photo would require extending the pure domain `Plant` (T003 scope) **and** the SwiftData
