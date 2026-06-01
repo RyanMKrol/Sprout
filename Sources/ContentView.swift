@@ -37,13 +37,29 @@ struct ContentView: View {
             makeDetail: makeDetail,
             makeCheckIn: makeCheckIn,
             makeRooms: makeRooms,
-            makeSettings: makeSettings
+            makeSettings: makeSettings,
+            makeGuidedWatering: makeGuidedWatering
         )
     }
 
     /// Build the Rooms view model (T213) against the shared repository.
     private func makeRooms() -> RoomsViewModel {
         RoomsViewModel(repository: repository)
+    }
+
+    /// Build the guided-watering coordinator (T215) for a mode: all plants, or only
+    /// those due now — both in due-order, against the shared repository + room factor.
+    private func makeGuidedWatering(_ mode: GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator {
+        let ordered = PlantListViewModel.ordered((try? repository.allPlants()) ?? [])
+        let plants = mode == .due
+            ? ordered.filter { DueStatus(nextDue: $0.nextDue, now: Date()).needsWater }
+            : ordered
+        return GuidedWateringCoordinator(
+            plants: plants,
+            repository: repository,
+            careDatabase: careDatabase,
+            environmentFactor: { Self.environmentFactor(for: $0, repository: repository) }
+        )
     }
 
     /// Build the photo-capture source. The real `AVFoundationCamera` only runs on a
