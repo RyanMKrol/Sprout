@@ -113,7 +113,7 @@ sign-off and tweaks.
 - [x] T105 Care DB batch 05 — add 10 UK houseplants (Alocasia / Caladium)
 - [x] T106 Care DB batch 06 — add 10 UK houseplants (ZZ / Dracaena / Cordyline)
 - [x] T107 Care DB batch 07 — add 10 UK houseplants (Sansevieria)
-- [ ] T108 Care DB batch 08 — add 10 UK houseplants (Echeveria / rosette succulents)
+- [x] T108 Care DB batch 08 — add 10 UK houseplants (Echeveria / rosette succulents)
 - [ ] T109 Care DB batch 09 — add 10 UK houseplants (Crassula / Sedum / Sempervivum)
 - [ ] T110 Care DB batch 10 — add 10 UK houseplants (Haworthia / Gasteria / Aloe)
 - [ ] T111 Care DB batch 11 — add 10 UK houseplants (Kalanchoe / trailing succulents)
@@ -374,7 +374,7 @@ sign-off and tweaks.
 - **Do:** Research **batch 07** (category: ZZ / Dracaena / Cordyline) per `docs/research/uk-houseplants.md` and add **10 new unique** UK houseplants not already present — each a real `CareProfile` (moisture + base/min/max) grounded in an authoritative source where reachable (else the genus-anchor defaults) — appending a row per plant to that doc's Provenance index.
 - **Done-when:** the dataset gains **exactly 10** new unique species (no duplicate scientific names); every new row passes the T004 validator (`min ≤ base ≤ max`, valid `moisture`); each new plant has a Provenance-index row recording its source (or, if web research isn't available in the run, the genus-anchor rationale used); unit tests green.
 
-### T108 — Care DB batch 08 — add 10 UK houseplants (Sansevieria)
+### T108 — Care DB batch 08 — add 10 UK houseplants (Echeveria / Graptopetalum / Pachyphytum & rosette succulents)
 - **Depends on:** T004
 - **Scope:** `Sources/Resources/care_database.json`, `docs/research/uk-houseplants.md`
 - **Design:** docs/research/uk-houseplants.md

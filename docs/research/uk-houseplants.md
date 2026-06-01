@@ -68,7 +68,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 05 ✅ | T105 | Alocasia, Colocasia, Caladium |
 | 06 ✅ | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
 | 07 ✅ | T107 | Sansevieria / snake plants & cultivars |
-| 08 | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
+| 08 ✅ | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
 | 09 | T109 | Crassula (jade), Sedum, Sempervivum |
 | 10 | T110 | Haworthia, Gasteria, Aloe |
 | 11 | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
@@ -169,3 +169,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Ceylon Bowstring Hemp | Sansevieria zeylanica | driesOut | 14 / 10–28 | Genus anchor (Sansevieria) — dark-banded upright species, same trifasciata-type dry-out cadence |
 | White Snake Plant | Sansevieria trifasciata 'Bantel's Sensation' | driesOut | 14 / 10–24 | Genus anchor (Sansevieria) — slim white-striped cultivar; less chlorophyll but same dry-out cadence |
 | Black Coral Snake Plant | Sansevieria trifasciata 'Black Coral' | driesOut | 14 / 10–28 | Genus anchor (Sansevieria) — dark-green trifasciata cultivar, same every-2-weeks dry-out cadence as the species |
+| Mexican Snowball | Echeveria elegans | driesOut | 12 / 9–21 | Succulents Box / Plant Orbit — soak-and-dry; water every ~10–14 days in growth, sparingly in winter; rosette stores water, root rot if soggy |
+| Black Prince Echeveria | Echeveria 'Black Prince' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — dark hybrid rosette, standard echeveria soak-and-dry cadence |
+| Perle von Nurnberg Echeveria | Echeveria 'Perle von Nürnberg' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — classic pastel hybrid rosette, standard echeveria soak-and-dry cadence |
+| Lipstick Echeveria | Echeveria agavoides | driesOut | 13 / 9–21 | Genus anchor (leaf succulent) — thick agave-like leaves store extra water → slightly longer base than the genus anchor |
+| Echeveria Lola | Echeveria 'Lola' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — compact agavoides×lilacina hybrid, standard echeveria soak-and-dry cadence |
+| Plush Plant | Echeveria pulvinata | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — fuzzy-leaved shrubby echeveria, standard soak-and-dry cadence |
+| Topsy Turvy Echeveria | Echeveria runyonii 'Topsy Turvy' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — recurved-leaf runyonii cultivar, standard echeveria soak-and-dry cadence |
+| Ghost Plant | Graptopetalum paraguayense | driesOut | 13 / 9–24 | Succulent Plant Care / Garden Beast — especially drought-resistant, soak-and-dry; can wait until leaves slightly shrivel → wider max |
+| Ghost Plant Debbie | × Graptoveria 'Debbie' | driesOut | 12 / 9–21 | Genus anchor (leaf succulent) — Graptopetalum × Echeveria hybrid rosette, standard soak-and-dry cadence |
+| Moonstones | Pachyphytum oviferum | driesOut | 12 / 9–21 | Succulents Box / World of Succulents — soak-and-dry, every ~1–2 weeks in growth; plump leaves store water, water when they soften/wrinkle |

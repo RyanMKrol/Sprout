@@ -523,5 +523,75 @@
     "minIntervalDays": 10,
     "maxIntervalDays": 28,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Mexican Snowball",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Black Prince Echeveria",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Perle von Nurnberg Echeveria",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Lipstick Echeveria",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Echeveria Lola",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Plush Plant",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Topsy Turvy Echeveria",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Ghost Plant",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Ghost Plant Debbie",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Moonstones",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
   }
 ]
