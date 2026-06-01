@@ -12,25 +12,31 @@ struct PlantListView: View {
     /// button and edit affordance are hidden — keeps the list usable on its own
     /// (e.g. in T006 contexts) without an editor wired in.
     private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
+    /// Builds the detail view model for a plant (T008). When `nil`, cards are not
+    /// tappable into a detail screen — keeps the list usable on its own.
+    private let makeDetail: ((UUID) -> PlantDetailViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
+    @State private var path = NavigationPath()
     @State private var didDeepLink = false
 
     init(
         viewModel: PlantListViewModel,
-        makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil
+        makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
+        makeDetail: ((UUID) -> PlantDetailViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
+        self.makeDetail = makeDetail
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if viewModel.isEmpty {
                     PlantListEmptyState()
                 } else {
                     List(viewModel.items) { item in
-                        PlantCardView(item: item)
+                        row(for: item)
                             .swipeActions(edge: .trailing) {
                                 if makeEditor != nil {
                                     Button("Edit") { editorMode = .edit(plantID: item.id) }
@@ -42,6 +48,11 @@ struct PlantListView: View {
                 }
             }
             .navigationTitle("My Plants")
+            .navigationDestination(for: UUID.self) { plantID in
+                if let makeDetail {
+                    PlantDetailView(viewModel: makeDetail(plantID))
+                }
+            }
             .toolbar {
                 if makeEditor != nil {
                     ToolbarItem(placement: .primaryAction) {
@@ -68,15 +79,37 @@ struct PlantListView: View {
         }
     }
 
+    /// A list row: a tappable `NavigationLink` into the plant's detail (T008) when a
+    /// `makeDetail` is wired in, otherwise the plain card (keeps the list usable on
+    /// its own).
+    @ViewBuilder
+    private func row(for item: PlantListViewModel.Item) -> some View {
+        if makeDetail != nil {
+            NavigationLink(value: item.id) {
+                PlantCardView(item: item)
+            }
+        } else {
+            PlantCardView(item: item)
+        }
+    }
+
     /// Screenshot deep-link (T002 convention): when launched with
-    /// `SPROUT_SCREEN=add`, auto-present the Add form once so the seeded run
-    /// captures the species picker. No-op in release builds (`requestedScreen` is
-    /// always `"list"`).
+    /// `SPROUT_SCREEN=add`, auto-present the Add form once; with
+    /// `SPROUT_SCREEN=detail`, push the first plant's detail screen so the seeded
+    /// run captures it. No-op in release builds (`requestedScreen` is always
+    /// `"list"`).
     private func deepLinkIfRequested() {
-        guard !didDeepLink, makeEditor != nil else { return }
+        guard !didDeepLink else { return }
         didDeepLink = true
-        if DemoSeed.requestedScreen == "add" {
+        switch DemoSeed.requestedScreen {
+        case "add" where makeEditor != nil:
             editorMode = .add
+        case "detail" where makeDetail != nil:
+            if let first = viewModel.items.first {
+                path.append(first.id)
+            }
+        default:
+            break
         }
     }
 }

@@ -70,15 +70,22 @@ enum DemoSeed {
     #if DEBUG
     private static var sampleData: [Plant] {
         let now = Date()
-        func due(_ days: Int) -> Date {
+        func day(_ days: Int) -> Date {
             Calendar.current.date(byAdding: .day, value: days, to: now) ?? now
         }
+        // The first plant in due-order (Lily) carries a small check-in history so
+        // the `SPROUT_SCREEN=detail` screenshot (T008) lands on a populated history.
+        let lilyHistory = [
+            CheckIn(date: day(-14), soil: .dry, leaves: .droopy, watered: true),
+            CheckIn(date: day(-7), soil: .moist, leaves: .fine, watered: false),
+            CheckIn(date: day(-2), soil: .dry, leaves: .fine, watered: true),
+        ]
         return [
-            Plant(nickname: "Lily", species: "Peace Lily", nextDue: due(-1)),
-            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: due(0)),
-            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: due(2)),
-            Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: due(3)),
-            Plant(nickname: "Spike", species: "Snake Plant", nextDue: due(6)),
+            Plant(nickname: "Lily", species: "Peace Lily", lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
+            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0)),
+            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2)),
+            Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3)),
+            Plant(nickname: "Spike", species: "Snake Plant", nextDue: day(6)),
         ]
     }
     #endif

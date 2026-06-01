@@ -159,6 +159,30 @@ keep them here so the design's compromises live in one place alongside your proj
   *Impact:* two files outside the literal `Scope:` globs changed, but only for the minimal wiring the feature needs.
   *Revisit:* when navigation grows (T008+), promote the shared store to a proper app-level environment dependency.
 
+- **Plant Detail (T008) shows a *placeholder* schedule summary — the real adaptive schedule lands in T009.**
+  *Why:* the schedule engine (effective interval / next-due from `base × weatherFactor × adj`) is
+  T009's deliverable, not T008's. The detail screen needs *something* in its Schedule section now, so
+  `PlantDetailViewModel.scheduleSummary` reports the species' **starting cadence** (`baseIntervalDays`
+  from the care DB) plus the existing `DueStatus.label`, with an explicit "(starting cadence)" note —
+  it does **not** apply `adj`, weather, or compute next-due itself.
+  *Impact:* the cadence shown is the raw species seed, not the personalised interval; a plant whose
+  `adj` has drifted will still read "Every ~N days (starting cadence)". The `nextDue` pill is whatever
+  was last persisted (seeded/edited), since nothing computes it yet.
+  *Revisit:* T009 replaces `scheduleSummary` with the engine's effective interval + next-due; T012
+  adds the "why this schedule" explanation on the same screen.
+
+- **Plant Detail (T008) required small edits to `ContentView`/`PlantListView` and to `DemoSeed` (outside T008's listed scope).**
+  *Why:* a detail screen is unreachable/unverifiable without navigation, so `PlantListView` gained a
+  `NavigationStack(path:)` + `NavigationLink`/`navigationDestination` and a `makeDetail` factory from
+  `ContentView` (built against the same shared store). To make the `SPROUT_SCREEN=detail` screenshot
+  land on a *populated* history, the first seeded plant (Lily) in `DemoSeed` was given a few demo
+  `CheckIn`s — the same `-seedDemoData YES`/`SPROUT_SCREEN` contract T002 established (and the doc's own
+  "later screens wire their cases in" revisit note).
+  *Impact:* three files outside the literal `Scope:` globs changed, but only for the minimal
+  navigation + seeded-history wiring the feature needs; the demo check-ins are DEBUG-only.
+  *Revisit:* when navigation grows further, promote the shared store to a proper app-level environment
+  dependency (carried over from T007's note).
+
 - **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
   *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
   Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,

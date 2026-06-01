@@ -87,7 +87,7 @@ sign-off and tweaks.
 **Phase 2 — Core screens**
 - [x] T006 My Plants list + empty state
 - [x] T007 Add / Edit Plant (species picker from care DB)
-- [ ] T008 Plant Detail + check-in history
+- [x] T008 Plant Detail + check-in history
 
 **Phase 3 — Check-ins & adaptive scheduling**
 - [ ] T009 Schedule engine — effective interval (pure)

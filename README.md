@@ -59,7 +59,7 @@ source of truth):
 | T005 | ✅ done | SwiftData persistence + repository protocol |
 | T006 | ✅ done | My Plants list + empty state |
 | T007 | ✅ done | Add / Edit Plant (species picker) |
-| T008 | ⏳ pending | Plant Detail + check-in history |
+| T008 | ✅ done | Plant Detail + check-in history |
 | T009 | ⏳ pending | Schedule engine — effective interval (pure) |
 | T010 | ⏳ pending | Adaptive update from a check-in (pure) |
 | T011 | ⏳ pending | Check-in flow UI (soil / leaves / watered) |
