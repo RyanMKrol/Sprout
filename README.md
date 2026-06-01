@@ -69,7 +69,7 @@ source of truth):
 | T015 | ✅ done | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ✅ done | Feed weather into the schedule engine |
 | T101–T130 | ✅ done (30/30) | Care DB build-out — 30 batches × 10 researched UK houseplants (305 species) |
-| T131 | ⏳ pending | Care database complete — deduped & reviewed |
+| T131 | ✅ done | Care database complete — 305 species, deduped & validated, provenance complete |
 | T200 | ⏳ pending | Final review — compile key decisions for sign-off |
 | T201 | ✅ done | Photo blob on the model (`Plant`/`StoredPlant.photoData` + `PlantPhoto` encode) |
 | T202 | ✅ done | Random nickname provider (curated English names) |

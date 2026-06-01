@@ -136,7 +136,7 @@ sign-off and tweaks.
 - [x] T128 Care DB batch 28 — add 10 UK houseplants (carnivorous)
 - [x] T129 Care DB batch 29 — add 10 UK houseplants (herbs / edibles / citrus)
 - [x] T130 Care DB batch 30 — add 10 UK houseplants (catch-all to ~300)
-- [ ] T131 Care database complete — ~300 plants, deduped & reviewed
+- [x] T131 Care database complete — ~300 plants, deduped & reviewed
 
 **Phase 7 — Final review**
 - [ ] T200 Compile key-decision review packet for human sign-off

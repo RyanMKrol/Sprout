@@ -134,6 +134,12 @@ keep them here so the design's compromises live in one place alongside your proj
   one test to the repo layout (the resource isn't copied into the test bundle).
   *Revisit:* wrap the array in `{ "version": n, "plants": [...] }` if the schema ever changes; add a
   distinct scientific-name field if display-name collisions become a real risk (checked again at T131).
+  *T131 audit:* 305 unique display-`species` records, all valid (`min ≤ base ≤ max`, valid `moisture`),
+  with a 1:1 Provenance-index row each. The reconciliation surfaced exactly **one** shared scientific
+  name — `Epipremnum aureum` for both **Pothos** and **Golden Pothos** — which is an *intentional*
+  everyday-name alias (both ship so the picker offers the common name), not a true duplicate. No
+  unintended display-name or scientific-name collisions remain, so a distinct scientific-name field is
+  still not warranted.
 
 - **Persistence (T005): `PlantRepository.update` rewrites only scalar fields, not check-ins.**
   *Why:* check-ins are an append-only history persisted via `addCheckIn(_:toPlant:)`; making
