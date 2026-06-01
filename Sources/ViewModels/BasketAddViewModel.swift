@@ -47,6 +47,8 @@ final class BasketAddViewModel: ObservableObject {
     /// The room all basket plants are added to (T213's picker sets this). `nil` → no
     /// room; a neutral initial cadence. Drives both `roomID` and the initial schedule.
     @Published var selectedRoom: Room?
+    /// Rooms available to assign the batch to (loaded from the repository).
+    @Published private(set) var availableRooms: [Room] = []
 
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
@@ -61,6 +63,11 @@ final class BasketAddViewModel: ObservableObject {
         self.repository = repository
         self.careDatabase = careDatabase
         self.nicknameProvider = RandomNicknameProvider(rng: AnyRandomNumberGenerator(rng))
+    }
+
+    /// Load the rooms available for assignment (call on appear).
+    func loadRooms() {
+        availableRooms = (try? repository.allRooms()) ?? []
     }
 
     // MARK: - Species picker (sourced from the care database)
