@@ -76,6 +76,20 @@ keep them here so the design's compromises live in one place alongside your proj
   `build_run.sh` and the test command); anyone opening the project must generate it first.
   *Revisit:* n/a — this is the intended workflow.
 
+- **Device code signing depends on an uncommitted, per-developer local xcconfig.**
+  *Why:* device builds need a `DEVELOPMENT_TEAM`, but committing a personal Apple Team ID into
+  the shared `project.yml` is undesirable. Instead `project.yml` sets `CODE_SIGN_STYLE: Automatic`
+  and points the Sprout target's `configFiles` at `Config/Signing.xcconfig` (committed), which does
+  an **optional** `#include? "Signing.local.xcconfig"`. The local file (gitignored) holds the team.
+  *Impact:* a fresh clone **cannot build for a real device** until the developer creates
+  `Config/Signing.local.xcconfig` with `DEVELOPMENT_TEAM = …`. Simulator builds — the only thing
+  the harness/CI runs — need no team, so the optional include is silently skipped and the gate is
+  unaffected. The team in use is a **free** personal account, so its provisioning profiles expire
+  ~weekly and the app must be re-run from Xcode to reinstall (paid entitlements unavailable).
+  *Revisit:* if device CI/distribution is ever needed, switch to a paid team + an explicit
+  provisioning profile (or App Store Connect API key) supplied out-of-band rather than this local
+  file.
+
 - **The demo-seed hook (T002) ships a throwaway dataset/UI, not the real model.** *(resolved in T006)*
   *Why:* the verification convention (`-seedDemoData YES` → populated screenshot) is needed
   *before* the domain model (T003), persistence (T005), and the real My Plants list (T006)

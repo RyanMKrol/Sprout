@@ -16,5 +16,8 @@ DerivedData/
 # Screenshots scratch (build_run.sh writes screenshots/latest.png)
 screenshots/
 
+# Local signing overrides — per-developer Team ID, never committed.
+Config/Signing.local.xcconfig
+
 # macOS
 .DS_Store
