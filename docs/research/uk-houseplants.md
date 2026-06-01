@@ -88,7 +88,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 25 ✅ | T125 | Orchids — Phalaenopsis & common houseplant orchids |
 | 26 ✅ | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
 | 27 ✅ | T127 | Flowering — African violet, cyclamen, kalanchoe blossfeldiana, Streptocarpus, Sinningia, Exacum, Nematanthus, Clivia, Gardenia (anthurium already in batch 04) |
-| 28 | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
+| 28 ✅ | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
 | 29 | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
 | 30 | T130 | Catch-all — remaining common UK houseplants to reach ~300 (Aeschynanthus, Hypoestes, Coleus, Oxalis, Maranta gaps…) |
 
@@ -369,3 +369,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Goldfish Plant | Nematanthus gregarius | evenlyMoist | 7 / 5–12 | Genus anchor (epiphytic gesneriad, cf. Aeschynanthus) — semi-succulent glossy leaves; keep evenly moist in growth and let the top inch dry between waterings, ease off in winter |
 | Kaffir Lily | Clivia miniata | driesOut | 12 / 8–21 | RHS — water moderately in growth but keep nearly dry over the cool winter rest that triggers flowering; fleshy water-storing roots tolerate drying → long interval, rots if kept wet |
 | Cape Jasmine | Gardenia jasminoides | staysMoist | 5 / 3–8 | RHS — keep the (lime-free) compost consistently moist with soft/rainwater and never let it dry out; high humidity, never waterlogged → short, moisture-loving interval |
+| Venus Flytrap | Dionaea muscipula | staysMoist | 2 / 1–4 | RHS — bog carnivore; stand the pot in 1–2 cm of rainwater/distilled water in summer and never let the compost dry out; keep barely moist over winter dormancy. Carnivorous anchor (staysMoist, 2 / 1–4) |
+| Cape Sundew | Drosera capensis | staysMoist | 2 / 1–4 | RHS / genus anchor (sundew) — keep the (lime-free) compost permanently wet by standing in rainwater; the dewy traps dry out fast if the tray empties, so never let it dry |
+| Round-leaved Sundew | Drosera rotundifolia | staysMoist | 2 / 1–4 | Genus anchor (temperate bog sundew) — UK-native peat-bog plant; keep constantly saturated with rainwater spring–autumn, barely moist through winter dormancy |
+| Forked Sundew | Drosera binata | staysMoist | 2 / 1–4 | Genus anchor (sundew, cf. D. capensis) — vigorous forked-leaf sundew; stand in rainwater and keep the compost permanently wet, never allowing it to dry out |
+| Tropical Pitcher Plant | Nepenthes alata | staysMoist | 4 / 2–7 | RHS — unlike the bog carnivores Nepenthes is NOT stood in water; keep the compost evenly moist and water from the top with rainwater when the surface starts to dry → slightly longer/drier interval, high humidity |
+| Purple Pitcher Plant | Sarracenia purpurea | staysMoist | 2 / 1–4 | RHS — hardy trumpet pitcher; stand the pot in a tray of rainwater through the growing season and keep the boggy compost constantly wet, reduce over winter dormancy |
+| Yellow Pitcher Plant | Sarracenia flava | staysMoist | 2 / 1–4 | Genus anchor (Sarracenia, cf. S. purpurea) — bog pitcher; keep permanently wet by standing in rainwater spring–autumn, barely moist in winter dormancy |
+| White Trumpet Pitcher | Sarracenia leucophylla | staysMoist | 2 / 1–4 | Genus anchor (Sarracenia, cf. S. purpurea) — tall white-topped trumpet; stand in rainwater and keep the compost saturated through the growing season, reduce in winter |
+| Mexican Butterwort | Pinguicula moranensis | staysMoist | 4 / 2–7 | Genus anchor (Mexican Pinguicula) — keep the compost moist with rainwater in active growth but tolerates the surface drying more than bog carnivores and wants a much drier succulent winter rest → slightly longer interval |
+| Cobra Lily | Darlingtonia californica | staysMoist | 2 / 1–5 | Genus anchor (bog carnivore, cf. Sarracenia) — cobra-headed pitcher needing cool, constantly wet roots; keep saturated with cool rainwater and never let it dry out (wider max for the cooler-rest period) |

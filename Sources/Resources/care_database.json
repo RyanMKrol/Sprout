@@ -1923,5 +1923,75 @@
     "minIntervalDays": 3,
     "maxIntervalDays": 8,
     "moisture": "staysMoist"
+  },
+  {
+    "species": "Venus Flytrap",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Cape Sundew",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Round-leaved Sundew",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Forked Sundew",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Tropical Pitcher Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Purple Pitcher Plant",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Yellow Pitcher Plant",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "White Trumpet Pitcher",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 4,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Mexican Butterwort",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Cobra Lily",
+    "baseIntervalDays": 2,
+    "minIntervalDays": 1,
+    "maxIntervalDays": 5,
+    "moisture": "staysMoist"
   }
 ]
