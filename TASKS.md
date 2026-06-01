@@ -85,7 +85,7 @@ sign-off and tweaks.
 - [x] T005 SwiftData persistence + repository protocol
 
 **Phase 2 — Core screens**
-- [ ] T006 My Plants list + empty state
+- [x] T006 My Plants list + empty state
 - [ ] T007 Add / Edit Plant (species picker from care DB)
 - [ ] T008 Plant Detail + check-in history
 

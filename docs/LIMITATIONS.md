@@ -76,15 +76,27 @@ keep them here so the design's compromises live in one place alongside your proj
   `build_run.sh` and the test command); anyone opening the project must generate it first.
   *Revisit:* n/a — this is the intended workflow.
 
-- **The demo-seed hook (T002) ships a throwaway dataset/UI, not the real model.**
+- **The demo-seed hook (T002) ships a throwaway dataset/UI, not the real model.** *(resolved in T006)*
   *Why:* the verification convention (`-seedDemoData YES` → populated screenshot) is needed
   *before* the domain model (T003), persistence (T005), and the real My Plants list (T006)
-  exist, so T002 uses a local `DemoPlant` stand-in and a `DemoPlantListView` to prove the hook.
-  *Impact:* the seeded screen is a placeholder; until T006, `screenshots/latest.png` under
-  `-seedDemoData YES` shows demo content that doesn't flow through the repository. The
-  `SPROUT_SCREEN` deep-link only recognises `"list"` so far.
-  *Revisit:* T006+ replace `DemoPlant`/`DemoPlantListView` with the real model + repository while
-  keeping the same `-seedDemoData YES` / `SPROUT_SCREEN` launch contract.
+  exist, so T002 used a local `DemoPlant` stand-in and a `DemoPlantListView` to prove the hook.
+  *Impact:* now historical — T006 replaced `DemoPlant`/`DemoPlantListView` with real `Plant`
+  values seeded into an in-memory `PlantRepository` (`DemoSeed.seededRepository()`) feeding the
+  real `PlantListView`, keeping the same `-seedDemoData YES` / `SPROUT_SCREEN` launch contract.
+  *Revisit:* `SPROUT_SCREEN` still only recognises `"list"`; later screens (detail/check-in/
+  settings) wire their cases into the same contract.
+
+- **My Plants list (T006) loads once on appear and rebuilds the repository per launch.**
+  *Why:* with no add/edit flow yet (T007) and no live data source, the view model reads the
+  repository once in `.onAppear`; `ContentView` constructs a fresh `PlantStore.persistent()`
+  (or seeded in-memory) store each launch rather than sharing a container/environment.
+  *Impact:* the list does **not** auto-refresh while visible — a plant added/edited elsewhere
+  in the same session won't appear until the list reloads. The `nextDue`-based due-order/pill is
+  computed against `Date()` at load time, so it can drift over a long-lived session until reload.
+  Repository construction failures degrade to an empty in-memory store (the list shows its empty
+  state) rather than surfacing an error.
+  *Revisit:* T007/T008 introduce navigation + mutations — move the repository into a shared
+  app-level dependency (e.g. environment / `@Observable`) and reload on return / data change.
 
 - **Domain types (T003) don't enforce their invariant at construction — `CareProfile.isValid` must be checked separately.**
   *Why:* the types are pure, `Codable` value types; a throwing/failable initialiser would

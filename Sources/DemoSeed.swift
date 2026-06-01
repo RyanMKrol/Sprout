@@ -14,20 +14,9 @@ import Foundation
 ///   ./build_run.sh "iPhone 17 Pro" -seedDemoData YES
 ///   ./build_run.sh "iPhone 17 Pro" -seedDemoData YES   # + SPROUT_SCREEN=detail later
 ///
-/// Later tasks (T006+) replace `DemoPlant` with the real domain model / repository
-/// but keep this same launch-argument contract so their screenshots stay scriptable.
-
-/// A minimal plant stand-in used only for seeded screenshots until the real
-/// domain model (T003) and persistence (T005) land.
-struct DemoPlant: Identifiable {
-    let id = UUID()
-    let name: String
-    let species: String
-    /// Human-readable next-watering hint shown on the card pill.
-    let nextDue: String
-    /// Whether the plant is currently reported healthy (drives the indicator).
-    let isHealthy: Bool
-}
+/// T006 swapped the throwaway `DemoPlant` stand-in for the **real** domain model
+/// (`Plant`) seeded into an in-memory `PlantRepository`, while keeping this same
+/// launch-argument contract so every later UI task's screenshots stay scriptable.
 
 /// The DEBUG launch hook. Reads the `-seedDemoData YES` launch argument and the
 /// optional `SPROUT_SCREEN=<name>` environment variable.
@@ -54,8 +43,10 @@ enum DemoSeed {
         #endif
     }
 
-    /// The in-memory demo plants — non-empty only when `isActive`.
-    static var plants: [DemoPlant] {
+    /// The in-memory demo plants (real domain `Plant`s) — non-empty only when
+    /// `isActive`. `nextDue` dates are relative to launch time so the seeded list
+    /// shows a realistic spread: overdue, due today, and upcoming.
+    static var plants: [Plant] {
         #if DEBUG
         guard isActive else { return [] }
         return sampleData
@@ -64,13 +55,31 @@ enum DemoSeed {
         #endif
     }
 
+    /// A fresh in-memory repository pre-loaded with `plants`, for seeded
+    /// screenshots. DEBUG-only; callers fall back to an empty store when inactive.
+    static func seededRepository() throws -> PlantRepository {
+        let repository = try PlantStore.inMemory()
+        #if DEBUG
+        for plant in plants {
+            try repository.add(plant)
+        }
+        #endif
+        return repository
+    }
+
     #if DEBUG
-    private static let sampleData: [DemoPlant] = [
-        DemoPlant(name: "Monty", species: "Monstera deliciosa", nextDue: "Due today", isHealthy: true),
-        DemoPlant(name: "Fern Bundy", species: "Nephrolepis exaltata", nextDue: "Due in 2 days", isHealthy: false),
-        DemoPlant(name: "Spike", species: "Sansevieria trifasciata", nextDue: "Due in 6 days", isHealthy: true),
-        DemoPlant(name: "Pothos Pete", species: "Epipremnum aureum", nextDue: "Due in 3 days", isHealthy: true),
-        DemoPlant(name: "Lily", species: "Spathiphyllum wallisii", nextDue: "Overdue by 1 day", isHealthy: false),
-    ]
+    private static var sampleData: [Plant] {
+        let now = Date()
+        func due(_ days: Int) -> Date {
+            Calendar.current.date(byAdding: .day, value: days, to: now) ?? now
+        }
+        return [
+            Plant(nickname: "Lily", species: "Peace Lily", nextDue: due(-1)),
+            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: due(0)),
+            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: due(2)),
+            Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: due(3)),
+            Plant(nickname: "Spike", species: "Snake Plant", nextDue: due(6)),
+        ]
+    }
     #endif
 }
