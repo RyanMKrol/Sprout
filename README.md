@@ -76,7 +76,7 @@ source of truth):
 | T203 | ✅ done | Basket add view model (multi-add + auto-naming) |
 | T204 | ✅ done | Basket add view + "+" rewiring (basket replaces single-add) |
 | T205 | ✅ done | Camera seam + stub + camera permission |
-| T206 | ⏳ pending | Photo-capture coordinator (sequential capture) |
+| T206 | ✅ done | Photo-capture coordinator (sequential capture) |
 | T207 | ⏳ pending | Camera overlay view + AVFoundation capture |
 | T208 | ⏳ pending | Wire post-create photo flow ("take photos?" → camera) |
 
