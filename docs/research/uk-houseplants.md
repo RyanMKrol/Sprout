@@ -61,7 +61,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 
 | Batch | Task | Category / genera |
 |---|---|---|
-| 01 | T101 | Pothos & Epipremnum cultivars (golden, marble, neon, satin/Scindapsus…) |
+| 01 ✅ | T101 | Pothos & Epipremnum cultivars (golden, marble, neon, satin/Scindapsus…) |
 | 02 | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
 | 03 | T103 | Monstera, Rhaphidophora, Syngonium |
 | 04 | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
@@ -99,4 +99,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 
 | Common name | Scientific name | moisture | base/min–max | Source |
 |---|---|---|---|---|
-| _(none yet — T101 onward fill this)_ | | | | |
+| Golden Pothos | Epipremnum aureum | evenlyMoist | 8 / 6–14 | The Sill / Happy Houseplants (UK) — water every 1–2 weeks, let top 2" dry |
+| Marble Queen Pothos | Epipremnum aureum 'Marble Queen' | evenlyMoist | 9 / 6–14 | Genus anchor (aroid) + heavy white variegation → slower growth, slightly longer interval |
+| Neon Pothos | Epipremnum aureum 'Neon' | evenlyMoist | 8 / 5–12 | Genus anchor (aroid); full-chlorophyll cultivar, standard pothos cadence |
+| Jade Pothos | Epipremnum aureum 'Jade' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); solid-green pothos, standard cadence |
+| Pearls and Jade Pothos | Epipremnum aureum 'Pearls and Jade' | evenlyMoist | 9 / 6–14 | Genus anchor (aroid) + variegation → slightly longer interval |
+| Manjula Pothos | Epipremnum aureum 'Manjula' | evenlyMoist | 9 / 6–14 | Genus anchor (aroid) + heavy variegation → slightly longer interval |
+| Snow Queen Pothos | Epipremnum aureum 'Snow Queen' | evenlyMoist | 10 / 7–14 | Genus anchor (aroid); near-white leaves, least chlorophyll → longest pothos interval |
+| Cebu Blue Pothos | Epipremnum pinnatum 'Cebu Blue' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); standard pothos cadence |
+| Satin Pothos | Scindapsus pictus 'Argyraeus' | evenlyMoist | 10 / 7–16 | The Sill / Smart Garden Guide — semi-succulent leaves, tolerant of under-watering → longer interval |
+| Silver Satin Pothos | Scindapsus pictus 'Exotica' | evenlyMoist | 10 / 7–16 | Smart Garden Guide / Leafy Place — Scindapsus, let top 2" dry; more drought-tolerant than Epipremnum |

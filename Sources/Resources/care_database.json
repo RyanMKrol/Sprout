@@ -33,5 +33,75 @@
     "minIntervalDays": 4,
     "maxIntervalDays": 10,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Golden Pothos",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Marble Queen Pothos",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Neon Pothos",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Jade Pothos",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Pearls and Jade Pothos",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Manjula Pothos",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Snow Queen Pothos",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Cebu Blue Pothos",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Satin Pothos",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Silver Satin Pothos",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
   }
 ]

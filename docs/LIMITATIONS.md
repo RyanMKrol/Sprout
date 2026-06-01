@@ -423,3 +423,15 @@ keep them here so the design's compromises live in one place alongside your proj
   needed for the provider to function at runtime; same precedent as earlier tasks' presentation
   wiring.
   *Revisit:* none expected; revise the copy if the permission rationale changes.
+
+- **Care DB (T101): several pothos cultivars grounded in genus-anchor rationale, not a per-cultivar citation.**
+  *Why:* authoritative per-cultivar UK watering guidance is scarce for named variegated cultivars
+  (Marble Queen, Neon, Jade, Pearls and Jade, Manjula, Snow Queen, Cebu Blue). Species-level
+  sources (The Sill, Happy Houseplants, Smart Garden Guide) confirmed the *Epipremnum* and
+  *Scindapsus* cadence; cultivar deltas (more white variegation → less chlorophyll → slightly
+  longer interval) were applied from the aroid genus anchor and recorded as the rationale in the
+  Provenance index, per the doc's "never block a batch for lack of a fetchable citation" rule.
+  *Impact:* per-cultivar intervals are sensible starting points (the engine's `weatherFactor` and
+  per-plant `adj` personalise from there), not precisely sourced prescriptions.
+  *Revisit:* tighten any cultivar's numbers if a more specific source surfaces; T131 reviews the
+  full set.

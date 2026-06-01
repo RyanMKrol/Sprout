@@ -106,7 +106,7 @@ sign-off and tweaks.
 **Phase 6 — Care database build-out (30 × 10 plants → ~300)**
 > Each batch researches & adds 10 new unique UK houseplants per `docs/research/uk-houseplants.md`.
 > Depends only on T004, so this whole phase can be moved earlier if you want the data sooner.
-- [ ] T101 Care DB batch 01 — add 10 UK houseplants (pothos / Epipremnum)
+- [x] T101 Care DB batch 01 — add 10 UK houseplants (pothos / Epipremnum)
 - [ ] T102 Care DB batch 02 — add 10 UK houseplants (Philodendron)
 - [ ] T103 Care DB batch 03 — add 10 UK houseplants (Monstera / Syngonium)
 - [ ] T104 Care DB batch 04 — add 10 UK houseplants (Anthurium / Aglaonema / peace lily)
