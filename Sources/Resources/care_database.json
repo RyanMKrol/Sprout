@@ -1713,5 +1713,75 @@
     "minIntervalDays": 8,
     "maxIntervalDays": 18,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Moth Orchid",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dendrobium Orchid",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Cymbidium Orchid",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dancing Lady Orchid",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Cattleya Orchid",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Vanda Orchid",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Slipper Orchid",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Jewel Orchid",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Pansy Orchid",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Zygopetalum Orchid",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
   }
 ]

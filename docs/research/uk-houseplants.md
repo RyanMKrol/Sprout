@@ -85,7 +85,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 22 ✅ | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
 | 23 ✅ | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
 | 24 ✅ | T124 | Hoya — common wax plants |
-| 25 | T125 | Orchids — Phalaenopsis & common houseplant orchids |
+| 25 ✅ | T125 | Orchids — Phalaenopsis & common houseplant orchids |
 | 26 | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
 | 27 | T127 | Flowering — African violet, cyclamen, anthurium (if new), kalanchoe blossfeldiana |
 | 28 | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
@@ -339,3 +339,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Miniature Wax Plant | Hoya bella | evenlyMoist | 9 / 6–14 | Genus anchor (Hoya, Hoya lanceolata subsp. bella) — small thin-leaved miniature, less drought-tolerant than carnosa → shorter interval |
 | Hoya Obovata | Hoya obovata | evenlyMoist | 12 / 9–18 | Genus anchor (Hoya) — large round thick succulent leaves store plenty of water → longer interval, let top two-thirds dry |
 | Common Waxflower | Hoya australis | evenlyMoist | 11 / 8–18 | Genus anchor (Hoya) — robust waxy-leaved climber, same let-top-two-thirds-dry cadence as H. carnosa |
+| Moth Orchid | Phalaenopsis hybrid | evenlyMoist | 7 / 5–10 | RHS — the commonest UK houseplant orchid; water about once a week, letting the bark mix almost dry out, never leave standing in water. Orchid genus anchor (evenlyMoist, base 7, 5–10) |
+| Dendrobium Orchid | Dendrobium nobile | evenlyMoist | 7 / 5–12 | RHS / Gardeners' World — water freely (~weekly) during active growth in summer, then much more sparingly through the cool winter rest that triggers flowering → wider max |
+| Cymbidium Orchid | Cymbidium hybrid | evenlyMoist | 7 / 5–12 | RHS — keep the compost evenly moist and water ~weekly while in growth, reducing once flower spikes form/over winter; pseudobulbs store some water → wider max |
+| Dancing Lady Orchid | Oncidium hybrid | evenlyMoist | 6 / 4–9 | American Orchid Society / RHS — thin pseudobulbs and fine roots dry out quickly in bark; water roughly every 4–7 days, more often than Phalaenopsis → shorter interval |
+| Cattleya Orchid | Cattleya hybrid | evenlyMoist | 9 / 6–14 | American Orchid Society — plump pseudobulbs store water; let the bark dry appreciably between waterings (every ~7–10 days), so a longer interval than the thinner-bulbed orchids |
+| Vanda Orchid | Vanda hybrid | evenlyMoist | 4 / 2–7 | RHS / American Orchid Society — usually grown bare-root in open baskets; thick aerial roots need very frequent soaking (near-daily when warm) → shortest orchid interval |
+| Slipper Orchid | Paphiopedilum hybrid | staysMoist | 6 / 4–9 | RHS — has no pseudobulbs, so it cannot store water; keep the compost consistently lightly moist and never let it dry out fully, water ~weekly |
+| Jewel Orchid | Ludisia discolor | evenlyMoist | 6 / 4–9 | RHS / Gardeners' World — terrestrial orchid grown for its velvety foliage; keep the compost evenly moist (never soggy), watering when the surface starts to dry |
+| Pansy Orchid | Miltoniopsis hybrid | staysMoist | 5 / 3–8 | American Orchid Society / RHS — fine roots and no water-storing pseudobulbs to speak of; keep evenly moist at all times, never allowing it to dry out → short, moisture-loving interval |
+| Zygopetalum Orchid | Zygopetalum hybrid | evenlyMoist | 7 / 5–10 | American Orchid Society / RHS — keep evenly moist during active growth, watering ~weekly and letting the surface barely dry; reduce a little once growth matures |
