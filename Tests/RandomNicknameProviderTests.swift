@@ -69,8 +69,19 @@ final class RandomNicknameProviderTests: XCTestCase {
         XCTAssertEqual(Set(drawn).count, 3)
     }
 
-    func testDefaultPoolIsReasonablySized() {
-        XCTAssertGreaterThan(EnglishNames.all.count, 100)
+    func testDefaultPoolIsLargeAndUnique() {
+        XCTAssertGreaterThanOrEqual(EnglishNames.all.count, 300)
         XCTAssertEqual(Set(EnglishNames.all).count, EnglishNames.all.count, "no duplicate names")
+        XCTAssertEqual(EnglishNames.all.count,
+                       EnglishNames.girls.count + EnglishNames.boys.count + EnglishNames.unisex.count,
+                       "all is the union of the sub-lists")
+    }
+
+    func testNamePoolIsGenderBalanced() {
+        let g = EnglishNames.girls.count
+        let b = EnglishNames.boys.count
+        // Within 10% of the larger list — neither gender dominates.
+        XCTAssertLessThanOrEqual(Double(abs(g - b)) / Double(max(g, b)), 0.10,
+                                 "girls (\(g)) and boys (\(b)) should be roughly balanced")
     }
 }
