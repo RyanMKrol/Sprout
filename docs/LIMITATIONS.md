@@ -154,6 +154,16 @@ keep them here so the design's compromises live in one place alongside your proj
   enums are stable and the only persistent store is the user's local device.
   *Revisit:* add a `SchemaMigrationPlan` / `VersionedSchema` if the model evolves after release.
 
+- **Plant photos (T201) are JPEG blobs stored in SwiftData (`Plant.photoData: Data?`, `@Attribute(.externalStorage)`).**
+  *Why:* the simplest single-store model — no separate file manager or asset table. `.externalStorage`
+  spills the blob to a sidecar file so the common `allPlants()` scalar fetch stays cheap, and
+  `PlantPhoto.encode` caps each photo at a ~1024 px square JPEG (≈150–300 KB). The field is optional,
+  so adding it is **additive with no migration** (existing records read back `nil`).
+  *Impact:* the store grows with each photo; there is no thumbnail tier (the full blob is loaded to
+  show a card image) and no iCloud asset dedupe/sync. Fine for a local, modestly-sized plant library.
+  *Revisit:* move to a file-backed asset store with a separate thumbnail cache if libraries grow large
+  or photo-heavy, or when sync is added.
+
 - **Add/Edit Plant (T007) captures only nickname + species — `location`, `pot size`, and `photo` are deferred.**
   *Why:* T007's `Scope:` is `Sources/Views/PlantEdit*` + `Sources/ViewModels/PlantEdit*` + `Tests/*`. Persisting
   location/pot size/photo would require extending the pure domain `Plant` (T003 scope) **and** the SwiftData
