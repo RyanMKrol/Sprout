@@ -164,10 +164,12 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* move to a file-backed asset store with a separate thumbnail cache if libraries grow large
   or photo-heavy, or when sync is added.
 
-- **Auto-naming (T202) draws from a fixed curated pool of ~125 English first names.**
+- **Auto-naming (T202/T209) draws from a fixed curated pool of ~300 English first names.**
   *Why:* a hand-vetted, family-friendly pool gives recognisable, on-brand names without shipping a
-  full top-500 census list or a name generator. Randomness is injected (seeded in tests/DemoSeed for
-  determinism), and `next(avoiding:)` keeps names unique against existing + in-basket nicknames.
+  full census list or a name generator. The pool is gender-balanced (≈148 girls' / ≈140 boys' / 20
+  nature-leaning unisex, split into testable sub-lists). Randomness is injected (seeded in
+  tests/DemoSeed for determinism), and `next(avoiding:)` keeps names unique against existing +
+  in-basket nicknames.
   *Impact:* a single basket (or library) larger than the pool exhausts unique names and falls back to
   suffixed variants ("Alice 2"). Names are English-only and not localised.
   *Revisit:* grow the pool or switch to a generator if users routinely add hundreds at once, or add

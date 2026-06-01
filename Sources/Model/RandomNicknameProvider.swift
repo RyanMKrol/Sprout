@@ -50,27 +50,51 @@ struct RandomNicknameProvider<RNG: RandomNumberGenerator> {
     }
 }
 
-/// A curated list of common, family-friendly English first names (mixed) used as
-/// the default pool for auto-assigning plant nicknames.
+/// A curated, balanced pool of common, family-friendly English first names used as
+/// the default for auto-assigning plant nicknames. Split by gender so the balance is
+/// testable; `all` is the union the provider draws from (≈140 / ≈140 / 20 = 300).
 enum EnglishNames {
-    static let all: [String] = [
-        // girls'
-        "Alice", "Amelia", "Ava", "Beatrice", "Bella", "Charlotte", "Chloe", "Daisy",
-        "Eleanor", "Eliza", "Ella", "Emily", "Emma", "Evelyn", "Florence", "Freya",
-        "Grace", "Hannah", "Harriet", "Hazel", "Holly", "Imogen", "Isabella", "Isla",
-        "Ivy", "Jessica", "Jasmine", "Lara", "Lily", "Lottie", "Lucy", "Maisie",
-        "Martha", "Matilda", "Maya", "Mia", "Millie", "Molly", "Nancy", "Nora",
-        "Olivia", "Penny", "Phoebe", "Poppy", "Rose", "Ruby", "Sophie", "Tilly",
-        "Violet", "Willow", "Winnie", "Zara",
-        // boys'
-        "Albert", "Alexander", "Alfie", "Archie", "Arthur", "Benjamin", "Charlie",
-        "Daniel", "Dexter", "Edward", "Elliot", "Ethan", "Felix", "Finley", "Freddie",
-        "George", "Harrison", "Harry", "Henry", "Hugo", "Isaac", "Jack", "Jacob",
-        "James", "Jasper", "Joseph", "Leo", "Louie", "Lucas", "Max", "Monty",
-        "Noah", "Oliver", "Oscar", "Otto", "Reuben", "Rory", "Rufus", "Samuel",
-        "Sebastian", "Stanley", "Teddy", "Theo", "Thomas", "Toby", "William",
-        // unisex / nature-leaning, fitting for plants
-        "Ash", "Basil", "Briar", "Clover", "Fern", "Heather", "Juniper",
-        "Laurel", "Olive", "River", "Robin", "Sage", "Sorrel", "Sunny",
+    static let girls: [String] = [
+        "Abigail", "Ada", "Adeline", "Agnes", "Alice", "Amber", "Amelia", "Anna", "Annabel", "Annie",
+        "Arabella", "Aria", "Ava", "Beatrice", "Bella", "Bonnie", "Bridget", "Camilla", "Caroline", "Catherine",
+        "Cecilia", "Charlotte", "Chloe", "Clara", "Claudia", "Connie", "Cora", "Daisy", "Daphne", "Darcey",
+        "Delilah", "Diana", "Dorothy", "Edith", "Eleanor", "Eliza", "Elizabeth", "Ella", "Ellie", "Eloise",
+        "Elsie", "Emily", "Emma", "Erin", "Esme", "Estella", "Eva", "Evelyn", "Faith", "Felicity",
+        "Fleur", "Florence", "Frances", "Freya", "Georgia", "Georgina", "Grace", "Gracie", "Greta", "Hannah",
+        "Harriet", "Hattie", "Heidi", "Helena", "Henrietta", "Hermione", "Hester", "Holly", "Imogen", "Iris",
+        "Isabel", "Isabella", "Isla", "Ivy", "Jane", "Jemima", "Jennifer", "Jessica", "Josephine", "Julia",
+        "Juliet", "Katherine", "Lara", "Laura", "Lauren", "Leah", "Lilian", "Lily", "Lola", "Lottie",
+        "Louisa", "Lucy", "Lydia", "Mabel", "Madeleine", "Maeve", "Maisie", "Margaret", "Margot", "Martha",
+        "Mary", "Matilda", "Maya", "Mia", "Millie", "Minnie", "Miriam", "Molly", "Nancy", "Naomi",
+        "Nell", "Nina", "Nora", "Octavia", "Olivia", "Ophelia", "Pearl", "Penelope", "Penny", "Phoebe",
+        "Polly", "Poppy", "Primrose", "Rachel", "Rebecca", "Rosa", "Rose", "Rosemary", "Ruby", "Sadie",
+        "Sarah", "Scarlett", "Sophia", "Sophie", "Stella", "Tabitha", "Tessa", "Thea", "Tilly", "Verity",
+        "Victoria", "Violet", "Vivienne", "Willa", "Winifred", "Winnie", "Zara", "Zoe",
     ]
+
+    static let boys: [String] = [
+        "Aaron", "Adam", "Albert", "Alexander", "Alfie", "Alfred", "Andrew", "Angus", "Anthony", "Archie",
+        "Arlo", "Arthur", "Austin", "Barnaby", "Benedict", "Benjamin", "Bertie", "Caleb", "Charlie", "Christopher",
+        "Clement", "Colin", "Connor", "Daniel", "David", "Dexter", "Dominic", "Douglas", "Duncan", "Edmund",
+        "Edward", "Edwin", "Elliot", "Ellis", "Ernest", "Ethan", "Ezra", "Felix", "Finlay", "Finn",
+        "Francis", "Frank", "Franklin", "Fraser", "Freddie", "Frederick", "Gabriel", "Gareth", "George", "Giles",
+        "Graham", "Gregory", "Hamish", "Harold", "Harrison", "Harry", "Harvey", "Henry", "Hugh", "Hugo",
+        "Humphrey", "Isaac", "Jack", "Jacob", "James", "Jasper", "Jeremy", "Jerome", "Jesse", "Joel",
+        "John", "Jonah", "Jonathan", "Joseph", "Joshua", "Julian", "Kit", "Laurence", "Leo", "Leonard",
+        "Lewis", "Liam", "Louie", "Louis", "Lucas", "Luke", "Magnus", "Malcolm", "Marcus", "Martin",
+        "Mason", "Matthew", "Maurice", "Max", "Maxwell", "Michael", "Miles", "Monty", "Nathaniel", "Nicholas",
+        "Noah", "Oliver", "Ollie", "Oscar", "Otto", "Owen", "Patrick", "Paul", "Percy", "Peter",
+        "Philip", "Quentin", "Ralph", "Raymond", "Reuben", "Richard", "Robert", "Rory", "Rufus", "Rupert",
+        "Samuel", "Sebastian", "Seth", "Simon", "Solomon", "Stanley", "Stephen", "Teddy", "Theo", "Theodore",
+        "Thomas", "Timothy", "Tobias", "Toby", "Tristan", "Victor", "Vincent", "Walter", "William", "Zachary",
+    ]
+
+    /// Nature-leaning unisex names that suit plants and aren't in either gendered list.
+    static let unisex: [String] = [
+        "Ash", "Basil", "Bay", "Briar", "Clover", "Fern", "Juniper", "Laurel", "Linden", "Moss",
+        "Olive", "Reed", "River", "Robin", "Rowan", "Sage", "Sorrel", "Sunny", "Vale", "Willow",
+    ]
+
+    /// The full pool the provider draws from.
+    static let all: [String] = girls + boys + unisex
 }

@@ -79,6 +79,13 @@ source of truth):
 | T206 | ✅ done | Photo-capture coordinator (sequential capture) |
 | T207 | ✅ done | Camera overlay view + AVFoundation capture |
 | T208 | ✅ done | Wire post-create photo flow ("take photos?" → camera) |
+| T209 | ✅ done | Balanced ~300-name pool (gender-split) |
+| T210 | ⏳ pending | Room domain model + environment factor (sunlight × humidity) |
+| T211 | ⏳ pending | Room persistence + plant→room link |
+| T212 | ⏳ pending | Drive schedule from rooms; retire phone weather |
+| T213 | ⏳ pending | Rooms UI + room assignment |
+| T214 | ⏳ pending | Tile home page (Plants/Rooms/Water) + show photos |
+| T215 | ⏳ pending | Guided watering walkthrough (two modes) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet (`docs/REVIEW.md`) of the key decisions for you to check and tweak once everything is

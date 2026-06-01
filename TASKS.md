@@ -150,6 +150,15 @@ sign-off and tweaks.
 - [x] T206 Photo-capture coordinator (sequential capture→save→advance)
 - [x] T207 Camera overlay view + AVFoundation capture
 - [x] T208 Wire post-create photo flow ("take photos?" → sequential camera)
+
+**Phase 9 — Rooms, room-driven schedules, tile home & guided watering**
+- [x] T209 Balanced ~300-name pool (gender-split, testable)
+- [ ] T210 Room domain model + environment factor (sunlight × humidity, pure)
+- [ ] T211 Room persistence + plant→room link (StoredRoom, schema, room CRUD)
+- [ ] T212 Drive schedule from rooms; retire phone weather; initial cadence at add-time
+- [ ] T213 Rooms UI + room assignment (rooms screen, basket/edit room picker)
+- [ ] T214 Tile home page (Plants/Rooms/Water) + show plant photos
+- [ ] T215 Guided watering walkthrough (two modes, photo + report → water/skip)
 ---
 
 ## Tasks
@@ -661,3 +670,66 @@ sign-off and tweaks.
 - **Verify:** simulator-screenshot.
 - **Done-when:** committing the basket prompts for photos; choosing Yes walks the new plants through
   the camera and saves each photo; choosing Not now returns to the refreshed list; unit tests green.
+
+---
+
+## Phase 9 — Rooms, room-driven schedules, tile home & guided watering
+
+> A second interactive feature round. Replaces the phone-weather schedule input with **Rooms**
+> (sunlight + humidity drive the cadence, including a plant's initial schedule at add-time), adds a
+> **tile home page** (Plants / Rooms / Water), surfaces plant **photos**, and adds an **interactive
+> guided-watering** walkthrough. Branches `t209`–`t215`. Full design in the approved plan.
+
+### T209 — Balanced ~300-name pool
+- **Depends on:** T202
+- **Scope:** `Sources/Model/RandomNicknameProvider.swift`, `Tests/RandomNicknameProviderTests.swift`, `docs/LIMITATIONS.md`
+- **Do:** Split `EnglishNames` into testable `girls`/`boys`/`unisex` sub-lists and expand to a balanced
+  ~300 (no duplicates); `all = girls + boys + unisex`.
+- **Done-when:** ≥300 unique names; girls/boys within ~10%; tests green.
+
+### T210 — Room domain model + environment factor
+- **Depends on:** (none)
+- **Scope:** `Sources/Model/Room.swift`, `Sources/Engine/RoomEnvironment.swift`, `Tests/RoomEnvironmentTests.swift`
+- **Do:** `Room {id,name,sunlight,humidity}` with `SunlightLevel{low,indirect,direct}` +
+  `RoomHumidity{dry,normal,moist}`; pure `RoomEnvironment.factor(sunlight:humidity:)` (3×3 table, clamped
+  to the engine's `[0.7,1.3]`).
+- **Done-when:** factor maps each combo as specified, clamps, neutral at indirect+normal; tests green.
+
+### T211 — Room persistence + plant→room link
+- **Depends on:** T210, T005
+- **Scope:** `Sources/Persistence/StoredModels.swift`, `PlantRepository.swift`, `SwiftDataPlantRepository.swift`, `Sources/Model/Plant.swift`, `Tests/PersistenceTests.swift`
+- **Do:** `StoredRoom @Model` + mapping; `Plant.roomID`/`StoredPlant.roomID` (additive, migration-free);
+  schema adds `StoredRoom`; room CRUD on the repository (delete-room nils plants' `roomID`).
+- **Done-when:** room + roomID round-trip; delete-room nils plants; tests green.
+
+### T212 — Drive the schedule from rooms; retire weather
+- **Depends on:** T211
+- **Scope:** `Sources/ContentView.swift`, `Sources/Engine/ScheduleExplanation.swift`, `Sources/ViewModels/{BasketAddViewModel,PlantEditViewModel,PlantListViewModel,CheckInViewModel,PlantDetailViewModel,SettingsViewModel}.swift`, `Sources/Views/SettingsView.swift`, `Tests/*`
+- **Do:** Resolve a **per-plant** environment factor from its room (replacing the global weather factor);
+  compute initial `nextDue` at add-time; swap weather causes for `driesFaster`/`driesSlower` in the
+  explanation; remove the weather toggle + temperature unit from Settings; unwire the weather/GPS path.
+- **Done-when:** schedule uses the room factor end-to-end; new plants get an initial cadence; no weather
+  toggle; explanation names the room environment; tests green.
+
+### T213 — Rooms UI + room assignment · Verify: simulator-screenshot
+- **Depends on:** T212
+- **Scope:** `Sources/Views/RoomsView.swift`, `Sources/ViewModels/RoomsViewModel.swift`, `Sources/Views/BasketAddView.swift`, `Sources/ViewModels/BasketAddViewModel.swift`, `Sources/Views/PlantEditView.swift`, `Sources/ViewModels/PlantEditViewModel.swift`, `Sources/ContentView.swift`, `Sources/DemoSeed.swift`, `Tests/*`
+- **Do:** Rooms list/add/edit/delete screen; room picker in the basket (batch) + edit; `makeRooms` factory;
+  demo rooms + `SPROUT_SCREEN=rooms`.
+- **Done-when:** can create/edit/delete rooms and assign plants; the rooms screenshot renders; tests green.
+
+### T214 — Tile home page + show photos · Verify: simulator-screenshot
+- **Depends on:** T213
+- **Scope:** `Sources/Views/HomeView.swift`, `Sources/ContentView.swift`, `Sources/Views/PlantListView.swift`, `Sources/Views/PlantDetailView.swift`, `Tests/*`
+- **Do:** `HomeView` with Plants/Rooms/Water tiles (Water shows a due count) + a Settings gear; it owns the
+  `NavigationStack` (de-nest `PlantListView`); show plant photos on cards + detail header.
+- **Done-when:** home tiles navigate correctly; photos display; `SPROUT_SCREEN=home` screenshot renders; tests green.
+
+### T215 — Guided watering walkthrough · Verify: simulator-screenshot
+- **Depends on:** T214
+- **Scope:** `Sources/ViewModels/GuidedWateringCoordinator.swift`, `Sources/Views/GuidedWateringView.swift`, `Sources/ContentView.swift`, `Sources/Views/HomeView.swift`, `Tests/GuidedWateringCoordinatorTests.swift`
+- **Do:** Sequential coordinator over a mode-selected `[Plant]` (full check-in vs due-only): per plant show
+  photo + report soil/leaves → preview recommendation (no persist) → confirm watered/skip (persist + advance).
+  Mode chooser on the Water tile; `SPROUT_SCREEN=water`.
+- **Done-when:** both modes walk the right plants; preview doesn't persist; confirm waters + advances; skip
+  advances; empty state; the water screenshot renders; tests green.
