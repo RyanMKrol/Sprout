@@ -77,7 +77,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 14 ✅ | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
 | 15 ✅ | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
 | 16 ✅ | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
-| 17 | T117 | Peperomia — common cultivars |
+| 17 ✅ | T117 | Peperomia — common cultivars |
 | 18 | T118 | Begonia — rex, maculata, rhizomatous |
 | 19 | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
 | 20 | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
@@ -259,3 +259,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Chinese Money Plant | Pilea peperomioides | evenlyMoist | 7 / 5–14 | Greenery Unlimited / The Sill — let the top 2–3 inches dry between waterings, water every 1–2 weeks; more prone to over- than under-watering, so allow drying to avoid root rot |
 | Aluminium Plant | Pilea cadierei | evenlyMoist | 6 / 4–10 | Genus anchor (Pilea, cf. P. peperomioides) — silver-splashed foliage; keep evenly moist, water when the top inch dries, ease off in winter; avoid waterlogging |
 | Moon Valley Pilea | Pilea involucrata 'Moon Valley' | evenlyMoist | 6 / 4–10 | Genus anchor (Pilea, friendship plant) — quilted bronze-green leaves; keep evenly moist, water when the top inch dries, never bone-dry nor soggy |
+| Watermelon Peperomia | Peperomia argyreia | evenlyMoist | 9 / 7–14 | RHS / The Sill — let the top 1–2" dry, water roughly weekly to fortnightly; thick succulent-ish petioles store water, prone to overwatering / root rot if kept soggy |
+| Baby Rubber Plant | Peperomia obtusifolia | evenlyMoist | 10 / 7–16 | The Sill / Costa Farms — thick succulent-like leaves store water; let the top 2" dry between waterings, every 1–2 weeks → slightly longer interval than the genus anchor |
+| Emerald Ripple Peperomia | Peperomia caperata | evenlyMoist | 9 / 7–14 | RHS — keep lightly/evenly moist, water when the top inch dries; never waterlogged, ease off in winter (genus anchor cadence) |
+| String of Turtles | Peperomia prostrata | evenlyMoist | 10 / 8–16 | Genus anchor (Peperomia) — semi-succulent trailing leaves store water; let the soil dry between waterings (every 1–2 weeks), root rot if kept wet → longer interval, higher min |
+| Raindrop Peperomia | Peperomia polybotrya | evenlyMoist | 10 / 7–16 | Genus anchor (Peperomia) — thick coin/raindrop leaves store water; let the top 2" dry between waterings → slightly longer interval than the genus anchor |
+| Cupid Peperomia | Peperomia scandens | evenlyMoist | 9 / 7–14 | Genus anchor (Peperomia) — trailing variegated species; keep lightly moist, water when the top inch dries, standard peperomia cadence |
+| Trailing Jade Peperomia | Peperomia rotundifolia | evenlyMoist | 10 / 7–16 | Genus anchor (Peperomia) — round succulent jade-like leaves store water; let the soil dry between waterings → slightly longer interval |
+| Ruby Cascade Peperomia | Peperomia 'Ruby Cascade' | evenlyMoist | 11 / 8–18 | Genus anchor (succulent trailing Peperomia) — fleshy water-storing leaves, notably drought-tolerant; soak then let dry well → longest interval in the batch |
+| Beetle Peperomia | Peperomia quadrangularis (syn. P. angulata) | evenlyMoist | 10 / 7–14 | Genus anchor (Peperomia) — semi-succulent trailing striped leaves; keep lightly moist, let the top dry between waterings |
+| Happy Bean Peperomia | Peperomia ferreyrae | evenlyMoist | 11 / 8–18 | Genus anchor (succulent Peperomia) — very succulent bean-shaped leaves store ample water; water sparingly, let the soil dry well between waterings → longest interval in the batch |

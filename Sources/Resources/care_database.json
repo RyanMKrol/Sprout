@@ -1153,5 +1153,75 @@
     "minIntervalDays": 4,
     "maxIntervalDays": 10,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Watermelon Peperomia",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Baby Rubber Plant",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Emerald Ripple Peperomia",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "String of Turtles",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Raindrop Peperomia",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Cupid Peperomia",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Trailing Jade Peperomia",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Ruby Cascade Peperomia",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Beetle Peperomia",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Happy Bean Peperomia",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
   }
 ]
