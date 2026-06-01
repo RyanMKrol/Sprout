@@ -92,7 +92,7 @@ sign-off and tweaks.
 **Phase 3 — Check-ins & adaptive scheduling**
 - [x] T009 Schedule engine — effective interval (pure)
 - [x] T010 Adaptive update from a check-in (pure)
-- [ ] T011 Check-in flow UI (soil / leaves / watered → recommendation)
+- [x] T011 Check-in flow UI (soil / leaves / watered → recommendation)
 - [ ] T012 "Why this schedule" explanation text
 
 **Phase 4 — Reminders & settings**

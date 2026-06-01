@@ -15,6 +15,9 @@ struct PlantListView: View {
     /// Builds the detail view model for a plant (T008). When `nil`, cards are not
     /// tappable into a detail screen — keeps the list usable on its own.
     private let makeDetail: ((UUID) -> PlantDetailViewModel)?
+    /// Builds the check-in view model for a plant (T011), threaded through to the
+    /// detail screen's "Check in" affordance. When `nil`, detail hides check-in.
+    private let makeCheckIn: ((UUID) -> CheckInViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var path = NavigationPath()
     @State private var didDeepLink = false
@@ -22,11 +25,13 @@ struct PlantListView: View {
     init(
         viewModel: PlantListViewModel,
         makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
-        makeDetail: ((UUID) -> PlantDetailViewModel)? = nil
+        makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
+        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
         self.makeDetail = makeDetail
+        self.makeCheckIn = makeCheckIn
     }
 
     var body: some View {
@@ -50,7 +55,10 @@ struct PlantListView: View {
             .navigationTitle("My Plants")
             .navigationDestination(for: UUID.self) { plantID in
                 if let makeDetail {
-                    PlantDetailView(viewModel: makeDetail(plantID))
+                    PlantDetailView(
+                        viewModel: makeDetail(plantID),
+                        makeCheckIn: makeCheckIn
+                    )
                 }
             }
             .toolbar {
@@ -94,18 +102,18 @@ struct PlantListView: View {
     }
 
     /// Screenshot deep-link (T002 convention): when launched with
-    /// `SPROUT_SCREEN=add`, auto-present the Add form once; with
-    /// `SPROUT_SCREEN=detail`, push the first plant's detail screen so the seeded
-    /// run captures it. No-op in release builds (`requestedScreen` is always
-    /// `"list"`).
+    /// `SPROUT_SCREEN=add`, auto-present the Add form once; with `SPROUT_SCREEN=detail`
+    /// (or `checkin`), push the first plant's detail screen so the seeded run
+    /// captures it — the detail screen then auto-opens its check-in sheet for
+    /// `checkin`. No-op in release builds (`requestedScreen` is always `"list"`).
     private func deepLinkIfRequested() {
         guard !didDeepLink else { return }
         didDeepLink = true
         switch DemoSeed.requestedScreen {
         case "add" where makeEditor != nil:
             editorMode = .add
-        case "detail" where makeDetail != nil:
-            if let first = viewModel.items.first {
+        case "detail", "checkin":
+            if makeDetail != nil, let first = viewModel.items.first {
                 path.append(first.id)
             }
         default:

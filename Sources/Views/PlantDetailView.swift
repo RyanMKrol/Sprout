@@ -10,9 +10,18 @@ import SwiftUI
 /// `PlantDetailViewModel`; this view only renders its published state.
 struct PlantDetailView: View {
     @StateObject private var viewModel: PlantDetailViewModel
+    /// Builds the check-in view model (T011) for this plant. When `nil`, the
+    /// "Check in" affordance is hidden — keeps the detail screen usable on its own.
+    private let makeCheckIn: ((UUID) -> CheckInViewModel)?
+    @State private var checkingIn = false
+    @State private var didDeepLink = false
 
-    init(viewModel: PlantDetailViewModel) {
+    init(
+        viewModel: PlantDetailViewModel,
+        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.makeCheckIn = makeCheckIn
     }
 
     var body: some View {
@@ -43,6 +52,18 @@ struct PlantDetailView: View {
                             .foregroundStyle(.secondary)
                     }
 
+                    if makeCheckIn != nil {
+                        Section {
+                            Button {
+                                checkingIn = true
+                            } label: {
+                                Label("Check in", systemImage: "checkmark.circle")
+                                    .frame(maxWidth: .infinity)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                    }
+
                     Section("Check-in history") {
                         if viewModel.hasHistory {
                             ForEach(viewModel.history) { item in
@@ -58,7 +79,29 @@ struct PlantDetailView: View {
         }
         .navigationTitle(viewModel.loadFailed ? "Plant" : viewModel.nickname)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { viewModel.load() }
+        .sheet(isPresented: $checkingIn) {
+            if let makeCheckIn {
+                CheckInView(viewModel: makeCheckIn(viewModel.plantID)) {
+                    // Reload so the updated schedule + new history row show.
+                    viewModel.load()
+                }
+            }
+        }
+        .onAppear {
+            viewModel.load()
+            deepLinkIfRequested()
+        }
+    }
+
+    /// Screenshot deep-link (T002 convention): when launched with
+    /// `SPROUT_SCREEN=checkin`, auto-present the check-in sheet once so the seeded
+    /// run captures it. No-op otherwise / in release builds.
+    private func deepLinkIfRequested() {
+        guard !didDeepLink else { return }
+        didDeepLink = true
+        if DemoSeed.requestedScreen == "checkin", makeCheckIn != nil {
+            checkingIn = true
+        }
     }
 
     /// Maps the (pure) due status to a presentation colour — matching the list pill.

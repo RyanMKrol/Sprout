@@ -22,7 +22,12 @@ struct ContentView: View {
     }
 
     var body: some View {
-        PlantListView(viewModel: listViewModel, makeEditor: makeEditor, makeDetail: makeDetail)
+        PlantListView(
+            viewModel: listViewModel,
+            makeEditor: makeEditor,
+            makeDetail: makeDetail,
+            makeCheckIn: makeCheckIn
+        )
     }
 
     /// Build the Add/Edit view model against the shared repository + care database.
@@ -34,6 +39,12 @@ struct ContentView: View {
     /// repository + care database.
     private func makeDetail(_ plantID: UUID) -> PlantDetailViewModel {
         PlantDetailViewModel(plantID: plantID, repository: repository, careDatabase: careDatabase)
+    }
+
+    /// Build the Check-in view model (T011) for a plant id against the shared
+    /// repository + care database.
+    private func makeCheckIn(_ plantID: UUID) -> CheckInViewModel {
+        CheckInViewModel(plantID: plantID, repository: repository, careDatabase: careDatabase)
     }
 
     /// Resolve the repository for this launch: seeded in-memory under

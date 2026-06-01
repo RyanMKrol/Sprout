@@ -227,6 +227,38 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* when real check-in data exists (post-T011), tune these rows — add explicit
   `late`-lengthening nudges to the design table and mirror them here.
 
+- **Check-in flow (T011) wires the engine in; it required edits to `ContentView`/`PlantListView`/`PlantDetailView`/`DemoSeed` (outside T011's listed scope).**
+  *Why:* the check-in is launched *from a plant*, so it needs an entry point: `PlantDetailView`
+  gained a "Check in" button + sheet and a `makeCheckIn` factory threaded from `ContentView`
+  through `PlantListView` (built against the same shared repository so the recorded check-in and
+  recomputed schedule persist). The `SPROUT_SCREEN=checkin` screenshot deep-link reuses the
+  `detail` push and then auto-opens the sheet — extending the T002 `-seedDemoData`/`SPROUT_SCREEN`
+  contract (the doc's own "later screens wire their cases in" revisit note).
+  *Impact:* four files outside the literal `Scope:` globs changed, but only for the minimal
+  wiring the feature needs. The check-in sheet does **not** live-refresh the detail screen while
+  open; the detail reloads its schedule + history on the sheet's dismissal (`onFinish`).
+  *Revisit:* when navigation grows further, promote the shared store to an app-level environment
+  dependency (carried over from T007/T008's notes).
+
+- **Check-in (T011) requires the plant's species to resolve in the care DB, or it can't run.**
+  *Why:* the adaptive update needs a `CareProfile` (moisture preference + interval band) to nudge
+  `adj` and recompute next-due. The view model exposes `canCheckIn` (false when the species has no
+  care record) and disables "Save check-in" rather than guessing a schedule.
+  *Impact:* a plant whose species isn't in the bundled database can be viewed but **not** checked
+  in — the Save button is disabled with an explanatory footer. With the seed DB this only affects
+  hand-entered/unknown species; coverage grows with the Phase 6 batches (T101–T130).
+  *Revisit:* if user-added species become common, fall back to a category-default profile (the
+  design's genus-anchor idea) so any plant can still be checked in.
+
+- **Check-in result text is built in the view model, not the (string-free) engine — duplicated by T012.**
+  *Why:* the design keeps `WateringRecommendation` a structured value (action + reason + day count)
+  so the engine stays pure and testable; the immediate confirmation sentence is presentation, so
+  `CheckInViewModel.Result.message` maps each `reason` to a short indication string.
+  *Impact:* there are now two places that turn the structured recommendation into prose — this
+  per-row confirmation and (soon) T012's richer "why this schedule" explanation. They can drift.
+  *Revisit:* T012 builds the canonical explanation; fold this `message` into it (or a shared
+  formatter) so the wording lives in one place.
+
 - **`didWater` requires both a water recommendation *and* the user's `watered` flag; otherwise we recheck in 3 days.**
   *Why:* the design's two branches are "watered ⇒ advance schedule" vs "skip ⇒ recheck in
   `recheckDays`". A recommendation to water that the user declined is treated as the skip/recheck

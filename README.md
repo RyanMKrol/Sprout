@@ -62,7 +62,7 @@ source of truth):
 | T008 | ✅ done | Plant Detail + check-in history |
 | T009 | ✅ done | Schedule engine — effective interval (pure) |
 | T010 | ✅ done | Adaptive update from a check-in (pure) |
-| T011 | ⏳ pending | Check-in flow UI (soil / leaves / watered) |
+| T011 | ✅ done | Check-in flow UI (soil / leaves / watered → recommendation) |
 | T012 | ⏳ pending | "Why this schedule" explanation text |
 | T013 | ⏳ pending | Local watering notifications |
 | T014 | ⏳ pending | Settings — preferred reminder time, units, weather toggle |
