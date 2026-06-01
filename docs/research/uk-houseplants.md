@@ -63,7 +63,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 |---|---|---|
 | 01 ✅ | T101 | Pothos & Epipremnum cultivars (golden, marble, neon, satin/Scindapsus…) |
 | 02 ✅ | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
-| 03 | T103 | Monstera, Rhaphidophora, Syngonium |
+| 03 ✅ | T103 | Monstera, Rhaphidophora, Syngonium |
 | 04 | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
 | 05 | T105 | Alocasia, Colocasia, Caladium |
 | 06 | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
@@ -119,3 +119,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Philodendron Prince of Orange | Philodendron 'Prince of Orange' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); self-heading erubescens hybrid, standard aroid cadence |
 | Philodendron Xanadu | Thaumatophyllum xanadu (syn. Philodendron xanadu) | evenlyMoist | 9 / 6–14 | Genus anchor (aroid); robust upright clump with thicker stems holding water → slightly longer interval |
 | Tree Philodendron | Thaumatophyllum bipinnatifidum (syn. Philodendron bipinnatifidum) | evenlyMoist | 9 / 6–14 | Genus anchor (aroid); large self-heading "selloum", robust → slightly longer interval |
+| Swiss Cheese Vine | Monstera adansonii | evenlyMoist | 8 / 5–12 | Lively Root / Joy Us Garden — water no more than ~weekly, every 7–9 days in warm months; let top inch dry, prone to root rot |
+| Variegated Monstera | Monstera deliciosa 'Thai Constellation' | evenlyMoist | 10 / 7–16 | Genus anchor (aroid) + heavy cream variegation → much less chlorophyll, slower growth → longest Monstera interval |
+| Silver Monstera | Monstera siltepecana | evenlyMoist | 9 / 6–14 | Genus anchor (aroid); semi-succulent silvery juvenile leaves tolerate drying → slightly longer interval |
+| Shingle Plant | Monstera dubia | evenlyMoist | 8 / 5–12 | Genus anchor (aroid); shingling climber, standard Monstera cadence |
+| Five Holes Plant | Monstera standleyana | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); standard Monstera cadence |
+| Mini Monstera | Rhaphidophora tetrasperma | evenlyMoist | 8 / 5–12 | Our House Plants / Patch — water every 1–2 weeks (~7 days in warm months); let top half dry, root rot if kept soggy |
+| Dragon Tail Plant | Rhaphidophora decursiva | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); vigorous Rhaphidophora climber, standard aroid cadence |
+| Arrowhead Plant | Syngonium podophyllum | evenlyMoist | 7 / 5–10 | RHS / Happy Houseplants (UK) — keep slightly moist in growth, water ~weekly in summer, let top inch dry |
+| Syngonium White Butterfly | Syngonium podophyllum 'White Butterfly' | evenlyMoist | 7 / 5–10 | Genus anchor (aroid); pale-leaved arrowhead cultivar, same cadence as the species |
+| Pink Syngonium | Syngonium podophyllum 'Pink Allusion' | evenlyMoist | 8 / 5–12 | Genus anchor (aroid) + pink variegation → slightly less chlorophyll → marginally longer interval |
