@@ -164,6 +164,15 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* move to a file-backed asset store with a separate thumbnail cache if libraries grow large
   or photo-heavy, or when sync is added.
 
+- **Auto-naming (T202) draws from a fixed curated pool of ~125 English first names.**
+  *Why:* a hand-vetted, family-friendly pool gives recognisable, on-brand names without shipping a
+  full top-500 census list or a name generator. Randomness is injected (seeded in tests/DemoSeed for
+  determinism), and `next(avoiding:)` keeps names unique against existing + in-basket nicknames.
+  *Impact:* a single basket (or library) larger than the pool exhausts unique names and falls back to
+  suffixed variants ("Alice 2"). Names are English-only and not localised.
+  *Revisit:* grow the pool or switch to a generator if users routinely add hundreds at once, or add
+  locale-aware name lists.
+
 - **Add/Edit Plant (T007) captures only nickname + species — `location`, `pot size`, and `photo` are deferred.**
   *Why:* T007's `Scope:` is `Sources/Views/PlantEdit*` + `Sources/ViewModels/PlantEdit*` + `Tests/*`. Persisting
   location/pot size/photo would require extending the pure domain `Plant` (T003 scope) **and** the SwiftData
