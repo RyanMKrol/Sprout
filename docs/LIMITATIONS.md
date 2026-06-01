@@ -215,3 +215,23 @@ keep them here so the design's compromises live in one place alongside your proj
   then re-run `build_run.sh` with the **Simulator app open** and capture after the app settles
   (≈7 s). Confirm content with `strings <app>/Sprout | grep <expected text>` and a pixel scan.
   Consider adding a `clean` step (or `-derivedDataPath`) to `build_run.sh` if this recurs.
+
+- **Adaptive engine (T010) fills decision-table gaps with conservative "hold" defaults.**
+  *Why:* the design table in `docs/designs/adaptive-watering.md` specifies `early` and
+  `on-time` for several dry/moist + fine rows but leaves a few `late` combinations unstated
+  (dry+fine+late for `driesOut`/`evenlyMoist`, and moist+fine+late). The pure `update` resolves
+  them by extending the nearest specified rule: those cases hold `adj` (×1.0) at the on-target
+  reason rather than nudging, and `early` always beats the `staysMoist` shorten note for dry+fine.
+  *Impact:* a plant repeatedly watered late while merely "dry"/"moist" won't auto-lengthen its
+  interval; the schedule drifts only when the user reports `wet`/droopy or an `early` dry-out.
+  *Revisit:* when real check-in data exists (post-T011), tune these rows — add explicit
+  `late`-lengthening nudges to the design table and mirror them here.
+
+- **`didWater` requires both a water recommendation *and* the user's `watered` flag; otherwise we recheck in 3 days.**
+  *Why:* the design's two branches are "watered ⇒ advance schedule" vs "skip ⇒ recheck in
+  `recheckDays`". A recommendation to water that the user declined is treated as the skip/recheck
+  path (`nextDue = checkIn.date + 3`, `lastWatered` unchanged), since no watering happened.
+  *Impact:* declining a "water now" prompt does not advance `lastWatered`; the plant is simply
+  re-prompted after the fixed `recheckDays = 3` window regardless of how overdue it was.
+  *Revisit:* if users frequently defer watering, make the recheck window adaptive to how overdue
+  the plant is rather than a flat 3 days.
