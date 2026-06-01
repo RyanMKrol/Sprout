@@ -356,3 +356,33 @@ keep them here so the design's compromises live in one place alongside your proj
   presentation wiring; the same precedent as T007/T008/T011.
   *Revisit:* when navigation grows further, promote the shared store to an app-level environment
   dependency (carried over from earlier notes).
+
+- **Weather (T015): a present forecast still maps to the neutral `weatherFactor = 1.0`.**
+  *Why:* T015 only delivers the *provider* — `WeatherProviding`/Open-Meteo decoding, the
+  injectable `LocationProviding` wrapper, and `WeatherFactorService`'s safe fallback. The real
+  forecast → factor mapping (hot/dry `< 1.0`, cold `> 1.0`) is **T016**, which replaces
+  `WeatherFactorService.factor(for:)`. Until then *every* outcome — forecast present or absent —
+  resolves to `1.0`.
+  *Impact:* installing the provider changes no watering interval yet; weather has zero schedule
+  effect until T016 lands and is wired into the engine.
+  *Revisit:* T016 — implement `factor(for:)` and feed it into `ScheduleEngine`.
+
+- **Weather (T015): `CoreLocationProvider` is not unit-tested and fetches a single coarse fix.**
+  *Why:* exercising `CLLocationManager` needs a real device/simulator location and a permission
+  prompt, neither available in the headless XCTest run (and the DoD forbids network/external
+  resources in tests). Tests cover the `LocationProviding` **seam** with a stub instead; the
+  concrete wrapper requests when-in-use auth and one `kCLLocationAccuracyKilometer` fix.
+  *Impact:* the real CoreLocation path is verified only by compilation + manual use, not by an
+  automated test; a stale fix is possible (no continuous updates) — acceptable for a daily
+  forecast lookup.
+  *Revisit:* if location bugs surface, add a UI/integration test on the simulator with a
+  scripted location, or cache the last fix.
+
+- **Weather (T015): `NSLocationWhenInUseUsageDescription` was added to `project.yml` (outside the literal `Sources/Weather` scope).**
+  *Why:* CoreLocation refuses to prompt without a usage-description string in the built
+  `Info.plist`; `project.yml` is the generated source of that plist and already carried a
+  `# T015 adds …` placeholder. One key added there, nothing else outside scope.
+  *Impact:* a single manifest line changed beyond the task's `Scope:` globs — the minimal infra
+  needed for the provider to function at runtime; same precedent as earlier tasks' presentation
+  wiring.
+  *Revisit:* none expected; revise the copy if the permission rationale changes.

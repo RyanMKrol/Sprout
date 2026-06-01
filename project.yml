@@ -24,7 +24,8 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        # T015 adds NSLocationWhenInUseUsageDescription here for weather.
+        # T015: weather adaptation reads the device location to fetch a local forecast.
+        NSLocationWhenInUseUsageDescription: "Sprout uses your location to fetch the local forecast and adjust each plant's watering schedule for hot and cold spells."
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ryankrol.sprout

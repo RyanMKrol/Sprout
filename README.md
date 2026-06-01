@@ -66,7 +66,7 @@ source of truth):
 | T012 | ✅ done | "Why this schedule" explanation text |
 | T013 | ✅ done | Local watering notifications |
 | T014 | ✅ done | Settings — preferred reminder time, units, weather toggle |
-| T015 | ⏳ pending | Weather provider (Open-Meteo + CoreLocation) |
+| T015 | ✅ done | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ⏳ pending | Feed weather into the schedule engine |
 | T101–T130 | ⏳ pending | Care DB build-out — 30 batches × 10 researched UK houseplants (→ ~300) |
 | T131 | ⏳ pending | Care database complete — deduped & reviewed |

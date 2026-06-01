@@ -100,7 +100,7 @@ sign-off and tweaks.
 - [x] T014 Settings — preferred reminder time, units, weather toggle
 
 **Phase 5 — Weather adaptation**
-- [ ] T015 Weather provider (Open-Meteo + CoreLocation)
+- [x] T015 Weather provider (Open-Meteo + CoreLocation)
 - [ ] T016 Feed weather into the schedule engine
 
 **Phase 6 — Care database build-out (30 × 10 plants → ~300)**
