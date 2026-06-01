@@ -71,7 +71,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 08 ✅ | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
 | 09 ✅ | T109 | Crassula (jade), Sedum, Sempervivum |
 | 10 ✅ | T110 | Haworthia, Gasteria, Aloe |
-| 11 | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
+| 11 ✅ | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
 | 13 | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
 | 14 | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
@@ -199,3 +199,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Aloe Vera | Aloe vera | driesOut | 14 / 10–28 | Old Farmer's Almanac / Joy Us Garden — water every 2–3 weeks spring/summer, every 4–6 weeks in winter; let top third dry, leaves store water (wider max) |
 | Lace Aloe | Aristaloe aristata (syn. Aloe aristata) | driesOut | 14 / 10–24 | Genus anchor (aloe relative) — rosette succulent, soak-and-dry every 2–3 weeks like Aloe vera |
 | Tiger Tooth Aloe | Aloe juvenna | driesOut | 14 / 10–24 | Genus anchor (Aloe) — small stacking aloe storing water in toothed leaves, soak-and-dry every 2–3 weeks |
+| Panda Plant | Kalanchoe tomentosa | driesOut | 14 / 10–24 | Succulents Box / Healthy Houseplants — soak-and-dry, water every 2–3 weeks only when soil is dry; fuzzy leaves store water, overwatering is the #1 killer |
+| Paddle Plant | Kalanchoe luciae | driesOut | 14 / 10–24 | Planet Desert / Succulents Box — soak-and-dry, let soil dry out completely between waterings; thick paddle leaves store water, reduce in winter |
+| Mother of Thousands | Kalanchoe daigremontiana | driesOut | 14 / 10–24 | Genus anchor (Kalanchoe leaf succulent) — fleshy water-storing leaves, soak-and-dry every 2–3 weeks like K. tomentosa |
+| Chandelier Plant | Kalanchoe delagoensis | driesOut | 14 / 10–24 | Genus anchor (Kalanchoe leaf succulent) — tubular water-storing leaves, soak-and-dry every 2–3 weeks |
+| Lavender Scallops | Kalanchoe fedtschenkoi | driesOut | 14 / 10–24 | Genus anchor (Kalanchoe leaf succulent) — scalloped fleshy leaves store water, soak-and-dry every 2–3 weeks |
+| Felt Bush | Kalanchoe beharensis | driesOut | 14 / 10–24 | Genus anchor (Kalanchoe leaf succulent) — large velvety drought-tolerant leaves, soak-and-dry every 2–3 weeks |
+| String of Pearls | Senecio rowleyanus | driesOut | 14 / 10–21 | Between Two Thorns / Gardenia (Curio rowleyanus) — soak-and-dry, every 2–3 weeks in summer, monthly in winter; bead leaves store water, root rot if kept wet |
+| String of Bananas | Senecio radicans | driesOut | 14 / 10–21 | Genus anchor (trailing Senecio/Curio) — banana-shaped water-storing leaves, soak-and-dry like string of pearls; slightly more vigorous |
+| String of Dolphins | Senecio peregrinus | driesOut | 13 / 9–21 | Succulents Box — soak-and-dry, ~weekly in active growth and monthly in winter; dolphin leaves store water, slightly thirstier hybrid → marginally shorter base |
+| Blue Chalksticks | Senecio serpens | driesOut | 14 / 10–24 | Genus anchor (chalk Senecio/Curio) — waxy blue water-storing finger leaves, exceptionally drought-tolerant, soak-and-dry every 2–3 weeks |

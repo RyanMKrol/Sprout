@@ -733,5 +733,75 @@
     "minIntervalDays": 10,
     "maxIntervalDays": 24,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Panda Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Paddle Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Mother of Thousands",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Chandelier Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Lavender Scallops",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Felt Bush",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "String of Pearls",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "String of Bananas",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "String of Dolphins",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Blue Chalksticks",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
   }
 ]
