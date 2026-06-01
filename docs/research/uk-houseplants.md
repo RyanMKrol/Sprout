@@ -62,7 +62,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Batch | Task | Category / genera |
 |---|---|---|
 | 01 ✅ | T101 | Pothos & Epipremnum cultivars (golden, marble, neon, satin/Scindapsus…) |
-| 02 | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
+| 02 ✅ | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
 | 03 | T103 | Monstera, Rhaphidophora, Syngonium |
 | 04 | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
 | 05 | T105 | Alocasia, Colocasia, Caladium |
@@ -109,3 +109,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Cebu Blue Pothos | Epipremnum pinnatum 'Cebu Blue' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); standard pothos cadence |
 | Satin Pothos | Scindapsus pictus 'Argyraeus' | evenlyMoist | 10 / 7–16 | The Sill / Smart Garden Guide — semi-succulent leaves, tolerant of under-watering → longer interval |
 | Silver Satin Pothos | Scindapsus pictus 'Exotica' | evenlyMoist | 10 / 7–16 | Smart Garden Guide / Leafy Place — Scindapsus, let top 2" dry; more drought-tolerant than Epipremnum |
+| Heartleaf Philodendron | Philodendron hederaceum | evenlyMoist | 8 / 6–14 | RHS / ukhouseplants.com — allow top third to dry; "consumes relatively little water for its size" |
+| Philodendron Brasil | Philodendron hederaceum 'Brasil' | evenlyMoist | 8 / 6–14 | Genus anchor (aroid); variegated heartleaf cultivar, same cadence as the species |
+| Velvet Leaf Philodendron | Philodendron hederaceum var. hederaceum 'Micans' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); velvet-leaf trailing form, standard heartleaf cadence |
+| Philodendron Lemon Lime | Philodendron hederaceum 'Lemon Lime' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); full-chlorophyll chartreuse cultivar, standard heartleaf cadence |
+| Philodendron Birkin | Philodendron 'Birkin' | evenlyMoist | 9 / 6–14 | Plant Care for Beginners / Apartment Therapy — let top 2" dry; slower variegated self-header → slightly longer interval |
+| Blushing Philodendron | Philodendron erubescens | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); climbing erubescens species, standard aroid cadence |
+| Pink Princess Philodendron | Philodendron erubescens 'Pink Princess' | evenlyMoist | 9 / 6–14 | Genus anchor (aroid) + heavy pink variegation → slower growth, slightly longer interval |
+| Philodendron Prince of Orange | Philodendron 'Prince of Orange' | evenlyMoist | 8 / 6–12 | Genus anchor (aroid); self-heading erubescens hybrid, standard aroid cadence |
+| Philodendron Xanadu | Thaumatophyllum xanadu (syn. Philodendron xanadu) | evenlyMoist | 9 / 6–14 | Genus anchor (aroid); robust upright clump with thicker stems holding water → slightly longer interval |
+| Tree Philodendron | Thaumatophyllum bipinnatifidum (syn. Philodendron bipinnatifidum) | evenlyMoist | 9 / 6–14 | Genus anchor (aroid); large self-heading "selloum", robust → slightly longer interval |
