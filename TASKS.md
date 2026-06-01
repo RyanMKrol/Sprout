@@ -140,6 +140,16 @@ sign-off and tweaks.
 
 **Phase 7 — Final review**
 - [ ] T200 Compile key-decision review packet for human sign-off
+
+**Phase 8 — Streamlined add plants (basket multi-add + photo capture)**
+- [x] T201 Photo blob on the model (Plant/StoredPlant.photoData + PlantPhoto encode)
+- [ ] T202 Random nickname provider (curated English names + injectable RNG)
+- [ ] T203 Basket add view model (multi-add state, auto-naming, batch commit)
+- [ ] T204 Basket add view + "+" rewiring (basket replaces single-add)
+- [ ] T205 Camera seam + stub + camera permission
+- [ ] T206 Photo-capture coordinator (sequential capture→save→advance)
+- [ ] T207 Camera overlay view + AVFoundation capture
+- [ ] T208 Wire post-create photo flow ("take photos?" → sequential camera)
 ---
 
 ## Tasks
@@ -555,3 +565,99 @@ sign-off and tweaks.
   change it, plus an explicit **"low-confidence / please check"** section; `README.md` links to it.
   This is the final task — when it merges, the backlog is complete and ready for your end-to-end
   review and tweaks.
+
+---
+
+## Phase 8 — Streamlined add plants (basket multi-add + photo capture)
+
+> A post-backlog feature added interactively (not by the unattended loop): make adding plants
+> fast and batch-oriented. "+" opens a **basket** where you tap to add many plants at once
+> (auto-named with random English names, editable + re-rollable), then optionally walk through a
+> **sequential square camera** that photographs each new plant one at a time. Built bottom-up as
+> atomic branches `t201`–`t208`. The full design is in the approved plan; specs below.
+
+### T201 — Photo blob on the model
+- **Depends on:** T005
+- **Scope:** `Sources/Model/Plant.swift`, `Sources/Model/PlantPhoto.swift`, `Sources/Persistence/StoredModels.swift`, `Tests/PlantPhotoTests.swift`, `Tests/PersistenceTests.swift`
+- **Do:** Add `photoData: Data?` to the domain `Plant` and the SwiftData `StoredPlant`
+  (`@Attribute(.externalStorage)`), threading it through `init(domain:)`/`toDomain()`/`applyScalars`.
+  Add a UIKit-aware `PlantPhoto.encode(_:maxDimension:jpegQuality:)` that centre-crops square,
+  downscales, and JPEG-compresses.
+- **Done-when:** photo round-trips through the repository (set, update, clear → nil); a plant added
+  without a photo reads back `nil` (additive, no migration); `PlantPhoto.encode` returns a square
+  JPEG within `maxDimension` and `nil` for an image with no `CGImage`; unit tests green.
+
+### T202 — Random nickname provider
+- **Depends on:** (none)
+- **Scope:** `Sources/Model/RandomNicknameProvider.swift`, `Tests/RandomNicknameProviderTests.swift`
+- **Do:** A pure value type holding a curated list of common English first names with an injectable
+  `RandomNumberGenerator`; `next(avoiding: Set<String>) -> String` returns an unused name where
+  possible, falling back gracefully (suffix) when the pool is exhausted.
+- **Done-when:** seeded RNG yields deterministic names; `next` never returns a name in `avoiding`
+  until the pool is exhausted; exhaustion never loops/crashes; unit tests green.
+
+### T203 — Basket add view model
+- **Depends on:** T202
+- **Scope:** `Sources/ViewModels/BasketAddViewModel.swift`, `Tests/BasketAddViewModelTests.swift`
+- **Do:** `@MainActor` view model holding a basket of `{species, auto nickname}` entries; species
+  search via the care DB; `add`/`remove`/`rename`/`reroll`; `commit() throws -> [Plant]` inserts
+  each via `repository.add` and returns them in basket order. Auto-names are unique across existing
+  repo nicknames ∪ current basket.
+- **Done-when:** adding the same species twice yields two entries with distinct names; `canCommit`
+  is false for an empty basket or an unknown species; `commit` creates exactly N plants in order;
+  unit tests green.
+
+### T204 — Basket add view + "+" rewiring 🚦
+- **Depends on:** T203
+- **Scope:** `Sources/Views/BasketAddView.swift`, `Sources/Views/PlantListView.swift`, `Sources/ContentView.swift`, `Sources/DemoSeed.swift`, `Tests/*`
+- **Do:** Build `BasketAddView` (species search + editable basket list with reroll/remove). Re-point
+  the list "+" button from the single-add sheet to the basket; keep `PlantEditView` for the
+  edit-swipe path only. Add a `makeBasket` factory in `ContentView` against the shared repository,
+  and a `SPROUT_SCREEN=basket` deep-link with a fixed RNG seed for stable screenshot names.
+- **Verify:** simulator-screenshot.
+- **Done-when:** "+" opens the basket; committing adds the plants and the list refreshes; the
+  `SPROUT_SCREEN=basket` screenshot shows the basket with stable names; edit-swipe still opens the
+  single-plant form; unit tests green.
+
+### T205 — Camera seam + stub + permission
+- **Depends on:** T201
+- **Scope:** `Sources/Camera/PhotoCapturing.swift`, `Sources/Camera/StubPhotoCapturing.swift`, `Sources/ContentView.swift`, `project.yml`
+- **Do:** Define the `PhotoCapturing` protocol (`isAvailable`, `capture() async -> UIImage?`) and a
+  `StubPhotoCapturing` returning a placeholder square image. Add `makeCamera()` in `ContentView`
+  returning the stub on simulator/DEBUG and the real camera (T207) otherwise. Add
+  `NSCameraUsageDescription` to `project.yml`.
+- **Done-when:** the seam + stub compile and are usable from tests; the camera-permission string is
+  present in the generated Info.plist; unit tests green.
+
+### T206 — Photo-capture coordinator
+- **Depends on:** T201, T205
+- **Scope:** `Sources/ViewModels/PhotoCaptureCoordinator.swift`, `Tests/PhotoCaptureCoordinatorTests.swift`
+- **Do:** `@MainActor` coordinator over an ordered list of targets `{id, nickname, species}`;
+  `captureCurrent()` captures via the seam, encodes via `PlantPhoto`, saves to the plant
+  (`plant(id:)` → set `photoData` → `update`), and advances; `skip()` advances without saving;
+  reaching the end sets `isFinished`. Exposes the banner text for the current target.
+- **Done-when:** capture saves the photo to the current plant and advances; skip advances without
+  saving; the end sets `isFinished`; banner names the current plant; unit tests green (via the stub
+  + in-memory repo).
+
+### T207 — Camera overlay view + AVFoundation capture
+- **Depends on:** T205, T206
+- **Scope:** `Sources/Camera/AVFoundationCamera.swift`, `Sources/Views/PhotoCaptureView.swift`, `Sources/DemoSeed.swift`, `Sources/Views/PlantListView.swift`
+- **Do:** Real `AVFoundationCamera` (square `AVCaptureSession` + `AVCaptureVideoPreviewLayer`
+  preview) implementing `PhotoCapturing`. `PhotoCaptureView`: square preview (or stub placeholder
+  when the camera is unavailable), top overlay banner naming the current plant, a large shutter
+  (tap → capture → auto-advance) and a Skip button. Add a `SPROUT_SCREEN=camera` deep-link.
+- **Verify:** simulator-screenshot (renders via the stub; the camera is unavailable on the sim).
+- **Done-when:** the `SPROUT_SCREEN=camera` screenshot shows the overlay banner + shutter; capturing
+  the stub image advances through the targets; the real on-device camera path is left for human
+  verification (🔒 — recorded, not auto-completed); unit tests green.
+
+### T208 — Wire post-create photo flow
+- **Depends on:** T204, T207
+- **Scope:** `Sources/Views/PlantListView.swift`, `Sources/ContentView.swift`
+- **Do:** After a basket commit, show a "Want to take photos of these plants?" dialog; on Yes,
+  present `PhotoCaptureView` (full-screen) over a coordinator seeded with the just-created plants in
+  basket order; refresh the list on finish.
+- **Verify:** simulator-screenshot.
+- **Done-when:** committing the basket prompts for photos; choosing Yes walks the new plants through
+  the camera and saves each photo; choosing Not now returns to the refreshed list; unit tests green.

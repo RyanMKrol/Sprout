@@ -14,6 +14,11 @@ final class StoredPlant {
     var lastWatered: Date?
     var nextDue: Date?
 
+    /// An optional plant photo (JPEG bytes). `.externalStorage` spills the blob to
+    /// a sidecar file rather than inlining it in the SQLite row, so the common
+    /// `allPlants()` fetch (which only needs scalars) stays cheap.
+    @Attribute(.externalStorage) var photoData: Data?
+
     /// Check-ins for this plant. Cascade-deleting the plant removes them too.
     @Relationship(deleteRule: .cascade, inverse: \StoredCheckIn.plant)
     var checkIns: [StoredCheckIn]
@@ -25,7 +30,8 @@ final class StoredPlant {
         adj: Double,
         lastWatered: Date?,
         nextDue: Date?,
-        checkIns: [StoredCheckIn] = []
+        checkIns: [StoredCheckIn] = [],
+        photoData: Data? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -34,6 +40,7 @@ final class StoredPlant {
         self.lastWatered = lastWatered
         self.nextDue = nextDue
         self.checkIns = checkIns
+        self.photoData = photoData
     }
 }
 
@@ -97,7 +104,8 @@ extension StoredPlant {
             adj: plant.adj,
             lastWatered: plant.lastWatered,
             nextDue: plant.nextDue,
-            checkIns: plant.checkIns.map(StoredCheckIn.init(domain:))
+            checkIns: plant.checkIns.map(StoredCheckIn.init(domain:)),
+            photoData: plant.photoData
         )
     }
 
@@ -113,7 +121,8 @@ extension StoredPlant {
             nextDue: nextDue,
             checkIns: checkIns
                 .sorted { $0.date < $1.date }
-                .map { $0.toDomain() }
+                .map { $0.toDomain() },
+            photoData: photoData
         )
     }
 
@@ -125,5 +134,6 @@ extension StoredPlant {
         adj = plant.adj
         lastWatered = plant.lastWatered
         nextDue = plant.nextDue
+        photoData = plant.photoData
     }
 }

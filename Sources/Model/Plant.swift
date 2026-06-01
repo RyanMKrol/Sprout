@@ -30,6 +30,10 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
     var nextDue: Date?
     /// Chronological history of check-ins for this plant.
     var checkIns: [CheckIn]
+    /// An optional photo of the plant, stored as JPEG bytes (see `PlantPhoto`).
+    /// `nil` until the user captures one; kept as raw `Data` so this stays a pure
+    /// value type with no UIKit dependency.
+    var photoData: Data?
 
     init(
         id: UUID = UUID(),
@@ -38,7 +42,8 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         adj: Double = Plant.defaultAdj,
         lastWatered: Date? = nil,
         nextDue: Date? = nil,
-        checkIns: [CheckIn] = []
+        checkIns: [CheckIn] = [],
+        photoData: Data? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -47,5 +52,6 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         self.lastWatered = lastWatered
         self.nextDue = nextDue
         self.checkIns = checkIns
+        self.photoData = photoData
     }
 }

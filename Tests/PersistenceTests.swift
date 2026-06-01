@@ -61,6 +61,39 @@ final class PersistenceTests: XCTestCase {
         XCTAssertTrue(fetched.checkIns.isEmpty)
     }
 
+    // MARK: photo (T201)
+
+    func testPlantPhotoRoundTrips() throws {
+        var plant = makePlant()
+        plant.photoData = Data([0x01, 0x02, 0x03, 0x04])
+        try repo.add(plant)
+
+        let fetched = try XCTUnwrap(repo.plant(id: plant.id))
+        XCTAssertEqual(fetched.photoData, Data([0x01, 0x02, 0x03, 0x04]))
+        XCTAssertEqual(fetched, plant)
+    }
+
+    func testPlantWithoutPhotoRoundTripsAsNil() throws {
+        // The additive, migration-free guarantee: a plant added without a photo
+        // reads back with `photoData == nil`.
+        let plant = makePlant()
+        try repo.add(plant)
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: plant.id)).photoData)
+    }
+
+    func testUpdateSetsAndClearsPhoto() throws {
+        var plant = makePlant()
+        try repo.add(plant)
+
+        plant.photoData = Data([0xAA, 0xBB])
+        try repo.update(plant)
+        XCTAssertEqual(try XCTUnwrap(repo.plant(id: plant.id)).photoData, Data([0xAA, 0xBB]))
+
+        plant.photoData = nil
+        try repo.update(plant)
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: plant.id)).photoData)
+    }
+
     func testPlantNotFoundReturnsNil() throws {
         XCTAssertNil(try repo.plant(id: UUID()))
     }
