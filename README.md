@@ -64,7 +64,7 @@ source of truth):
 | T010 | ✅ done | Adaptive update from a check-in (pure) |
 | T011 | ✅ done | Check-in flow UI (soil / leaves / watered → recommendation) |
 | T012 | ✅ done | "Why this schedule" explanation text |
-| T013 | ⏳ pending | Local watering notifications |
+| T013 | ✅ done | Local watering notifications |
 | T014 | ⏳ pending | Settings — preferred reminder time, units, weather toggle |
 | T015 | ⏳ pending | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ⏳ pending | Feed weather into the schedule engine |

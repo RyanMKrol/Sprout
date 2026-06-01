@@ -96,7 +96,7 @@ sign-off and tweaks.
 - [x] T012 "Why this schedule" explanation text
 
 **Phase 4 — Reminders & settings**
-- [ ] T013 Local watering notifications
+- [x] T013 Local watering notifications
 - [ ] T014 Settings — preferred reminder time, units, weather toggle
 
 **Phase 5 — Weather adaptation**

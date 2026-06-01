@@ -295,3 +295,19 @@ keep them here so the design's compromises live in one place alongside your proj
   re-prompted after the fixed `recheckDays = 3` window regardless of how overdue it was.
   *Revisit:* if users frequently defer watering, make the recheck window adaptive to how overdue
   the plant is rather than a flat 3 days.
+
+- **Watering notifications degrade to a silent no-op when permission is denied; the scheduler is not yet wired into the live app flow.** (T013)
+  *Why:* `WateringNotificationScheduler` requests authorization lazily on the first
+  `scheduleReminder` and treats a denied/failed request as "don't schedule" (returns `false`,
+  guards out) rather than surfacing an error — there is no in-app UI to nudge the user toward
+  Settings. The protocol + `UNUserNotificationCenter` implementation + graceful degradation are
+  complete and integration-tested against a stub center, but the scheduler is **not yet called**
+  from app launch / the check-in path (those files are outside T013's `Scope:`
+  `Sources/Notifications/*`).
+  *Impact:* if the user denies notifications, watering reminders silently never fire and the app
+  gives no feedback. Until the live wiring lands, reminders are exercised only by tests, not by
+  the running app. The reminder fires at a fixed `defaultReminderHour = 9` for every plant.
+  *Revisit:* T014 (Settings) owns the preferred reminder-time window and the user-facing
+  notification toggle; wire `scheduleReminder` into the check-in flow (reschedule on each
+  check-in) and `cancelReminder` into plant deletion there, and add a "notifications are off"
+  hint when authorization is denied.
