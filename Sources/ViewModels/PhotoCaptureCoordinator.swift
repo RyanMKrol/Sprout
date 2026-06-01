@@ -35,7 +35,10 @@ final class PhotoCaptureCoordinator: ObservableObject {
     @Published private(set) var isFinished: Bool = false
 
     private let repository: PlantRepository
-    private let camera: PhotoCapturing
+    /// The capture source. Exposed so the view can ask it for a live preview when it
+    /// provides one (`CameraPreviewProviding`); the stub doesn't, so the view falls
+    /// back to a placeholder.
+    let camera: PhotoCapturing
 
     init(targets: [Target], repository: PlantRepository, camera: PhotoCapturing) {
         self.targets = targets
