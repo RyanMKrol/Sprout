@@ -2063,5 +2063,75 @@
     "minIntervalDays": 5,
     "maxIntervalDays": 14,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Lipstick Plant",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Polka Dot Plant",
+    "baseIntervalDays": 3,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 5,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Coleus",
+    "baseIntervalDays": 3,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 5,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "False Shamrock",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Swedish Ivy",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Friendship Plant",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Croton",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Madagascar Jasmine",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Earth Star",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Persian Shield",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
   }
 ]

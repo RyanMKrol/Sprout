@@ -90,7 +90,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 27 ✅ | T127 | Flowering — African violet, cyclamen, kalanchoe blossfeldiana, Streptocarpus, Sinningia, Exacum, Nematanthus, Clivia, Gardenia (anthurium already in batch 04) |
 | 28 ✅ | T128 | Carnivorous — Venus flytrap, sundew, pitcher (Sarracenia/Nepenthes) |
 | 29 ✅ | T129 | Indoor herbs & edibles — basil, mint, chilli, citrus (calamondin), coffee |
-| 30 | T130 | Catch-all — remaining common UK houseplants to reach ~300 (Aeschynanthus, Hypoestes, Coleus, Oxalis, Maranta gaps…) |
+| 30 ✅ | T130 | Catch-all — remaining common UK houseplants to reach ~300 (Aeschynanthus, Hypoestes, Coleus, Oxalis, Maranta gaps…) |
 
 ## Provenance index (the loop appends here, one row per plant)
 
@@ -389,3 +389,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Meyer Lemon | Citrus × meyeri | evenlyMoist | 7 / 5–12 | RHS / genus anchor (Citrus, cf. calamondin) — water when the top few cm dry, keep evenly moist in growth and reduce in winter; well-drained, never waterlogged |
 | Rosemary | Salvia rosmarinus (syn. Rosmarinus officinalis) | driesOut | 8 / 5–14 | RHS — drought-tolerant Mediterranean shrub; let the compost dry out between waterings and water sparingly, resents wet/waterlogged roots → long interval |
 | Thyme | Thymus vulgaris | driesOut | 8 / 5–14 | RHS — Mediterranean sub-shrub that thrives on the dry side; let the compost dry between waterings, water sparingly, never waterlog → long interval like rosemary |
+| Lipstick Plant | Aeschynanthus radicans | evenlyMoist | 9 / 6–16 | RHS / Hortology — epiphytic trailer with semi-succulent leaves; water when the top 2–3 cm of compost dry, keep evenly moist in growth and reduce in winter; tolerates the surface drying → longer interval than soft-leaved foliage |
+| Polka Dot Plant | Hypoestes phyllostachya | staysMoist | 3 / 2–5 | RHS — thin-leaved foliage plant that wilts dramatically when dry; keep the compost consistently moist and never let it dry out fully, water as soon as the surface starts to dry → short, moisture-loving interval |
+| Coleus | Coleus scutellarioides (syn. Plectranthus scutellarioides) | staysMoist | 3 / 2–5 | RHS — thirsty soft-stemmed foliage plant; keep the compost evenly moist at all times and water freely in growth, wilts fast and drops leaves if allowed to dry → short interval |
+| False Shamrock | Oxalis triangularis | evenlyMoist | 6 / 4–10 | RHS — tuberous wood sorrel; keep the compost evenly moist in active growth, watering when the surface starts to dry, and let it dry off when the foliage dies back into dormancy → medium interval |
+| Swedish Ivy | Plectranthus verticillatus | evenlyMoist | 6 / 4–10 | Genus anchor (Plectranthus) / Hortology — vigorous trailing foliage; keep evenly moist in growth, water when the top 2–3 cm dry, slightly fleshy stems tolerate brief drying → medium interval |
+| Friendship Plant | Pilea involucrata | evenlyMoist | 6 / 4–10 | Genus anchor (Pilea, cf. aluminium plant / moon valley pilea) — keep the compost evenly moist, watering when the surface dries; dislikes both soggy and bone-dry compost → medium interval |
+| Croton | Codiaeum variegatum | evenlyMoist | 6 / 4–9 | RHS — colourful foliage shrub; keep the compost evenly moist spring–summer, watering when the top 2–3 cm dry, and avoid drying out (drops leaves) or waterlogging → medium interval |
+| Madagascar Jasmine | Stephanotis floribunda | evenlyMoist | 7 / 5–12 | RHS — twining flowering climber; water freely keeping the compost evenly moist through the growing season, letting the surface dry between waterings, and much more sparingly in winter → medium interval |
+| Earth Star | Cryptanthus bivittatus | evenlyMoist | 7 / 5–12 | Genus anchor (terrestrial bromeliad) — unlike cup-forming bromeliads it is watered at the roots; keep the compost lightly but evenly moist, watering when the surface dries, and never waterlog the flat rosette → medium interval |
+| Persian Shield | Strobilanthes dyerianus | staysMoist | 4 / 3–6 | RHS / Hortology — iridescent foliage plant that wilts when dry; keep the compost consistently moist and never let it dry out fully, water when the surface just begins to dry → short, moisture-loving interval |
