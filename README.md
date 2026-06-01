@@ -52,7 +52,7 @@ source of truth):
 
 | Task | Status | Description |
 |---|---|---|
-| T001 | ⏳ pending | Project scaffold + local Definition of Done passes on an empty build |
+| T001 | ✅ done | Project scaffold + local Definition of Done passes on an empty build |
 | T002 | ⏳ pending | Verification baseline — demo-seed hook + screenshot convention |
 | T003 | ⏳ pending | Domain model types (Plant, CareProfile, CheckIn) |
 | T004 | ⏳ pending | Care database loader, schema & validator |

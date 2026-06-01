@@ -77,7 +77,7 @@ sign-off and tweaks.
 > review packet of the key decisions for you to check and tweak once everything is built.
 
 **Phase 0 — Foundations**
-- [ ] T001 Project scaffold + local Definition of Done passes on an empty build
+- [x] T001 Project scaffold + local Definition of Done passes on an empty build
 - [ ] T002 Verification baseline — demo-seed hook + screenshot convention
 **Phase 1 — Domain & data**
 - [ ] T003 Domain model types (Plant, CareProfile, CheckIn) — pure Swift
