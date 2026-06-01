@@ -43,12 +43,22 @@ final class PlantEditViewModel: ObservableObject {
     @Published private(set) var availableRooms: [Room] = []
     /// `true` if *edit* mode was asked to edit a plant the repository doesn't have.
     @Published private(set) var loadFailed: Bool = false
+    /// The plant's photo bytes (T219). Pre-filled from the plant in *edit* mode, then
+    /// replaced in-memory by `changePhoto()` and persisted by `save()` — the form is
+    /// transactional, so a Cancel discards a freshly-captured photo.
+    @Published private(set) var photoData: Data?
+    /// `true` while a `changePhoto()` capture is in flight, so the view can show
+    /// progress and avoid overlapping captures.
+    @Published private(set) var isCapturingPhoto: Bool = false
 
     let mode: Mode
     private let repository: PlantRepository
     /// Retained for source compatibility with the presenter (`ContentView.makeEditor`)
     /// and any future add path; the edit form no longer reads the care database.
     private let careDatabase: CareDatabase
+    /// The camera seam (T207) used by `changePhoto()`. The simulator/tests pass the
+    /// stub so the path is screenshottable and unit-tested without hardware.
+    private let camera: PhotoCapturing
     /// The plant being edited, loaded once in *edit* mode so `save()` can update it
     /// without clobbering its scheduling state. `nil` in *add* mode.
     private var editingPlant: Plant?
@@ -56,10 +66,16 @@ final class PlantEditViewModel: ObservableObject {
     /// plant in *edit* mode and preserved verbatim on save; the form never changes it.
     private var species: String = ""
 
-    init(mode: Mode, repository: PlantRepository, careDatabase: CareDatabase) {
+    init(
+        mode: Mode,
+        repository: PlantRepository,
+        careDatabase: CareDatabase,
+        camera: PhotoCapturing
+    ) {
         self.mode = mode
         self.repository = repository
         self.careDatabase = careDatabase
+        self.camera = camera
         availableRooms = (try? repository.allRooms()) ?? []
         if case let .edit(plantID) = mode {
             if let plant = (try? repository.plant(id: plantID)) ?? nil {
@@ -67,6 +83,7 @@ final class PlantEditViewModel: ObservableObject {
                 nickname = plant.nickname
                 species = plant.species
                 selectedRoomID = plant.roomID
+                photoData = plant.photoData
             } else {
                 loadFailed = true
             }
@@ -86,6 +103,27 @@ final class PlantEditViewModel: ObservableObject {
 
     /// Save-button label.
     var saveButtonTitle: String { isEditing ? "Save" : "Add" }
+
+    // MARK: - Photo
+
+    /// `true` when the plant currently has a photo (so the view can offer "Change
+    /// photo" vs "Add photo" and show the image rather than a placeholder).
+    var hasPhoto: Bool { photoData != nil }
+
+    /// Capture a new photo via the camera seam (T207), square + compress it with
+    /// `PlantPhoto.encode`, and stage it on the form. The preview updates immediately;
+    /// the bytes are written to the plant by `save()` (the form is transactional, so a
+    /// Cancel discards a just-captured photo). A failed/empty capture leaves the
+    /// existing photo untouched.
+    func changePhoto() async {
+        guard !isCapturingPhoto else { return }
+        isCapturingPhoto = true
+        defer { isCapturingPhoto = false }
+        guard let image = await camera.capture(), let data = PlantPhoto.encode(image) else {
+            return // capture failed — keep the current photo
+        }
+        photoData = data
+    }
 
     // MARK: - Save
 
@@ -109,12 +147,18 @@ final class PlantEditViewModel: ObservableObject {
         if var plant = editingPlant {
             plant.nickname = trimmedNickname
             plant.roomID = selectedRoomID
+            plant.photoData = photoData // staged by changePhoto() (T219)
             // species + scheduling state (adj/lastWatered/nextDue/checkIns) untouched.
             try repository.update(plant)
             editingPlant = plant
             return plant
         } else {
-            let plant = Plant(nickname: trimmedNickname, species: species, roomID: selectedRoomID)
+            let plant = Plant(
+                nickname: trimmedNickname,
+                species: species,
+                photoData: photoData,
+                roomID: selectedRoomID
+            )
             try repository.add(plant)
             return plant
         }

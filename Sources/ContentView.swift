@@ -82,7 +82,12 @@ struct ContentView: View {
     /// Build the Edit view model against the shared repository + care database. (Used
     /// only for the edit-swipe path now; adding goes through the basket — `makeBasket`.)
     private func makeEditor(_ mode: PlantEditViewModel.Mode) -> PlantEditViewModel {
-        PlantEditViewModel(mode: mode, repository: repository, careDatabase: careDatabase)
+        PlantEditViewModel(
+            mode: mode,
+            repository: repository,
+            careDatabase: careDatabase,
+            camera: makeCamera()
+        )
     }
 
     /// Build the basket add view model (T204) against the shared repository + care

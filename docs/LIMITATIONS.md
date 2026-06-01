@@ -567,3 +567,13 @@ keep them here so the design's compromises live in one place alongside your proj
   a plant whose species needs correcting can't be fixed in-app (only deleted + re-added via the basket).
   *Revisit:* when an add/edit refactor lands, drop `Mode.add` entirely and make the view model
   edit-only; if species correction becomes a real need, add a dedicated "change species" affordance.
+
+- **Edit-photo (T219): single-shot capture, no library import / preview / retake.**
+  *Why:* T219 reuses the existing `PhotoCapturing` seam (T207) — a one-frame `capture()` that's
+  squared + compressed by `PlantPhoto.encode` — so the edit form gets a photo path without a new
+  camera UI. The captured bytes are staged in-memory and only persisted on **Save** (the form is
+  transactional, so Cancel discards them). *Impact:* the user can't pick from the photo library, can't
+  preview/retake before it lands, and there's no in-form way to *remove* an existing photo (only
+  replace it). On the simulator/DEBUG the stub returns a generated leaf placeholder, so the screenshot
+  shows the seam, not a real camera frame. *Revisit:* when a richer photo flow lands (library import,
+  preview + retake, explicit "remove photo"), extend the seam rather than the single `capture()` call.

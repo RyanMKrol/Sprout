@@ -28,8 +28,16 @@ final class PlantEditViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    private func editModel(for plantID: UUID) -> PlantEditViewModel {
-        PlantEditViewModel(mode: .edit(plantID: plantID), repository: repo, careDatabase: db)
+    private func editModel(
+        for plantID: UUID,
+        camera: PhotoCapturing? = nil
+    ) -> PlantEditViewModel {
+        PlantEditViewModel(
+            mode: .edit(plantID: plantID),
+            repository: repo,
+            careDatabase: db,
+            camera: camera ?? StubPhotoCapturing()
+        )
     }
 
     // MARK: canSave / save guards (nickname only — species is no longer part of the form)
@@ -128,5 +136,65 @@ final class PlantEditViewModelTests: XCTestCase {
     func testEditMissingPlantFlagsLoadFailure() {
         let vm = editModel(for: UUID())
         XCTAssertTrue(vm.loadFailed)
+    }
+
+    // MARK: photo (T219)
+
+    func testEditPrefillsExistingPhoto() throws {
+        let existing = Data([0x01, 0x02, 0x03])
+        let plant = Plant(nickname: "Spike", species: "Snake Plant", photoData: existing)
+        try repo.add(plant)
+        let vm = editModel(for: plant.id)
+        XCTAssertEqual(vm.photoData, existing)
+        XCTAssertTrue(vm.hasPhoto)
+    }
+
+    func testNoPhotoMeansNoExistingPhoto() throws {
+        let plant = Plant(nickname: "Spike", species: "Snake Plant")
+        try repo.add(plant)
+        let vm = editModel(for: plant.id)
+        XCTAssertNil(vm.photoData)
+        XCTAssertFalse(vm.hasPhoto)
+    }
+
+    func testChangePhotoCapturesAndPersistsOnSave() async throws {
+        let plant = Plant(nickname: "Spike", species: "Snake Plant")
+        try repo.add(plant)
+        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: true))
+
+        await vm.changePhoto()
+        // Staged in-memory immediately…
+        XCTAssertNotNil(vm.photoData)
+        XCTAssertTrue(vm.hasPhoto)
+        XCTAssertFalse(vm.isCapturingPhoto)
+        // …but not persisted until save (transactional form).
+        XCTAssertNil(try repo.plant(id: plant.id)?.photoData)
+
+        try vm.save()
+        XCTAssertEqual(try repo.plant(id: plant.id)?.photoData, vm.photoData)
+    }
+
+    func testChangePhotoReplacesExistingPhotoOnSave() async throws {
+        let old = Data([0xAA])
+        let plant = Plant(nickname: "Spike", species: "Snake Plant", photoData: old)
+        try repo.add(plant)
+        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: true))
+
+        await vm.changePhoto()
+        try vm.save()
+
+        let reloaded = try repo.plant(id: plant.id)
+        XCTAssertNotNil(reloaded?.photoData)
+        XCTAssertNotEqual(reloaded?.photoData, old)
+    }
+
+    func testFailedCaptureKeepsExistingPhoto() async throws {
+        let existing = Data([0xBB, 0xCC])
+        let plant = Plant(nickname: "Spike", species: "Snake Plant", photoData: existing)
+        try repo.add(plant)
+        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: false))
+
+        await vm.changePhoto()
+        XCTAssertEqual(vm.photoData, existing) // untouched on capture failure
     }
 }

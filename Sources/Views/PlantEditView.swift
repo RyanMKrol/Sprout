@@ -22,6 +22,22 @@ struct PlantEditView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section("Photo") {
+                    HStack(spacing: 16) {
+                        PlantThumbnail(photoData: viewModel.photoData, size: 64)
+                        Button {
+                            Task { await viewModel.changePhoto() }
+                        } label: {
+                            if viewModel.isCapturingPhoto {
+                                ProgressView()
+                            } else {
+                                Text(viewModel.hasPhoto ? "Change photo" : "Add photo")
+                            }
+                        }
+                        .disabled(viewModel.isCapturingPhoto)
+                    }
+                }
+
                 Section("Nickname") {
                     TextField("Nickname", text: $viewModel.nickname)
                         .textInputAutocapitalization(.words)
