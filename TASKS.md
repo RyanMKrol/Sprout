@@ -159,6 +159,20 @@ sign-off and tweaks.
 - [x] T213 Rooms UI + room assignment (rooms screen, basket/edit room picker)
 - [x] T214 Tile home page (Plants/Rooms/Water) + show plant photos
 - [x] T215 Guided watering walkthrough (two modes, photo + report → water/skip)
+
+**Phase 10 — Overnight polish: data reset, home redesign, edit/delete, room light, care DB → ~320**
+- [ ] T216 Developer settings — delete all plants & rooms (full data reset)
+- [ ] T217 Rename "Name" field label to "Nickname" everywhere
+- [ ] T218 My Plants: swipe-to-delete + edit rework (drop species; keep nickname + room)
+- [ ] T219 Edit flow: change a plant's photo
+- [ ] T220 Room light model — direct/indirect sun sliders → inferred brightness + info tooltips
+- [ ] T221 Room-first "Add plants" flow (choose/add room, then add its plants)
+- [ ] T222 Square-tile home redesign + split "Water" and "Full check-in" tiles
+- [ ] T223 Fix multi-add photo prompt — explicit decline + connected presentation
+- [ ] T224 Care DB audit + source research (Patch / Reddit / web) → gap list
+- [ ] T225 Care DB gap-fill batch 1 — ~15 missing common species (incl. Monstera adansonii)
+- [ ] T226 Care DB gap-fill batch 2 — ~15 more common species (→ ~320)
+- [ ] T227 Care DB final audit — ~320 unique, deduped, validated, provenance complete
 ---
 
 ## Tasks
@@ -733,3 +747,131 @@ sign-off and tweaks.
   Mode chooser on the Water tile; `SPROUT_SCREEN=water`.
 - **Done-when:** both modes walk the right plants; preview doesn't persist; confirm waters + advances; skip
   advances; empty state; the water screenshot renders; tests green.
+
+---
+
+## Phase 10 — Overnight polish: data reset, home redesign, edit/delete, room light, care DB → ~320
+
+> Interactive follow-ups, structured for the unattended loop (no mid-loop gates). UI tasks verify via
+> `SPROUT_SCREEN` deep-links + DemoSeed screenshots. Schema changes are **additive** (no SwiftData
+> migration) so an existing on-device store keeps opening; the new data-reset (T216) is the manual refresh.
+
+### T216 — Developer settings: delete all plants & rooms
+- **Depends on:** T211, T214
+- **Scope:** `Sources/Persistence/PlantRepository.swift`, `Sources/Persistence/SwiftDataPlantRepository.swift`, `Sources/ContentView.swift`, `Sources/Views/SettingsView.swift`, `Sources/ViewModels/SettingsViewModel.swift`, `Tests/*`
+- **Do:** Add repository bulk-delete (`deleteAllPlants()` + `deleteAllRooms()`), and a "Developer" section in
+  Settings with a destructive "Delete all plants & rooms" button behind a confirmation dialog. Wire it through
+  the shared repository so the list/home refresh after.
+- **Verify:** simulator-screenshot.
+- **Done-when:** the Developer section shows the reset action; confirming removes every plant and room (verified
+  by a repository test); the empty state shows on return; `EmptyPlantRepository` + tests updated; unit tests green.
+
+### T217 — Rename "Name" field label to "Nickname"
+- **Depends on:** T207
+- **Scope:** `Sources/Views/PlantEditView.swift`, `Sources/Views/BasketAddView.swift`, `Sources/Views/PhotoCaptureView.swift` (and any other "Name" plant-label UI), `Tests/*`
+- **Do:** Replace the user-facing "Name" label/placeholder for a plant's nickname with "Nickname" across the
+  add/edit/basket UI (the field already maps to `nickname`).
+- **Done-when:** no plant input is labelled "Name" (it reads "Nickname"); species labels are untouched; unit tests green.
+
+### T218 — My Plants: swipe-to-delete + edit rework (drop species)
+- **Depends on:** T214
+- **Scope:** `Sources/Views/PlantListView.swift`, `Sources/Views/PlantEditView.swift`, `Sources/ViewModels/PlantEditViewModel.swift`, `Tests/PlantEditViewModelTests.swift`
+- **Do:** Add a swipe-to-delete action on the My Plants list (via `repository.delete(id:)`, refreshing the list).
+  Rework the edit form to edit **nickname + room only** — remove the species picker (species is fixed once a plant
+  exists); keep `save()` updating nickname/room without touching species/scheduling state.
+- **Verify:** simulator-screenshot.
+- **Done-when:** a plant can be deleted from the list; the edit form no longer offers species selection and saves
+  nickname/room changes; `PlantEditViewModelTests` updated for the narrowed edit; unit tests green.
+
+### T219 — Edit flow: change a plant's photo
+- **Depends on:** T218, T207
+- **Scope:** `Sources/Views/PlantEditView.swift`, `Sources/ViewModels/PlantEditViewModel.swift`, `Sources/ContentView.swift`, `Tests/*`
+- **Do:** Let the edit form change the plant's photo — show the current photo (or placeholder) and a
+  "Change photo" action that captures a new one via the existing `PhotoCapturing` seam (single-target), encodes it
+  with `PlantPhoto.encode`, and saves it onto the plant. Reuse the simulator stub so it's screenshottable.
+- **Verify:** simulator-screenshot.
+- **Done-when:** editing a plant can set/replace its `photoData` and it persists; the simulator path uses the stub;
+  unit tests green.
+
+### T220 — Room light model: direct/indirect sliders → inferred brightness + tooltips
+- **Depends on:** T213
+- **Scope:** `Sources/Model/Room.swift`, `Sources/Engine/RoomEnvironment.swift`, `Sources/Persistence/StoredModels.swift`, `Sources/Views/RoomsView.swift`, `Tests/RoomEnvironmentTests.swift`, `Tests/PersistenceTests.swift`
+- **Do:** Replace the single sunlight enum with two **light-level** inputs — `directSun` and `indirectSun`
+  (each low/medium/high) — and derive an overall **brightness** (dark/medium/bright). `RoomEnvironment.factor`
+  consumes the derived brightness (× humidity). Make the schema change **additive** (new optional fields with
+  sensible defaults; leave the old `sunlight` field in place, defaulted, so existing stores still open). Surface
+  the two levels as segmented controls/sliders in the room editor with small **info (eye/ⓘ) tooltips** explaining
+  each. Keep humidity as-is.
+- **Verify:** simulator-screenshot.
+- **Done-when:** a room is described by direct + indirect light → inferred brightness; the factor is monotonic
+  (brighter ⇒ shorter interval) and clamped; the room editor shows the two controls + tooltips; additive schema
+  (no migration); `RoomEnvironmentTests` cover the brightness inference; unit tests green.
+
+### T221 — Room-first "Add plants" flow
+- **Depends on:** T220, T203
+- **Scope:** `Sources/Views/*` (new add-flow view), `Sources/ViewModels/BasketAddViewModel.swift`, `Sources/ContentView.swift`, `Sources/DemoSeed.swift`, `Tests/*`
+- **Do:** Build a room-first add flow: step 1 choose an existing room **or** add a new one (reusing the room
+  editor); step 2 add all plants into that room (the basket, with the room pre-selected so every plant inherits it
+  + its initial cadence). Replace the old add-then-pick-room ordering. Add a `SPROUT_SCREEN=addflow` deep-link.
+- **Verify:** simulator-screenshot.
+- **Done-when:** the flow selects/creates a room then adds plants that all land in it; committing creates the
+  plants with that `roomID` + initial cadence; the screenshot shows the room-first step; unit tests green.
+
+### T222 — Square-tile home redesign + split Water / Full check-in
+- **Depends on:** T221
+- **Scope:** `Sources/Views/HomeView.swift`, `Tests/*`
+- **Do:** Redesign the home page as a playful grid of **square tiles**: My Plants, Rooms, Add plants (launches the
+  T221 room-first flow), **Water your plants** (plants due now), and **Full check-in** (all plants) — the last two
+  as two separate, clearly-signposted tiles instead of one tile that asks the mode. Keep the Settings gear.
+- **Verify:** simulator-screenshot.
+- **Done-when:** the home shows square tiles including a working Add-plants tile and two distinct watering tiles
+  (each launching the right `GuidedWateringCoordinator` mode); `SPROUT_SCREEN=home` screenshot renders the grid;
+  unit tests green.
+
+### T223 — Fix multi-add photo prompt (decline + connected presentation)
+- **Depends on:** T221
+- **Scope:** `Sources/Views/*` (the add flow + its photo prompt), `Tests/*`
+- **Do:** After a multi-add commit, present the "take photos?" step with an explicit, obvious decline ("Not now"/
+  "Skip photos") and a clear Yes — and **fix the disconnected floating dialog** over a long list by presenting it
+  as a proper sheet/screen anchored to the add flow (not a bare confirmation dialog over the list).
+- **Verify:** simulator-screenshot.
+- **Done-when:** the prompt offers a clear take-photos vs skip choice and reads as part of the add flow (not a
+  detached dialog); declining returns to a refreshed home/list; the screenshot shows the connected prompt; unit tests green.
+
+### T224 — Care DB audit + source research → gap list
+- **Depends on:** T004
+- **Scope:** `docs/research/uk-houseplants.md`, `docs/research/care-db-audit.md` (new), `Tests/CareDatabase*`
+- **Do:** Audit the current ~295 species against the most common UK houseplants. Research candidate sources where
+  reachable — the **Patch** plant catalogue (patchplants.com), the **Reddit** plant communities (most-discussed
+  plants), and general web research on the easiest / most common UK houseplants — and compile a **gap list** of
+  missing common species (must include *Monstera adansonii*). Where a source isn't reachable in the run, fall back
+  to the established genus-anchor rationale and record that.
+- **Done-when:** `docs/research/care-db-audit.md` lists current coverage, the target common-plant set with sources
+  (or fallback rationale), and an explicit prioritised gap list (incl. Monstera adansonii) sized to reach ~320; unit tests green.
+
+### T225 — Care DB gap-fill batch 1 (~15 missing common species)
+- **Depends on:** T224
+- **Scope:** `Sources/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Do:** Add the **top ~15** missing common species from the T224 gap list (including **Monstera adansonii**) —
+  each a real `CareProfile` (moisture + base/min/max) grounded in a source where reachable (else the genus-anchor
+  default) — with a Provenance-index row per plant.
+- **Done-when:** ~15 new unique species added; each passes the T004 validator (`min ≤ base ≤ max`, valid moisture);
+  no duplicate (normalised) species; each has a Provenance row; unit tests green.
+
+### T226 — Care DB gap-fill batch 2 (~15 more → ~320)
+- **Depends on:** T225
+- **Scope:** `Sources/Resources/care_database.json`, `docs/research/uk-houseplants.md`
+- **Do:** Add the **next ~15** species from the T224 gap list to bring the dataset to ~320 unique species, same
+  sourcing + provenance rules as T225.
+- **Done-when:** ~15 further unique species added (dataset ≥ ~320); all validator-clean, deduped, with Provenance
+  rows; unit tests green.
+
+### T227 — Care DB final audit (~320 unique, deduped, validated)
+- **Depends on:** T225, T226
+- **Scope:** `Sources/Resources/care_database.json`, `docs/research/uk-houseplants.md`, `docs/research/care-db-audit.md`, `Tests/CareDatabase*`
+- **Do:** Verify the assembled dataset end to end: ~320 unique species, no duplicate (normalised) names, every
+  record valid; reconcile the Provenance index + audit doc against the JSON and confirm the previously-missing
+  common plants (incl. Monstera adansonii) are present.
+- **Done-when:** the file holds **≥ 315 unique** species; the T004 validator passes on the whole dataset; every
+  plant has a Provenance row; the audit doc's gap list is fully closed (or remaining gaps explicitly justified);
+  README status updated; unit tests green.
