@@ -15,6 +15,9 @@ struct PlantListView: View {
     /// Builds the basket add view model (T204) — the "+" multi-add flow. When `nil`,
     /// the add button is hidden — keeps the list usable on its own.
     private let makeBasket: (() -> BasketAddViewModel)?
+    /// Builds the sequential photo-capture coordinator (T207) for a set of targets.
+    /// When `nil`, the photo flow is unavailable.
+    private let makePhotoCapture: (([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator)?
     /// Builds the detail view model for a plant (T008). When `nil`, cards are not
     /// tappable into a detail screen — keeps the list usable on its own.
     private let makeDetail: ((UUID) -> PlantDetailViewModel)?
@@ -29,11 +32,15 @@ struct PlantListView: View {
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
     @State private var didDeepLink = false
+    /// Targets for the sequential photo flow + whether it's presented (T207/T208).
+    @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
+    @State private var photoPresented = false
 
     init(
         viewModel: PlantListViewModel,
         makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
         makeBasket: (() -> BasketAddViewModel)? = nil,
+        makePhotoCapture: (([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator)? = nil,
         makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
         makeCheckIn: ((UUID) -> CheckInViewModel)? = nil,
         makeSettings: (() -> SettingsViewModel)? = nil
@@ -41,6 +48,7 @@ struct PlantListView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
         self.makeBasket = makeBasket
+        self.makePhotoCapture = makePhotoCapture
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
         self.makeSettings = makeSettings
@@ -118,6 +126,14 @@ struct PlantListView: View {
                 SettingsView(viewModel: makeSettings())
             }
         }
+        .fullScreenCover(isPresented: $photoPresented) {
+            if let makePhotoCapture {
+                PhotoCaptureView(coordinator: makePhotoCapture(photoTargets)) {
+                    photoPresented = false
+                    viewModel.load()
+                }
+            }
+        }
         .onAppear {
             viewModel.load()
             deepLinkIfRequested()
@@ -150,6 +166,11 @@ struct PlantListView: View {
         switch DemoSeed.requestedScreen {
         case "add", "basket":
             if makeBasket != nil { basketPresented = true }
+        case "camera" where makePhotoCapture != nil:
+            photoTargets = viewModel.items.map {
+                PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)
+            }
+            photoPresented = true
         case "settings" where makeSettings != nil:
             settingsPresented = true
         case "detail", "checkin":

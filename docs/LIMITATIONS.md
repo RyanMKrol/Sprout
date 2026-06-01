@@ -182,6 +182,26 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* add a single-save `addAll(_:)` to the repository if large baskets show latency, and make
   the commit transactional.
 
+- **Camera capture (T207) can't run on the simulator, so the real path is human-verified, not gated.**
+  *Why:* AVFoundation capture needs hardware. The flow is reached only through the `PhotoCapturing`
+  seam (T205); `ContentView.makeCamera()` returns `StubPhotoCapturing` on the simulator / under the
+  demo seed and the real `AVFoundationCamera` only on device. So the sequential coordinator (T206) and
+  the overlay UI (T207) are unit-tested + screenshottable via the stub, but the actual camera session,
+  preview, permission prompt, and photo bytes are exercised **only by running on a device** (🔒).
+  *Impact:* a regression in `AVFoundationCamera` itself (session config, delegate bridging, orientation)
+  would pass the local DoD; it's caught only by manual on-device testing. The stub also reports the
+  camera unavailable, so the simulator always shows the placeholder, never a live preview.
+  *Revisit:* add a device test target / manual smoke-test checklist, or a CI device lab, if the camera
+  path changes often.
+
+- **The photo flow's presentation (T207) required wiring outside the literal Camera/View scope.**
+  *Why:* the capture screen is unreachable without a presenter, so `PlantListView` gained a
+  `makePhotoCapture` factory + a `.fullScreenCover` + a `SPROUT_SCREEN=camera` deep-link, `ContentView`
+  gained `makeCamera()`/`makePhotoCapture()` against the shared repository, and `PhotoCaptureCoordinator`
+  exposed its `camera` so the view can source a live preview. Same minimal-wiring precedent as
+  T007/T008/T011/T014.
+  *Revisit:* fold the shared store + camera into an app-level environment dependency when state grows.
+
 - **Add/Edit Plant (T007) captures only nickname + species — `location`, `pot size`, and `photo` are deferred.**
   *Why:* T007's `Scope:` is `Sources/Views/PlantEdit*` + `Sources/ViewModels/PlantEdit*` + `Tests/*`. Persisting
   location/pot size/photo would require extending the pure domain `Plant` (T003 scope) **and** the SwiftData

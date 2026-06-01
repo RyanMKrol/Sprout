@@ -148,7 +148,7 @@ sign-off and tweaks.
 - [x] T204 Basket add view + "+" rewiring (basket replaces single-add)
 - [x] T205 Camera seam + stub + camera permission
 - [x] T206 Photo-capture coordinator (sequential capture→save→advance)
-- [ ] T207 Camera overlay view + AVFoundation capture
+- [x] T207 Camera overlay view + AVFoundation capture
 - [ ] T208 Wire post-create photo flow ("take photos?" → sequential camera)
 ---
 

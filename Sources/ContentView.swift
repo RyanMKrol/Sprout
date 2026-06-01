@@ -35,11 +35,29 @@ struct ContentView: View {
             viewModel: listViewModel,
             makeEditor: makeEditor,
             makeBasket: makeBasket,
+            makePhotoCapture: makePhotoCapture,
             makeDetail: makeDetail,
             makeCheckIn: makeCheckIn,
             makeSettings: makeSettings
         )
         .task { await refreshWeatherFactor() }
+    }
+
+    /// Build the photo-capture source. The real `AVFoundationCamera` only runs on a
+    /// device; the simulator and the demo seed use the stub so screenshots/tests
+    /// never touch hardware or trigger a permission prompt.
+    private func makeCamera() -> PhotoCapturing {
+        #if targetEnvironment(simulator)
+        return StubPhotoCapturing()
+        #else
+        return DemoSeed.isActive ? StubPhotoCapturing() : AVFoundationCamera()
+        #endif
+    }
+
+    /// Build a photo-capture coordinator for the given targets against the shared
+    /// repository + a camera (T206/T207).
+    private func makePhotoCapture(_ targets: [PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator {
+        PhotoCaptureCoordinator(targets: targets, repository: repository, camera: makeCamera())
     }
 
     /// Build the Edit view model against the shared repository + care database. (Used
