@@ -135,6 +135,14 @@ final class PlantListViewModel: ObservableObject {
         }
     }
 
+    /// Delete a plant by id (swipe-to-delete on the My Plants list, T218), then
+    /// reload so the row disappears. Repository errors are swallowed — the reload
+    /// simply leaves the list as it was.
+    func delete(id: UUID) {
+        try? repository.delete(id: id)
+        load()
+    }
+
     /// The compact "why" summary for a plant's card, or `nil` when no care database
     /// is wired in or the species has no record to anchor a cadence.
     private func whySummary(for plant: Plant) -> String? {

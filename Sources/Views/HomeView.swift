@@ -131,7 +131,7 @@ struct HomeView: View {
     }
 
     /// Screenshot deep-link (T002 convention). `home`/`list` (default) lands on the
-    /// tiles; `plants`/`add`/`basket`/`camera`/`photoprompt` push the list (which
+    /// tiles; `plants`/`add`/`basket`/`camera`/`photoprompt`/`edit` push the list (which
     /// handles its own sheet deep-links); `rooms` pushes Rooms; `settings` opens the
     /// settings sheet.
     private func deepLinkIfRequested() {
@@ -142,7 +142,7 @@ struct HomeView: View {
             path.append(Route.rooms)
         case "settings":
             settingsPresented = true
-        case "plants", "add", "basket", "camera", "photoprompt":
+        case "plants", "add", "basket", "camera", "photoprompt", "edit":
             path.append(Route.plants)
         case "water":
             startGuided(.all)

@@ -163,7 +163,7 @@ sign-off and tweaks.
 **Phase 10 — Overnight polish: data reset, home redesign, edit/delete, room light, care DB → ~320**
 - [x] T216 Developer settings — delete all plants & rooms (full data reset)
 - [x] T217 Rename "Name" field label to "Nickname" everywhere
-- [ ] T218 My Plants: swipe-to-delete + edit rework (drop species; keep nickname + room)
+- [x] T218 My Plants: swipe-to-delete + edit rework (drop species; keep nickname + room)
 - [ ] T219 Edit flow: change a plant's photo
 - [ ] T220 Room light model — direct/indirect sun sliders → inferred brightness + info tooltips
 - [ ] T221 Room-first "Add plants" flow (choose/add room, then add its plants)

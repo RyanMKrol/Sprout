@@ -1,13 +1,13 @@
 import SwiftUI
 
-/// The **Add / Edit Plant** form (T007). A nickname field and a species picker
-/// sourced from the bundled care database (T004); saving routes through the
-/// repository (T005) via `PlantEditViewModel`. Presented as a sheet from the My
-/// Plants list, and verified by the `-seedDemoData YES` screenshot convention
-/// (`SPROUT_SCREEN=add`).
+/// The **Edit Plant** form (T007, narrowed by T218). Edits a plant's nickname and
+/// room only — **species is fixed once a plant exists**, so there's no species
+/// picker; choosing a species happens in the basket add flow (T204). Saving routes
+/// through the repository (T005) via `PlantEditViewModel`, preserving the plant's
+/// learned scheduling state.
 ///
-/// Pure presentation: every form rule (what's selectable, when a save is allowed,
-/// add-vs-edit) lives in the view model.
+/// Pure presentation: every form rule (when a save is allowed) lives in the view
+/// model.
 struct PlantEditView: View {
     @StateObject private var viewModel: PlantEditViewModel
     /// Called after a successful save or a cancel, so the presenter can dismiss the
@@ -33,28 +33,6 @@ struct PlantEditView: View {
                             Text("None").tag(UUID?.none)
                             ForEach(viewModel.availableRooms) { room in
                                 Text(room.name).tag(UUID?.some(room.id))
-                            }
-                        }
-                    }
-                }
-
-                Section("Species") {
-                    TextField("Search species", text: $viewModel.speciesQuery)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                    ForEach(viewModel.speciesResults) { profile in
-                        Button {
-                            viewModel.select(profile)
-                        } label: {
-                            HStack {
-                                Text(profile.species)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                if viewModel.isSelected(profile) {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(Color.accentColor)
-                                        .accessibilityLabel("Selected")
-                                }
                             }
                         }
                     }

@@ -62,6 +62,9 @@ struct PlantListView: View {
                 List(viewModel.items) { item in
                     row(for: item)
                         .swipeActions(edge: .trailing) {
+                            Button("Delete", role: .destructive) {
+                                viewModel.delete(id: item.id)
+                            }
                             if makeEditor != nil {
                                 Button("Edit") { editorMode = .edit(plantID: item.id) }
                                     .tint(.blue)
@@ -164,8 +167,9 @@ struct PlantListView: View {
 
     /// Screenshot deep-link (T002 convention): when launched with
     /// `SPROUT_SCREEN=add` (or `basket`), auto-present the basket add flow once; with
-    /// `SPROUT_SCREEN=detail` (or `checkin`), push the first plant's detail screen so
-    /// the seeded run captures it — the detail screen then auto-opens its check-in
+    /// `SPROUT_SCREEN=edit`, open the narrowed edit form (T218) for the first plant;
+    /// with `SPROUT_SCREEN=detail` (or `checkin`), push the first plant's detail screen
+    /// so the seeded run captures it — the detail screen then auto-opens its check-in
     /// sheet for `checkin`. No-op in release builds (`requestedScreen` is always
     /// `"list"`).
     private func deepLinkIfRequested() {
@@ -174,6 +178,8 @@ struct PlantListView: View {
         switch DemoSeed.requestedScreen {
         case "add", "basket":
             if makeBasket != nil { basketPresented = true }
+        case "edit" where makeEditor != nil:
+            if let first = viewModel.items.first { editorMode = .edit(plantID: first.id) }
         case "camera" where makePhotoCapture != nil:
             photoTargets = viewModel.items.map {
                 PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)

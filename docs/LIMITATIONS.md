@@ -557,3 +557,13 @@ keep them here so the design's compromises live in one place alongside your proj
   data from Settings (two taps + a confirm) with no undo and no backup/export — the data is gone.
   *Revisit:* when a real onboarding/account model or data export lands, move this behind a debug flag
   (or remove it) and offer a safer "start over" with export-first.
+
+- **Edit form (T218): `PlantEditViewModel.add` mode is retained but unreachable, and species edits are not offered.**
+  *Why:* T218 narrows the edit form to nickname + room, since species is fixed once a plant exists and
+  adding now flows through the basket (T204). To avoid churning the presenter signatures
+  (`ContentView.makeEditor`, `HomeView`), the `Mode.add` case and the add branch of `save()` were kept,
+  but nothing constructs `.add` anymore — only `.edit` is wired up. *Impact:* the add branch is dead
+  code that, if ever reached, would create a plant with an empty species string (no picker feeds it);
+  a plant whose species needs correcting can't be fixed in-app (only deleted + re-added via the basket).
+  *Revisit:* when an add/edit refactor lands, drop `Mode.add` entirely and make the view model
+  edit-only; if species correction becomes a real need, add a dedicated "change species" affordance.
