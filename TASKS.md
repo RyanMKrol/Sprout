@@ -146,7 +146,7 @@ sign-off and tweaks.
 - [x] T202 Random nickname provider (curated English names + injectable RNG)
 - [x] T203 Basket add view model (multi-add state, auto-naming, batch commit)
 - [x] T204 Basket add view + "+" rewiring (basket replaces single-add)
-- [ ] T205 Camera seam + stub + camera permission
+- [x] T205 Camera seam + stub + camera permission
 - [ ] T206 Photo-capture coordinator (sequential capture→save→advance)
 - [ ] T207 Camera overlay view + AVFoundation capture
 - [ ] T208 Wire post-create photo flow ("take photos?" → sequential camera)

@@ -20,6 +20,8 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Sprout uses the camera to take a photo of each plant you add.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Sprout uses your location to fetch the local forecast and adjust each plant's watering schedule for hot and cold spells.</string>
 	<key>UILaunchScreen</key>

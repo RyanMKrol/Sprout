@@ -29,6 +29,8 @@ targets:
           - UIInterfaceOrientationPortrait
         # T015: weather adaptation reads the device location to fetch a local forecast.
         NSLocationWhenInUseUsageDescription: "Sprout uses your location to fetch the local forecast and adjust each plant's watering schedule for hot and cold spells."
+        # T205: the sequential photo flow takes a photo of each plant you add.
+        NSCameraUsageDescription: "Sprout uses the camera to take a photo of each plant you add."
     configFiles:
       Debug: Config/Signing.xcconfig
       Release: Config/Signing.xcconfig
