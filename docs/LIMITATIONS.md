@@ -75,3 +75,27 @@ keep them here so the design's compromises live in one place alongside your proj
   *Impact:* a new source file isn't picked up until `xcodegen generate` runs (it's baked into
   `build_run.sh` and the test command); anyone opening the project must generate it first.
   *Revisit:* n/a — this is the intended workflow.
+
+- **The demo-seed hook (T002) ships a throwaway dataset/UI, not the real model.**
+  *Why:* the verification convention (`-seedDemoData YES` → populated screenshot) is needed
+  *before* the domain model (T003), persistence (T005), and the real My Plants list (T006)
+  exist, so T002 uses a local `DemoPlant` stand-in and a `DemoPlantListView` to prove the hook.
+  *Impact:* the seeded screen is a placeholder; until T006, `screenshots/latest.png` under
+  `-seedDemoData YES` shows demo content that doesn't flow through the repository. The
+  `SPROUT_SCREEN` deep-link only recognises `"list"` so far.
+  *Revisit:* T006+ replace `DemoPlant`/`DemoPlantListView` with the real model + repository while
+  keeping the same `-seedDemoData YES` / `SPROUT_SCREEN` launch contract.
+
+- **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
+  *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
+  Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,
+  so the simulator keeps running an **old** binary and the captured screen looks blank/white.
+  Two compounding factors: `simctl io … screenshot` also returns a tiny 6×9 stub unless the
+  **Simulator GUI window is open**, and a capture taken mid-launch shows the empty white launch
+  screen. (This is why T001's screenshot also came out blank.)
+  *Impact:* a green `** BUILD SUCCEEDED **` does **not** guarantee the screenshot reflects the
+  latest code; a blank screenshot can be a false negative.
+  *Revisit:* when a screenshot looks blank/stale, `rm -rf build ~/Library/Developer/Xcode/DerivedData/Sprout-*`
+  then re-run `build_run.sh` with the **Simulator app open** and capture after the app settles
+  (≈7 s). Confirm content with `strings <app>/Sprout | grep <expected text>` and a pixel scan.
+  Consider adding a `clean` step (or `-derivedDataPath`) to `build_run.sh` if this recurs.

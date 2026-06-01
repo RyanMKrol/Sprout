@@ -170,6 +170,41 @@ populated state), then **Read `screenshots/latest.png`** and confirm the UI matc
 intent (right screen, expected elements, no error state). Record what you saw in `worklog/TNNN.md`.
 For a flow that needs a specific screen/state, drive it via a **debug launch argument / env var**
 (the `-seedDemoData` hook from T002), not manual taps.
+
+#### The demo-seed hook (T002 — the screenshot convention every UI task reuses)
+
+`Sources/DemoSeed.swift` defines a **DEBUG-only** launch hook so screenshots show real content
+instead of the empty first-run screen — no XCUITest, no manual taps:
+
+- **Activate it:** launch with the `-seedDemoData YES` argument, which `build_run.sh` passes
+  straight through to the app:
+  ```sh
+  ./build_run.sh "iPhone 17 Pro" -seedDemoData YES   # launches into a populated screen
+  ```
+  In code, gate on `DemoSeed.isActive` (true only in DEBUG + when the argument is present) and
+  read `DemoSeed.plants` for the in-memory demo dataset.
+- **Pick a screen:** set the `SPROUT_SCREEN=<name>` environment variable (read via
+  `DemoSeed.requestedScreen`, default `"list"`) to deep-link a screenshot to a specific screen
+  (e.g. `detail`, `checkin`, `settings`). Pass env vars to the simulator with
+  `xcrun simctl launch --console <udid> com.ryankrol.sprout` after
+  `xcrun simctl spawn <udid> launchctl setenv SPROUT_SCREEN detail`, or wire a new case into the
+  switch as later screens land.
+- **It never ships:** the hook is wrapped in `#if DEBUG`; in release builds `DemoSeed.isActive`
+  is always `false` and `DemoSeed.plants` is empty, so neither the seeding path nor the demo
+  data is compiled into a production binary.
+- **Later UI tasks (T006+)** swap `DemoPlant` for the real domain model / repository but keep
+  this same `-seedDemoData YES` / `SPROUT_SCREEN` contract, so their screenshots stay scriptable.
+
+> **If a screenshot comes out blank/white, the build is almost certainly stale — not the code.**
+> `build_run.sh` builds incrementally, and on this Xcode/simulator a view-only change sometimes
+> isn't relinked/reinstalled (the sim keeps running the old binary). Also `simctl io screenshot`
+> only captures a real frame with the **Simulator app window open**, and a mid-launch capture
+> shows the white launch screen. To get a trustworthy shot:
+> `rm -rf build ~/Library/Developer/Xcode/DerivedData/Sprout-*`, re-run `build_run.sh` with the
+> Simulator open, capture ~7 s after launch, and sanity-check with
+> `strings build/Debug-iphonesimulator/Sprout.app/Sprout | grep "<expected text>"`. See the
+> `build_run.sh` stale-binary row in [`docs/LIMITATIONS.md`](./docs/LIMITATIONS.md).
+
 - Tasks marked **🔒 needs-human** require the user (credentials, provisioning, anything
   spending real money or touching production). Do not attempt the human-gated portion
   yourself; prepare everything around it and hand off.

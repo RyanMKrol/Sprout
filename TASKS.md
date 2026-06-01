@@ -78,7 +78,7 @@ sign-off and tweaks.
 
 **Phase 0 — Foundations**
 - [x] T001 Project scaffold + local Definition of Done passes on an empty build
-- [ ] T002 Verification baseline — demo-seed hook + screenshot convention
+- [x] T002 Verification baseline — demo-seed hook + screenshot convention
 **Phase 1 — Domain & data**
 - [ ] T003 Domain model types (Plant, CareProfile, CheckIn) — pure Swift
 - [ ] T004 Care database loader, schema & validator (data grows via T101–T130)
