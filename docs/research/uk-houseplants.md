@@ -83,7 +83,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 20 ✅ | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
 | 21 ✅ | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
 | 22 ✅ | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
-| 23 | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
+| 23 ✅ | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
 | 24 | T124 | Hoya — common wax plants |
 | 25 | T125 | Orchids — Phalaenopsis & common houseplant orchids |
 | 26 | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
@@ -319,3 +319,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Audrey Fig | Ficus benghalensis | evenlyMoist | 9 / 6–14 | Hortology / RHS — banyan fig grown for velvety leaves; water when the top few cm dry, then drench. Sits on the fig anchor |
 | Mistletoe Fig | Ficus deltoidea | evenlyMoist | 8 / 6–12 | Genus anchor (Ficus) + Hortology — compact fig that likes steady moisture in growth; let the surface dry, never waterlogged → slightly shorter than the fig anchor |
 | Triangle Fig | Ficus triangularis | evenlyMoist | 9 / 6–13 | Genus anchor (Ficus) — triangular-leaved fig; standard fig cadence, water when the top 2–3 cm of compost are dry |
+| Umbrella Tree | Schefflera actinophylla (syn. Heptapleurum actinophyllum) | evenlyMoist | 9 / 6–14 | RHS / Hortology — water when the top third of compost dries, then drench; prone to root rot if kept wet, drops leaves if overwatered |
+| Dwarf Umbrella Tree | Schefflera arboricola (syn. Heptapleurum arboricola) | evenlyMoist | 9 / 6–14 | RHS / Hortology — the common houseplant umbrella; let the top 2–3 cm dry between waterings, never soggy → same cadence as the genus anchor |
+| Variegated Dwarf Umbrella Tree | Schefflera arboricola 'Gold Capella' | evenlyMoist | 10 / 7–15 | Genus anchor (Schefflera) + gold variegation → less chlorophyll, slightly slower growth → marginally longer interval |
+| Schefflera Janine | Schefflera arboricola 'Janine' | evenlyMoist | 10 / 7–15 | Genus anchor (Schefflera) + heavy cream variegation → slower growth → slightly longer interval |
+| Dumb Cane | Dieffenbachia seguine | evenlyMoist | 8 / 6–12 | RHS — water moderately, keep evenly moist in growth and let the top 2–3 cm dry; thick stems resent waterlogging |
+| Dieffenbachia Camille | Dieffenbachia 'Camille' | evenlyMoist | 8 / 6–12 | Genus anchor (Dieffenbachia) — popular cream-centred cultivar, same keep-evenly-moist cadence as the species |
+| Dieffenbachia Tropic Snow | Dieffenbachia seguine 'Tropic Snow' | evenlyMoist | 8 / 6–12 | Genus anchor (Dieffenbachia) — large variegated seguine cultivar, same let-top-inch-dry cadence as the species |
+| Spineless Yucca | Yucca elephantipes (syn. Yucca gigantea) | driesOut | 14 / 10–24 | RHS / Hortology — woody desert plant; let the soil dry out fully, water sparingly every 2–3 weeks; overwatering rots the cane |
+| Adam's Needle | Yucca aloifolia | driesOut | 14 / 10–24 | Genus anchor (Yucca) — drought-hardy rosette yucca; same dry-out-fully, water-every-2–3-weeks cadence as the species |
+| Money Tree | Pachira aquatica | evenlyMoist | 10 / 7–15 | Hortology / RHS — water when the top 50–75% of compost dries; the swollen trunk stores water, so let it dry well between drenches → slightly longer than the moist-loving anchor |

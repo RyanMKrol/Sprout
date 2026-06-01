@@ -1573,5 +1573,75 @@
     "minIntervalDays": 6,
     "maxIntervalDays": 13,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Umbrella Tree",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dwarf Umbrella Tree",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Variegated Dwarf Umbrella Tree",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 15,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Schefflera Janine",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 15,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dumb Cane",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dieffenbachia Camille",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dieffenbachia Tropic Snow",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Spineless Yucca",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Adam's Needle",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Money Tree",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 15,
+    "moisture": "evenlyMoist"
   }
 ]

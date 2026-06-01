@@ -128,7 +128,7 @@ sign-off and tweaks.
 - [x] T120 Care DB batch 20 — add 10 UK houseplants (spider plant / Aspidistra)
 - [x] T121 Care DB batch 21 — add 10 UK houseplants (palms)
 - [x] T122 Care DB batch 22 — add 10 UK houseplants (Ficus)
-- [ ] T123 Care DB batch 23 — add 10 UK houseplants (Schefflera / Dieffenbachia / Pachira)
+- [x] T123 Care DB batch 23 — add 10 UK houseplants (Schefflera / Dieffenbachia / Pachira)
 - [ ] T124 Care DB batch 24 — add 10 UK houseplants (Hoya)
 - [ ] T125 Care DB batch 25 — add 10 UK houseplants (orchids)
 - [ ] T126 Care DB batch 26 — add 10 UK houseplants (bromeliads / air plants)
