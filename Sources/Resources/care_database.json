@@ -803,5 +803,75 @@
     "minIntervalDays": 10,
     "maxIntervalDays": 24,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Christmas Cactus",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 21,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Thanksgiving Cactus",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 21,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Easter Cactus",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Mistletoe Cactus",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 16,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Bunny Ears Cactus",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Golden Barrel Cactus",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 42,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Old Lady Cactus",
+    "baseIntervalDays": 18,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Powder Puff Cactus",
+    "baseIntervalDays": 18,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Bishop's Cap Cactus",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Peruvian Apple Cactus",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
   }
 ]
