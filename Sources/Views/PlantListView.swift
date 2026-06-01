@@ -8,9 +8,19 @@ import SwiftUI
 /// presentation, verified by the `-seedDemoData YES` screenshot convention (T002).
 struct PlantListView: View {
     @StateObject private var viewModel: PlantListViewModel
+    /// Builds the editor view model for an add/edit (T007). When `nil`, the add
+    /// button and edit affordance are hidden — keeps the list usable on its own
+    /// (e.g. in T006 contexts) without an editor wired in.
+    private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
+    @State private var editorMode: PlantEditViewModel.Mode?
+    @State private var didDeepLink = false
 
-    init(viewModel: PlantListViewModel) {
+    init(
+        viewModel: PlantListViewModel,
+        makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.makeEditor = makeEditor
     }
 
     var body: some View {
@@ -21,13 +31,53 @@ struct PlantListView: View {
                 } else {
                     List(viewModel.items) { item in
                         PlantCardView(item: item)
+                            .swipeActions(edge: .trailing) {
+                                if makeEditor != nil {
+                                    Button("Edit") { editorMode = .edit(plantID: item.id) }
+                                        .tint(.blue)
+                                }
+                            }
                     }
                     .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle("My Plants")
+            .toolbar {
+                if makeEditor != nil {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            editorMode = .add
+                        } label: {
+                            Label("Add Plant", systemImage: "plus")
+                        }
+                    }
+                }
+            }
         }
-        .onAppear { viewModel.load() }
+        .sheet(item: $editorMode) { mode in
+            if let makeEditor {
+                PlantEditView(viewModel: makeEditor(mode)) {
+                    editorMode = nil
+                    viewModel.load()
+                }
+            }
+        }
+        .onAppear {
+            viewModel.load()
+            deepLinkIfRequested()
+        }
+    }
+
+    /// Screenshot deep-link (T002 convention): when launched with
+    /// `SPROUT_SCREEN=add`, auto-present the Add form once so the seeded run
+    /// captures the species picker. No-op in release builds (`requestedScreen` is
+    /// always `"list"`).
+    private func deepLinkIfRequested() {
+        guard !didDeepLink, makeEditor != nil else { return }
+        didDeepLink = true
+        if DemoSeed.requestedScreen == "add" {
+            editorMode = .add
+        }
     }
 }
 

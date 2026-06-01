@@ -140,6 +140,25 @@ keep them here so the design's compromises live in one place alongside your proj
   enums are stable and the only persistent store is the user's local device.
   *Revisit:* add a `SchemaMigrationPlan` / `VersionedSchema` if the model evolves after release.
 
+- **Add/Edit Plant (T007) captures only nickname + species — `location`, `pot size`, and `photo` are deferred.**
+  *Why:* T007's `Scope:` is `Sources/Views/PlantEdit*` + `Sources/ViewModels/PlantEdit*` + `Tests/*`. Persisting
+  location/pot size/photo would require extending the pure domain `Plant` (T003 scope) **and** the SwiftData
+  `StoredPlant` record + mapping (T005 scope) — out of this task's scope — so the form was kept to the fields the
+  model already holds. The task's `Done-when:` only requires save→repository and the care-DB species picker, both of
+  which are met and unit-tested.
+  *Impact:* the form mentioned in T007's `Do:` is narrower than described — a user can't yet record where a plant
+  lives, its pot size, or a photo. No data is silently dropped (the fields simply don't exist on the form).
+  *Revisit:* when a task is scoped to extend the domain model + persistence, add `location`/`potSize` (optional
+  `String`s) and a photo reference to `Plant`/`StoredPlant`, then surface them in `PlantEditView`/`PlantEditViewModel`.
+
+- **Add/Edit entry points required small edits to `ContentView` / `PlantListView` (outside T007's listed scope).**
+  *Why:* a new screen is unreachable and unverifiable without an entry point. The "+" toolbar button + edit
+  swipe-action live in `PlantListView`, and `ContentView` now holds the shared repository + care database (in
+  `@State`, created once) so the list and the editor write to/read from the **same** store and a saved plant appears
+  on reload. This also resolves the T006 "rebuilds the repository per launch" revisit note for the in-session case.
+  *Impact:* two files outside the literal `Scope:` globs changed, but only for the minimal wiring the feature needs.
+  *Revisit:* when navigation grows (T008+), promote the shared store to a proper app-level environment dependency.
+
 - **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
   *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
   Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,

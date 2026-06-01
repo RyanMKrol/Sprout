@@ -6,8 +6,28 @@ import SwiftUI
 /// screenshots show real content. A first-run launch with no plants shows the
 /// list's empty state.
 struct ContentView: View {
+    /// The shared store for this launch — held in `@State` so it is created **once**
+    /// and the same instance backs both the list and the Add/Edit editor (T007),
+    /// so a saved plant shows up when the list reloads.
+    @State private var repository: PlantRepository
+    /// The bundled care database (T004), the source of the editor's species picker.
+    @State private var careDatabase: CareDatabase
+    @StateObject private var listViewModel: PlantListViewModel
+
+    init() {
+        let repository = Self.makeRepository()
+        _repository = State(initialValue: repository)
+        _careDatabase = State(initialValue: Self.makeCareDatabase())
+        _listViewModel = StateObject(wrappedValue: PlantListViewModel(repository: repository))
+    }
+
     var body: some View {
-        PlantListView(viewModel: PlantListViewModel(repository: Self.makeRepository()))
+        PlantListView(viewModel: listViewModel, makeEditor: makeEditor)
+    }
+
+    /// Build the Add/Edit view model against the shared repository + care database.
+    private func makeEditor(_ mode: PlantEditViewModel.Mode) -> PlantEditViewModel {
+        PlantEditViewModel(mode: mode, repository: repository, careDatabase: careDatabase)
     }
 
     /// Resolve the repository for this launch: seeded in-memory under
@@ -20,6 +40,12 @@ struct ContentView: View {
         } catch {
             return (try? PlantStore.inMemory()) ?? EmptyPlantRepository()
         }
+    }
+
+    /// Load the bundled care database; an empty database if it can't be read so the
+    /// editor still presents (with no species to pick) rather than crashing.
+    private static func makeCareDatabase() -> CareDatabase {
+        (try? CareDatabase.loadBundled()) ?? CareDatabase(profiles: [])
     }
 }
 
