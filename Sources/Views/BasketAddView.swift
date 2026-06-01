@@ -85,7 +85,7 @@ struct BasketAddView: View {
                 ForEach(viewModel.basket) { entry in
                     HStack(spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
-                            TextField("Name", text: nameBinding(for: entry))
+                            TextField("Nickname", text: nameBinding(for: entry))
                                 .textInputAutocapitalization(.words)
                                 .font(.body)
                             Text(entry.species)

@@ -22,7 +22,7 @@ struct PlantEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Name") {
+                Section("Nickname") {
                     TextField("Nickname", text: $viewModel.nickname)
                         .textInputAutocapitalization(.words)
                 }

@@ -87,7 +87,7 @@ source of truth):
 | T214 | ✅ done | Tile home page (Plants/Rooms/Water) + show photos |
 | T215 | ✅ done | Guided watering walkthrough (two modes) |
 | T216 | ✅ done | Developer settings — delete all plants & rooms |
-| T217 | ⏳ pending | Rename "Name" field label to "Nickname" |
+| T217 | ✅ done | Rename "Name" field label to "Nickname" |
 | T218 | ⏳ pending | My Plants swipe-to-delete + edit rework (drop species) |
 | T219 | ⏳ pending | Edit flow: change a plant's photo |
 | T220 | ⏳ pending | Room light model — direct/indirect sliders → brightness + tooltips |
