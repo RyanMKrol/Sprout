@@ -243,5 +243,75 @@
     "minIntervalDays": 5,
     "maxIntervalDays": 12,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Flamingo Flower",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Pigtail Anthurium",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Velvet Cardboard Anthurium",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Crystal Anthurium",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Chinese Evergreen",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Aglaonema Silver Bay",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Aglaonema Silver Queen",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Red Aglaonema",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Sensation Peace Lily",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Domino Peace Lily",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
   }
 ]

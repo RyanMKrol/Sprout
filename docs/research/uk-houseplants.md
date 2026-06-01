@@ -64,7 +64,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 01 ✅ | T101 | Pothos & Epipremnum cultivars (golden, marble, neon, satin/Scindapsus…) |
 | 02 ✅ | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
 | 03 ✅ | T103 | Monstera, Rhaphidophora, Syngonium |
-| 04 | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
+| 04 ✅ | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
 | 05 | T105 | Alocasia, Colocasia, Caladium |
 | 06 | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
 | 07 | T107 | Sansevieria / snake plants & cultivars |
@@ -129,3 +129,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Arrowhead Plant | Syngonium podophyllum | evenlyMoist | 7 / 5–10 | RHS / Happy Houseplants (UK) — keep slightly moist in growth, water ~weekly in summer, let top inch dry |
 | Syngonium White Butterfly | Syngonium podophyllum 'White Butterfly' | evenlyMoist | 7 / 5–10 | Genus anchor (aroid); pale-leaved arrowhead cultivar, same cadence as the species |
 | Pink Syngonium | Syngonium podophyllum 'Pink Allusion' | evenlyMoist | 8 / 5–12 | Genus anchor (aroid) + pink variegation → slightly less chlorophyll → marginally longer interval |
+| Flamingo Flower | Anthurium andraeanum | evenlyMoist | 7 / 5–11 | RHS — water freely spring–autumn (~weekly in growth), let top inch dry, water sparingly in winter |
+| Pigtail Anthurium | Anthurium scherzerianum | evenlyMoist | 7 / 5–11 | Genus anchor (Anthurium) — flowering species, same evenly-moist cadence as A. andraeanum |
+| Velvet Cardboard Anthurium | Anthurium clarinervium | evenlyMoist | 8 / 6–12 | Smart Garden Guide / Rooted Hues — let top 1–2" (~80%) dry, never bone-dry nor soggy; velvet-leaf → slightly longer/drier than flowering anthuriums |
+| Crystal Anthurium | Anthurium crystallinum | evenlyMoist | 8 / 6–12 | Odd Leaf (UK) — velvet-leaf, keep lightly moist and let top dry between waterings; same cadence as clarinervium |
+| Chinese Evergreen | Aglaonema commutatum | evenlyMoist | 9 / 7–14 | Gardenia / Chelsea Garden Center — water every 7–10 days; thick stems store moisture, somewhat drought-tolerant → longer interval |
+| Aglaonema Silver Bay | Aglaonema 'Silver Bay' | evenlyMoist | 9 / 7–14 | Genus anchor (Aglaonema) — robust variegated cultivar, standard Chinese-evergreen cadence |
+| Aglaonema Silver Queen | Aglaonema 'Silver Queen' | evenlyMoist | 9 / 7–14 | Genus anchor (Aglaonema) — classic cultivar, standard Chinese-evergreen cadence |
+| Red Aglaonema | Aglaonema 'Siam Aurora' | evenlyMoist | 9 / 7–14 | Genus anchor (Aglaonema) — pink/red cultivar with moisture-storing stems, standard Chinese-evergreen cadence |
+| Sensation Peace Lily | Spathiphyllum 'Sensation' | evenlyMoist | 6 / 4–9 | Love That Leaf — giant peace lily; keep evenly moist, good drench every 1–2 weeks, droops when thirsty |
+| Domino Peace Lily | Spathiphyllum 'Domino' | evenlyMoist | 6 / 4–9 | Genus anchor (Spathiphyllum) — variegated peace lily, same keep-evenly-moist cadence as the species |

@@ -109,7 +109,7 @@ sign-off and tweaks.
 - [x] T101 Care DB batch 01 — add 10 UK houseplants (pothos / Epipremnum)
 - [x] T102 Care DB batch 02 — add 10 UK houseplants (Philodendron)
 - [x] T103 Care DB batch 03 — add 10 UK houseplants (Monstera / Syngonium)
-- [ ] T104 Care DB batch 04 — add 10 UK houseplants (Anthurium / Aglaonema / peace lily)
+- [x] T104 Care DB batch 04 — add 10 UK houseplants (Anthurium / Aglaonema / peace lily)
 - [ ] T105 Care DB batch 05 — add 10 UK houseplants (Alocasia / Caladium)
 - [ ] T106 Care DB batch 06 — add 10 UK houseplants (ZZ / Dracaena / Cordyline)
 - [ ] T107 Care DB batch 07 — add 10 UK houseplants (Sansevieria)
