@@ -66,7 +66,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 03 ✅ | T103 | Monstera, Rhaphidophora, Syngonium |
 | 04 ✅ | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
 | 05 ✅ | T105 | Alocasia, Colocasia, Caladium |
-| 06 | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
+| 06 ✅ | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
 | 07 | T107 | Sansevieria / snake plants & cultivars |
 | 08 | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
 | 09 | T109 | Crassula (jade), Sedum, Sempervivum |
@@ -149,3 +149,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Black Magic Elephant Ear | Colocasia esculenta 'Black Magic' | staysMoist | 4 / 2–7 | Genus anchor (Colocasia) — dark-leaved esculenta cultivar, same keep-wet bog cadence as the species |
 | Angel Wings | Caladium bicolor | evenlyMoist | 5 / 3–8 | Patch / ukhouseplants — keep evenly/lightly moist in growth, water when top 2–3 cm dry; tubers rot if waterlogged, drier in winter dormancy |
 | Caladium White Christmas | Caladium 'White Christmas' | evenlyMoist | 5 / 3–8 | Genus anchor (Caladium) — white-leaved cultivar, same keep-lightly-moist cadence as C. bicolor |
+| ZZ Plant | Zamioculcas zamiifolia | driesOut | 14 / 10–24 | Lively Root / The Sill — rhizomes store water, let soil dry ~100%, water every 2–3 weeks; root rot if overwatered |
+| Raven ZZ | Zamioculcas zamiifolia 'Raven' | driesOut | 14 / 10–24 | Genus anchor (ZZ) — black-leaved cultivar, same drought-tolerant rhizome cadence as the species |
+| ZZ Zenzi | Zamioculcas zamiifolia 'Zenzi' | driesOut | 14 / 10–24 | Genus anchor (ZZ) — compact dwarf cultivar, same store-water-and-dry-out cadence as the species |
+| Dragon Tree | Dracaena marginata | driesOut | 12 / 8–21 | House Plant Resource Center / Soltech — let top 50% dry, water every 2–3 weeks; overwatering is the #1 killer |
+| Corn Plant | Dracaena fragrans | driesOut | 11 / 7–18 | Healthy Houseplants / Leafy Place — keep slightly moist but tolerates under-watering, water when top 2.5–5 cm dry (~1–2 weeks) |
+| Janet Craig Dracaena | Dracaena fragrans 'Janet Craig' | driesOut | 11 / 7–18 | Genus anchor (Dracaena fragrans) — dark-green cultivar, same let-top-inch-dry cadence as the species |
+| Lemon Lime Dracaena | Dracaena fragrans 'Lemon Lime' | driesOut | 11 / 7–18 | Genus anchor (Dracaena fragrans) — variegated cultivar, same let-top-inch-dry cadence as the species |
+| Song of India | Dracaena reflexa | driesOut | 12 / 8–21 | Genus anchor (Dracaena) — woody cane shrub, let top half dry between waterings like D. marginata |
+| Lucky Bamboo | Dracaena sanderiana | evenlyMoist | 7 / 5–10 | Genus anchor (Dracaena, water-grown form) — usually grown in water; in soil keep consistently moist, never let dry fully |
+| Hawaiian Ti Plant | Cordyline fruticosa | evenlyMoist | 6 / 4–10 | Almanac / Bouqs — likes consistently/evenly moist soil (not soggy), water when top 1–2" dry; chlorine-sensitive |

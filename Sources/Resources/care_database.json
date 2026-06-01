@@ -383,5 +383,75 @@
     "minIntervalDays": 3,
     "maxIntervalDays": 8,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "ZZ Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Raven ZZ",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "ZZ Zenzi",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Dragon Tree",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Corn Plant",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 18,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Janet Craig Dracaena",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 18,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Lemon Lime Dracaena",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 18,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Song of India",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Lucky Bamboo",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Hawaiian Ti Plant",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
   }
 ]
