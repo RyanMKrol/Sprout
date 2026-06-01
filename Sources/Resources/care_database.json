@@ -1083,5 +1083,75 @@
     "minIntervalDays": 3,
     "maxIntervalDays": 7,
     "moisture": "staysMoist"
+  },
+  {
+    "species": "Never Never Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Fishbone Prayer Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Golden Mosaic Ctenanthe",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Stromanthe Triostar",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Nerve Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Silver Nerve Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Red Nerve Plant",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Chinese Money Plant",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Aluminium Plant",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Moon Valley Pilea",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
   }
 ]

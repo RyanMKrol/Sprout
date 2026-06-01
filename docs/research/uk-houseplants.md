@@ -76,7 +76,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 13 ✅ | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
 | 14 ✅ | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
 | 15 ✅ | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
-| 16 | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
+| 16 ✅ | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
 | 17 | T117 | Peperomia — common cultivars |
 | 18 | T118 | Begonia — rex, maculata, rhizomatous |
 | 19 | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
@@ -249,3 +249,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Zebra Plant Calathea | Goeppertia zebrina (syn. Calathea zebrina) | staysMoist | 4 / 3–6 | Genus anchor (Calathea/Goeppertia) — velvety zebra-striped leaves; keep consistently lightly moist, water ~weekly, never waterlogged nor bone-dry |
 | Calathea Orbifolia | Goeppertia orbifolia (syn. Calathea orbifolia) | staysMoist | 4 / 3–7 | Garden Betty / Smart Garden Guide — keep top inch slightly damp (never bone-dry or soggy), water ~weekly and reduce to every 2–3 weeks in winter; use filtered/distilled/rainwater to avoid tip browning |
 | Furry Feather Calathea | Goeppertia rufibarba (syn. Calathea rufibarba) | staysMoist | 5 / 3–7 | Genus anchor (Calathea/Goeppertia) — wavy fuzzy leaves, one of the tougher calatheas; keep evenly moist but tolerates the surface drying a touch → marginally longer base/max |
+| Never Never Plant | Ctenanthe oppenheimiana 'Tricolor' | staysMoist | 4 / 3–6 | Genus anchor (Ctenanthe, prayer-plant relative cf. Calathea/Maranta) — variegated tricolour foliage; keep soil consistently lightly moist (never dry, never soggy), water ~weekly with filtered/rainwater, high humidity |
+| Fishbone Prayer Plant | Ctenanthe burle-marxii | staysMoist | 4 / 3–6 | Genus anchor (Ctenanthe, prayer-plant relative) — fishbone-banded leaves; keep evenly moist, water when the surface barely dries, never let it dry out fully |
+| Golden Mosaic Ctenanthe | Ctenanthe lubbersiana | staysMoist | 4 / 3–6 | Genus anchor (Ctenanthe, prayer-plant relative) — yellow-mottled foliage (Bamburanta); keep consistently lightly moist, water ~weekly, dislikes drying out |
+| Stromanthe Triostar | Stromanthe sanguinea 'Triostar' (syn. Stromanthe thalia) | staysMoist | 4 / 3–6 | Genus anchor (Stromanthe, prayer-plant relative cf. Calathea/Maranta) — pink-variegated triostar; keep evenly moist with filtered/rainwater, never dry nor waterlogged, high humidity |
+| Nerve Plant | Fittonia albivenis | staysMoist | 4 / 2–6 | RHS — keep soil moist, water when the top ~inch dries (~weekly in spring/summer, every 10–14 days in winter); droops/wilts dramatically when dry but recovers once watered; never waterlogged. Notably thirsty → low min |
+| Silver Nerve Plant | Fittonia albivenis (Argyroneura Group) | staysMoist | 4 / 2–6 | Genus anchor (Fittonia, cf. F. albivenis per RHS) — silver-veined nerve plant; keep consistently moist, water when top inch dries, recovers fast from a thirst-wilt; same thirsty cadence as the species |
+| Red Nerve Plant | Fittonia albivenis (Verschaffeltii Group) | staysMoist | 4 / 2–6 | Genus anchor (Fittonia, cf. F. albivenis per RHS) — red/pink-veined nerve plant; keep consistently moist, water when top inch dries; same thirsty keep-moist cadence as the species |
+| Chinese Money Plant | Pilea peperomioides | evenlyMoist | 7 / 5–14 | Greenery Unlimited / The Sill — let the top 2–3 inches dry between waterings, water every 1–2 weeks; more prone to over- than under-watering, so allow drying to avoid root rot |
+| Aluminium Plant | Pilea cadierei | evenlyMoist | 6 / 4–10 | Genus anchor (Pilea, cf. P. peperomioides) — silver-splashed foliage; keep evenly moist, water when the top inch dries, ease off in winter; avoid waterlogging |
+| Moon Valley Pilea | Pilea involucrata 'Moon Valley' | evenlyMoist | 6 / 4–10 | Genus anchor (Pilea, friendship plant) — quilted bronze-green leaves; keep evenly moist, water when the top inch dries, never bone-dry nor soggy |
