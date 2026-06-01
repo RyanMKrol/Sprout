@@ -39,6 +39,8 @@ final class PlantDetailViewModel: ObservableObject {
     /// Check-in history, **most-recent first** (the repository returns it oldest
     /// first). Empty drives the history empty state.
     @Published private(set) var history: [HistoryItem] = []
+    /// The plant's photo (JPEG bytes), shown as a header image (T214). `nil` → placeholder.
+    @Published private(set) var photoData: Data?
     /// `true` if the requested plant could not be loaded (deleted / unknown id).
     @Published private(set) var loadFailed: Bool = false
 
@@ -77,11 +79,13 @@ final class PlantDetailViewModel: ObservableObject {
             baseIntervalDays = nil
             explanation = nil
             history = []
+            photoData = nil
             return
         }
         loadFailed = false
         nickname = plant.nickname
         species = plant.species
+        photoData = plant.photoData
         due = DueStatus(nextDue: plant.nextDue, now: now)
 
         let profile = careDatabase.profile(forSpecies: plant.species)

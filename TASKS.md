@@ -157,7 +157,7 @@ sign-off and tweaks.
 - [x] T211 Room persistence + plant→room link (StoredRoom, schema, room CRUD)
 - [x] T212 Drive schedule from rooms; retire phone weather; initial cadence at add-time
 - [x] T213 Rooms UI + room assignment (rooms screen, basket/edit room picker)
-- [ ] T214 Tile home page (Plants/Rooms/Water) + show plant photos
+- [x] T214 Tile home page (Plants/Rooms/Water) + show plant photos
 - [ ] T215 Guided watering walkthrough (two modes, photo + report → water/skip)
 ---
 

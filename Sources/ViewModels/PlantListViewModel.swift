@@ -82,7 +82,13 @@ final class PlantListViewModel: ObservableObject {
         /// Compact "why this schedule" summary (T012), e.g. *"Every 5d · shortened"*.
         /// `nil` when no care database is wired in or the species has no record.
         let whySummary: String?
+        /// The plant's photo (JPEG bytes), shown as a card thumbnail (T214). `nil` → leaf placeholder.
+        let photoData: Data?
     }
+
+    /// Number of plants that need water now (due today or overdue) — drives the home
+    /// "Water" tile's count (T214).
+    var dueCount: Int { items.filter { $0.due.needsWater }.count }
 
     /// The plants to display, already in due-order. Empty drives the first-run
     /// empty state (`isEmpty`).
@@ -123,7 +129,8 @@ final class PlantListViewModel: ObservableObject {
                 nickname: plant.nickname,
                 species: plant.species,
                 due: DueStatus(nextDue: plant.nextDue, now: now),
-                whySummary: whySummary(for: plant)
+                whySummary: whySummary(for: plant),
+                photoData: plant.photoData
             )
         }
     }

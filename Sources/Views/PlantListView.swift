@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The **My Plants** home list (T006). Renders the plants from
 /// `PlantListViewModel` as cards — nickname, species, a next-due pill and a
@@ -24,17 +25,8 @@ struct PlantListView: View {
     /// Builds the check-in view model for a plant (T011), threaded through to the
     /// detail screen's "Check in" affordance. When `nil`, detail hides check-in.
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
-    /// Builds the Settings view model (T014). When `nil`, the settings button is
-    /// hidden — keeps the list usable on its own (e.g. in early tests).
-    private let makeSettings: (() -> SettingsViewModel)?
-    /// Builds the Rooms view model (T213). When `nil`, the rooms button is hidden.
-    /// (T214 moves room access to the home page; this toolbar entry is interim.)
-    private let makeRooms: (() -> RoomsViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
-    @State private var path = NavigationPath()
-    @State private var settingsPresented = false
-    @State private var roomsPresented = false
     @State private var didDeepLink = false
     /// Targets for the sequential photo flow + whether it's presented (T207/T208).
     @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
@@ -50,9 +42,7 @@ struct PlantListView: View {
         makeBasket: (() -> BasketAddViewModel)? = nil,
         makePhotoCapture: (([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator)? = nil,
         makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
-        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil,
-        makeSettings: (() -> SettingsViewModel)? = nil,
-        makeRooms: (() -> RoomsViewModel)? = nil
+        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
@@ -60,63 +50,43 @@ struct PlantListView: View {
         self.makePhotoCapture = makePhotoCapture
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
-        self.makeSettings = makeSettings
-        self.makeRooms = makeRooms
     }
 
+    /// De-nested: the host (`HomeView`) provides the `NavigationStack`. This view
+    /// supplies the list, its plant-detail destination, the add button, and its sheets.
     var body: some View {
-        NavigationStack(path: $path) {
-            Group {
-                if viewModel.isEmpty {
-                    PlantListEmptyState()
-                } else {
-                    List(viewModel.items) { item in
-                        row(for: item)
-                            .swipeActions(edge: .trailing) {
-                                if makeEditor != nil {
-                                    Button("Edit") { editorMode = .edit(plantID: item.id) }
-                                        .tint(.blue)
-                                }
+        Group {
+            if viewModel.isEmpty {
+                PlantListEmptyState()
+            } else {
+                List(viewModel.items) { item in
+                    row(for: item)
+                        .swipeActions(edge: .trailing) {
+                            if makeEditor != nil {
+                                Button("Edit") { editorMode = .edit(plantID: item.id) }
+                                    .tint(.blue)
                             }
-                    }
-                    .listStyle(.insetGrouped)
+                        }
                 }
+                .listStyle(.insetGrouped)
             }
-            .navigationTitle("My Plants")
-            .navigationDestination(for: UUID.self) { plantID in
-                if let makeDetail {
-                    PlantDetailView(
-                        viewModel: makeDetail(plantID),
-                        makeCheckIn: makeCheckIn
-                    )
-                }
+        }
+        .navigationTitle("My Plants")
+        .navigationDestination(for: UUID.self) { plantID in
+            if let makeDetail {
+                PlantDetailView(
+                    viewModel: makeDetail(plantID),
+                    makeCheckIn: makeCheckIn
+                )
             }
-            .toolbar {
-                if makeSettings != nil {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            settingsPresented = true
-                        } label: {
-                            Label("Settings", systemImage: "gearshape")
-                        }
-                    }
-                }
-                if makeRooms != nil {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            roomsPresented = true
-                        } label: {
-                            Label("Rooms", systemImage: "house")
-                        }
-                    }
-                }
-                if makeBasket != nil {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            basketPresented = true
-                        } label: {
-                            Label("Add Plants", systemImage: "plus")
-                        }
+        }
+        .toolbar {
+            if makeBasket != nil {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        basketPresented = true
+                    } label: {
+                        Label("Add Plants", systemImage: "plus")
                     }
                 }
             }
@@ -138,16 +108,6 @@ struct PlantListView: View {
                     if case let .created(plants) = result { pendingPhotoPlants = plants }
                     basketPresented = false
                 }
-            }
-        }
-        .sheet(isPresented: $settingsPresented) {
-            if let makeSettings {
-                SettingsView(viewModel: makeSettings())
-            }
-        }
-        .sheet(isPresented: $roomsPresented) {
-            if let makeRooms {
-                NavigationStack { RoomsView(viewModel: makeRooms()) }
             }
         }
         .confirmationDialog(
@@ -221,17 +181,37 @@ struct PlantListView: View {
             photoPresented = true
         case "photoprompt" where makePhotoCapture != nil:
             photoPromptPresented = true
-        case "settings" where makeSettings != nil:
-            settingsPresented = true
-        case "rooms" where makeRooms != nil:
-            roomsPresented = true
-        case "detail", "checkin":
-            if makeDetail != nil, let first = viewModel.items.first {
-                path.append(first.id)
-            }
         default:
             break
         }
+    }
+}
+
+/// A small rounded plant photo, or a tinted leaf placeholder when there's no photo
+/// (T214). Shared by the list card and other compact contexts.
+struct PlantThumbnail: View {
+    let photoData: Data?
+    var tint: Color = .green
+    var size: CGFloat = 44
+
+    var body: some View {
+        Group {
+            if let photoData, let image = UIImage(data: photoData) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                ZStack {
+                    tint.opacity(0.15)
+                    Image(systemName: "leaf.fill")
+                        .font(.system(size: size * 0.4))
+                        .foregroundStyle(tint)
+                }
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .accessibilityHidden(true)
     }
 }
 
@@ -253,10 +233,7 @@ struct PlantCardView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "drop.fill")
-                .font(.title3)
-                .foregroundStyle(dueColor)
-                .accessibilityHidden(true)
+            PlantThumbnail(photoData: item.photoData, tint: dueColor)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.nickname)

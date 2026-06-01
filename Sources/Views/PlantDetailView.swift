@@ -34,6 +34,15 @@ struct PlantDetailView: View {
                 )
             } else {
                 Form {
+                    Section {
+                        HStack {
+                            Spacer()
+                            PlantThumbnail(photoData: viewModel.photoData, tint: dueColor, size: 120)
+                            Spacer()
+                        }
+                        .listRowBackground(Color.clear)
+                    }
+
                     Section("Species") {
                         LabeledContent("Species", value: viewModel.species)
                     }

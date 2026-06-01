@@ -84,7 +84,7 @@ source of truth):
 | T211 | ✅ done | Room persistence + plant→room link |
 | T212 | ✅ done | Drive schedule from rooms; retire phone weather |
 | T213 | ✅ done | Rooms UI + room assignment |
-| T214 | ⏳ pending | Tile home page (Plants/Rooms/Water) + show photos |
+| T214 | ✅ done | Tile home page (Plants/Rooms/Water) + show photos |
 | T215 | ⏳ pending | Guided watering walkthrough (two modes) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review

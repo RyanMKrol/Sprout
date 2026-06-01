@@ -29,15 +29,15 @@ struct ContentView: View {
     }
 
     var body: some View {
-        PlantListView(
-            viewModel: listViewModel,
+        HomeView(
+            listViewModel: listViewModel,
             makeEditor: makeEditor,
             makeBasket: makeBasket,
             makePhotoCapture: makePhotoCapture,
             makeDetail: makeDetail,
             makeCheckIn: makeCheckIn,
-            makeSettings: makeSettings,
-            makeRooms: makeRooms
+            makeRooms: makeRooms,
+            makeSettings: makeSettings
         )
     }
 
