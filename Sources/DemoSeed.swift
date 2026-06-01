@@ -81,7 +81,9 @@ enum DemoSeed {
             CheckIn(date: day(-2), soil: .dry, leaves: .fine, watered: true),
         ]
         return [
-            Plant(nickname: "Lily", species: "Peace Lily", lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
+            // Lily carries a learned `adj` below 1.0 so its detail screen shows a
+            // real "shortened" explanation (T012) rather than the seed cadence.
+            Plant(nickname: "Lily", species: "Peace Lily", adj: 0.7, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
             Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0)),
             Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2)),
             Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3)),

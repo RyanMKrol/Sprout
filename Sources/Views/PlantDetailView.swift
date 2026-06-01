@@ -47,7 +47,7 @@ struct PlantDetailView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(dueColor)
                         }
-                        Text(viewModel.scheduleSummary)
+                        Text(viewModel.explanation?.sentence ?? viewModel.scheduleSummary)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }

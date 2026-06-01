@@ -32,6 +32,10 @@ final class PlantDetailViewModel: ObservableObject {
     /// The species' starting cadence in days (from the care DB), if the species
     /// resolves to a record — shown in the schedule placeholder. `nil` otherwise.
     @Published private(set) var baseIntervalDays: Int?
+    /// The "why this schedule" explanation (T012), built from the species' care
+    /// profile, the plant's learned `adj`, and its most recent check-in. `nil` when
+    /// the species has no care record to anchor the cadence.
+    @Published private(set) var explanation: ScheduleExplanation?
     /// Check-in history, **most-recent first** (the repository returns it oldest
     /// first). Empty drives the history empty state.
     @Published private(set) var history: [HistoryItem] = []
@@ -41,11 +45,18 @@ final class PlantDetailViewModel: ObservableObject {
     let plantID: UUID
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
+    private let explanationBuilder: ScheduleExplanationBuilder
 
-    init(plantID: UUID, repository: PlantRepository, careDatabase: CareDatabase) {
+    init(
+        plantID: UUID,
+        repository: PlantRepository,
+        careDatabase: CareDatabase,
+        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder()
+    ) {
         self.plantID = plantID
         self.repository = repository
         self.careDatabase = careDatabase
+        self.explanationBuilder = explanationBuilder
     }
 
     /// Load (or reload) the plant and its history from the repository. A missing
@@ -58,6 +69,7 @@ final class PlantDetailViewModel: ObservableObject {
             species = ""
             due = .unscheduled
             baseIntervalDays = nil
+            explanation = nil
             history = []
             return
         }
@@ -65,7 +77,18 @@ final class PlantDetailViewModel: ObservableObject {
         nickname = plant.nickname
         species = plant.species
         due = DueStatus(nextDue: plant.nextDue, now: now)
-        baseIntervalDays = careDatabase.profile(forSpecies: plant.species)?.baseIntervalDays
+
+        let profile = careDatabase.profile(forSpecies: plant.species)
+        baseIntervalDays = profile?.baseIntervalDays
+        explanation = profile.map { profile in
+            explanationBuilder.explanation(
+                species: plant.species,
+                profile: profile,
+                adj: plant.adj,
+                lastCheckIn: plant.checkIns.max { $0.date < $1.date }
+            )
+        }
+
         history = plant.checkIns
             .sorted { $0.date > $1.date }
             .map { HistoryItem(id: $0.id, date: $0.date, soil: $0.soil, leaves: $0.leaves, watered: $0.watered) }

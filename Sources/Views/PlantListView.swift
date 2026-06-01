@@ -151,6 +151,11 @@ struct PlantCardView: View {
                 Text(item.species)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let whySummary = item.whySummary {
+                    Text(whySummary)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
             }
 
             Spacer()
@@ -164,7 +169,16 @@ struct PlantCardView: View {
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(item.nickname), \(item.species), \(item.due.label)")
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    /// Spoken label: name, species, due status, and the "why" summary when present.
+    private var accessibilityLabel: String {
+        var parts = ["\(item.nickname), \(item.species), \(item.due.label)"]
+        if let whySummary = item.whySummary {
+            parts.append(whySummary)
+        }
+        return parts.joined(separator: ", ")
     }
 
     /// Maps the (pure) due status to a presentation colour — overdue/today read

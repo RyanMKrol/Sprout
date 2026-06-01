@@ -79,6 +79,9 @@ final class PlantListViewModel: ObservableObject {
         let nickname: String
         let species: String
         let due: DueStatus
+        /// Compact "why this schedule" summary (T012), e.g. *"Every 5d · shortened"*.
+        /// `nil` when no care database is wired in or the species has no record.
+        let whySummary: String?
     }
 
     /// The plants to display, already in due-order. Empty drives the first-run
@@ -86,9 +89,20 @@ final class PlantListViewModel: ObservableObject {
     @Published private(set) var items: [Item] = []
 
     private let repository: PlantRepository
+    /// Optional care database — when wired in, each card carries a compact
+    /// "why this schedule" summary (T012). Defaults to `nil` so contexts that only
+    /// need the list (e.g. early tests) keep working unchanged.
+    private let careDatabase: CareDatabase?
+    private let explanationBuilder: ScheduleExplanationBuilder
 
-    init(repository: PlantRepository) {
+    init(
+        repository: PlantRepository,
+        careDatabase: CareDatabase? = nil,
+        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder()
+    ) {
         self.repository = repository
+        self.careDatabase = careDatabase
+        self.explanationBuilder = explanationBuilder
     }
 
     /// `true` when there are no plants — the view shows the first-run empty state.
@@ -103,9 +117,25 @@ final class PlantListViewModel: ObservableObject {
                 id: plant.id,
                 nickname: plant.nickname,
                 species: plant.species,
-                due: DueStatus(nextDue: plant.nextDue, now: now)
+                due: DueStatus(nextDue: plant.nextDue, now: now),
+                whySummary: whySummary(for: plant)
             )
         }
+    }
+
+    /// The compact "why" summary for a plant's card, or `nil` when no care database
+    /// is wired in or the species has no record to anchor a cadence.
+    private func whySummary(for plant: Plant) -> String? {
+        guard
+            let careDatabase,
+            let profile = careDatabase.profile(forSpecies: plant.species)
+        else { return nil }
+        return explanationBuilder.explanation(
+            species: plant.species,
+            profile: profile,
+            adj: plant.adj,
+            lastCheckIn: plant.checkIns.max { $0.date < $1.date }
+        ).pillSummary
     }
 
     /// Plants in due-order: earliest `nextDue` first; unscheduled plants (no

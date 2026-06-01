@@ -259,6 +259,34 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* T012 builds the canonical explanation; fold this `message` into it (or a shared
   formatter) so the wording lives in one place.
 
+- **"Why this schedule" (T012) names a *single* dominant cause, not a combined explanation.**
+  *Why:* the explanation must read as one plain sentence, so `ScheduleExplanationBuilder`
+  picks one `Cause` by priority — a check-in that actually moved `adj` wins, else an
+  off-neutral `weatherFactor`, else the seed/settled cadence. It does not blend "dried out
+  early *and* a warm spell."
+  *Impact:* when both a learned `adj` and (post-T016) weather have shifted the interval, only
+  the check-in is named; the weather contribution is silent even though it moved the number.
+  Also, `adj`-from-check-in is inferred from the *most recent* check-in's soil/leaves, not
+  from the actual nudge that produced the current `adj`, so a `lastCheckIn` whose own nudge
+  was ×1.0 (a "hold") can still be attributed as the cause whenever `adj ≠ 1` from earlier
+  history. The builder is purely presentational and recomputes the effective interval itself
+  (via `ScheduleEngine`) rather than reading a persisted `nextDue`.
+  *Revisit:* if multi-factor schedules become common (T016), let the explanation list a
+  primary + secondary cause, and persist the per-check-in nudge so the attribution is exact.
+
+- **"Why this schedule" (T012) required wiring edits to view models / `DemoSeed` (outside the literal Engine scope).**
+  *Why:* the pure builder lives in `Sources/Engine/ScheduleExplanation.swift`, but surfacing it
+  needs `PlantDetailViewModel` to expose an `explanation` (shown on detail) and
+  `PlantListViewModel` to expose a `pillSummary` per card (the care DB is now injected into the
+  list VM, defaulting to `nil` so existing tests are unchanged). `DemoSeed`'s Lily was given a
+  learned `adj` of `0.7` so the `SPROUT_SCREEN=detail` screenshot shows a real "shortened"
+  sentence instead of the seed cadence.
+  *Impact:* files outside `Sources/Engine/*` changed (view models, two views, `DemoSeed`), but
+  only for the minimal display wiring. The detail screen falls back to T008's
+  `scheduleSummary` placeholder when the species has no care record (no explanation to build).
+  *Revisit:* fold T011's per-row `Result.message` into this canonical explanation so watering
+  prose lives in one place (carried over from T011's note).
+
 - **`didWater` requires both a water recommendation *and* the user's `watered` flag; otherwise we recheck in 3 days.**
   *Why:* the design's two branches are "watered ⇒ advance schedule" vs "skip ⇒ recheck in
   `recheckDays`". A recommendation to water that the user declined is treated as the skip/recheck

@@ -16,9 +16,12 @@ struct ContentView: View {
 
     init() {
         let repository = Self.makeRepository()
+        let careDatabase = Self.makeCareDatabase()
         _repository = State(initialValue: repository)
-        _careDatabase = State(initialValue: Self.makeCareDatabase())
-        _listViewModel = StateObject(wrappedValue: PlantListViewModel(repository: repository))
+        _careDatabase = State(initialValue: careDatabase)
+        _listViewModel = StateObject(
+            wrappedValue: PlantListViewModel(repository: repository, careDatabase: careDatabase)
+        )
     }
 
     var body: some View {
