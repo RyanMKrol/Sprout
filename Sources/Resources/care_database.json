@@ -1223,5 +1223,75 @@
     "minIntervalDays": 8,
     "maxIntervalDays": 18,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Rex Begonia",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Polka Dot Begonia",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Angel Wing Begonia",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Iron Cross Begonia",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Escargot Begonia",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Beefsteak Begonia",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Wax Begonia",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Tuberous Begonia",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dragon Wing Begonia",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Palm-leaf Begonia",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
   }
 ]

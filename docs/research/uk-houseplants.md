@@ -78,7 +78,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 15 ✅ | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
 | 16 ✅ | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
 | 17 ✅ | T117 | Peperomia — common cultivars |
-| 18 | T118 | Begonia — rex, maculata, rhizomatous |
+| 18 ✅ | T118 | Begonia — rex, maculata, rhizomatous |
 | 19 | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
 | 20 | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
 | 21 | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
@@ -269,3 +269,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Ruby Cascade Peperomia | Peperomia 'Ruby Cascade' | evenlyMoist | 11 / 8–18 | Genus anchor (succulent trailing Peperomia) — fleshy water-storing leaves, notably drought-tolerant; soak then let dry well → longest interval in the batch |
 | Beetle Peperomia | Peperomia quadrangularis (syn. P. angulata) | evenlyMoist | 10 / 7–14 | Genus anchor (Peperomia) — semi-succulent trailing striped leaves; keep lightly moist, let the top dry between waterings |
 | Happy Bean Peperomia | Peperomia ferreyrae | evenlyMoist | 11 / 8–18 | Genus anchor (succulent Peperomia) — very succulent bean-shaped leaves store ample water; water sparingly, let the soil dry well between waterings → longest interval in the batch |
+| Rex Begonia | Begonia rex-cultorum | evenlyMoist | 6 / 4–9 | RHS — rhizomatous foliage begonia; keep the compost moist but never waterlogged, let the surface dry slightly between waterings, water from below to keep crown/leaves dry (genus anchor cadence) |
+| Polka Dot Begonia | Begonia maculata 'Wightii' | evenlyMoist | 7 / 5–10 | RHS / Hortology — cane (wing-leaf) begonia; let the top 2–3 cm dry before watering, more drought-tolerant fleshy stems → slightly longer interval than the genus anchor; avoid soggy roots |
+| Angel Wing Begonia | Begonia coccinea | evenlyMoist | 7 / 5–10 | Genus anchor (cane begonia) — bamboo-like water-storing stems; water when the top few cm dry, slightly longer interval than rhizomatous types; dislikes waterlogging |
+| Iron Cross Begonia | Begonia masoniana | evenlyMoist | 6 / 5–10 | RHS — rhizomatous begonia; keep evenly moist in growth, let the surface dry slightly, water from below to protect the hairy leaves; never sit in water |
+| Escargot Begonia | Begonia 'Escargot' | evenlyMoist | 6 / 4–9 | Genus anchor (rhizomatous Rex-type) — spiral-leaf foliage begonia; keep lightly moist, let the top dry between waterings, avoid wetting the leaves (genus anchor cadence) |
+| Beefsteak Begonia | Begonia × erythrophylla | evenlyMoist | 7 / 5–11 | Genus anchor (rhizomatous begonia) — thick rounded fleshy leaves store water and tolerate drying; let the top 2–3 cm dry well → slightly longer, more drought-tolerant interval |
+| Wax Begonia | Begonia × semperflorens-cultorum | evenlyMoist | 5 / 4–8 | RHS — fibrous-rooted bedding/houseplant begonia; keep the compost evenly moist in growth, water when the surface starts to dry; shorter interval than the cane/rhizomatous types |
+| Tuberous Begonia | Begonia × tuberhybrida | evenlyMoist | 5 / 4–8 | RHS — tuberous begonia; keep evenly moist while in active growth/flower, water when the surface dries, avoid waterlogging the tuber; reduce sharply as it dies back |
+| Dragon Wing Begonia | Begonia 'Dragon Wing' | evenlyMoist | 6 / 4–9 | Genus anchor (cane × fibrous hybrid) — vigorous angel-wing-type; keep evenly moist in growth, let the surface dry slightly between waterings (genus anchor cadence) |
+| Palm-leaf Begonia | Begonia luxurians | evenlyMoist | 6 / 4–9 | Genus anchor (cane begonia) — tall palmate-leaved species; keep evenly moist in growth, water when the top few cm dry, dislikes both drying out fully and waterlogging |
