@@ -166,7 +166,7 @@ sign-off and tweaks.
 - [x] T218 My Plants: swipe-to-delete + edit rework (drop species; keep nickname + room)
 - [x] T219 Edit flow: change a plant's photo
 - [x] T220 Room light model — direct/indirect sun sliders → inferred brightness + info tooltips
-- [ ] T221 Room-first "Add plants" flow (choose/add room, then add its plants)
+- [x] T221 Room-first "Add plants" flow (choose/add room, then add its plants)
 - [ ] T222 Square-tile home redesign + split "Water" and "Full check-in" tiles
 - [ ] T223 Fix multi-add photo prompt — explicit decline + connected presentation
 - [ ] T224 Care DB audit + source research (Patch / Reddit / web) → gap list

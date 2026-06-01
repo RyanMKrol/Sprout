@@ -90,10 +90,12 @@ struct ContentView: View {
         )
     }
 
-    /// Build the basket add view model (T204) against the shared repository + care
-    /// database. Under the demo seed it uses a fixed RNG seed and pre-fills a couple
-    /// of entries so the `SPROUT_SCREEN=basket` screenshot shows a populated basket
-    /// with stable names.
+    /// Build the basket add view model (T204) for the room-first add flow (T221)
+    /// against the shared repository + care database. Under the demo seed it uses a
+    /// fixed RNG seed and pre-fills a couple of entries so the `SPROUT_SCREEN=basket`
+    /// screenshot shows a populated basket with stable names. `addflow` lands on the
+    /// room step (the new room-first screenshot); `add`/`basket` skip ahead to the
+    /// populated plants step with a room pre-selected.
     private func makeBasket() -> BasketAddViewModel {
         let vm: BasketAddViewModel
         if DemoSeed.isActive {
@@ -104,6 +106,10 @@ struct ContentView: View {
             )
             for species in DemoSeed.basketSampleSpecies {
                 if let profile = careDatabase.profile(forSpecies: species) { vm.add(profile) }
+            }
+            if DemoSeed.requestedScreen == "add" || DemoSeed.requestedScreen == "basket" {
+                vm.loadRooms()
+                vm.chooseRoom(vm.availableRooms.first)
             }
         } else {
             vm = BasketAddViewModel(repository: repository, careDatabase: careDatabase)

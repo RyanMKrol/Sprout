@@ -192,6 +192,16 @@ keep them here so the design's compromises live in one place alongside your proj
   the first check-in corrects it. Plants whose species isn't in the care DB still get `nextDue = nil`.
   *Revisit:* ask "just watered?" in the add flow, or anchor the first due date at the add date itself.
 
+- **Room-first add flow (T221) assigns one room to the whole batch.**
+  *Why:* the flow is deliberately room-first — step 1 picks/creates a single room, step 2 adds every
+  plant into it — which is the common case (you stand in one room and add what's there) and keeps the
+  basket model (one `selectedRoom` → every plant's `roomID` + initial cadence) unchanged. A "Skip — no
+  room for now" option avoids dead-ending a user with no rooms yet (plants land room-less / neutral).
+  *Impact:* you can't split a single basket across multiple rooms in one pass — plants for a second room
+  need a second trip through the flow (or a later per-plant edit). The room editor reused here is the
+  full T220 editor, so creating a room mid-add is identical to the Rooms screen.
+  *Revisit:* allow a per-entry room override in the basket if multi-room batches become common.
+
 - **Plant photos (T201) are JPEG blobs stored in SwiftData (`Plant.photoData: Data?`, `@Attribute(.externalStorage)`).**
   *Why:* the simplest single-store model — no separate file manager or asset table. `.externalStorage`
   spills the blob to a sidecar file so the common `allPlants()` scalar fetch stays cheap, and

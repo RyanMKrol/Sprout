@@ -157,6 +157,66 @@ final class BasketAddViewModelTests: XCTestCase {
         XCTAssertNotNil(created[0].nextDue, "a new plant gets an initial cadence, not nil")
     }
 
+    // MARK: room-first flow (T221)
+
+    func testFlowStartsOnTheRoomStep() {
+        XCTAssertEqual(makeVM().step, .room)
+    }
+
+    func testChooseRoomSelectsItAndAdvancesToPlants() {
+        let vm = makeVM()
+        let room = Room(name: "Kitchen", sunlight: .indirect, humidity: .normal)
+        vm.chooseRoom(room)
+        XCTAssertEqual(vm.selectedRoom, room)
+        XCTAssertEqual(vm.step, .plants)
+    }
+
+    func testChooseNoRoomStillAdvances() {
+        let vm = makeVM()
+        vm.chooseRoom(nil)
+        XCTAssertNil(vm.selectedRoom)
+        XCTAssertEqual(vm.step, .plants)
+    }
+
+    func testCreateRoomPersistsSelectsAndAdvances() throws {
+        let vm = makeVM()
+        vm.createRoom(name: "Sunroom", directSun: .high, indirectSun: .high, humidity: .dry)
+
+        // Persisted to the repository…
+        let rooms = try repo.allRooms()
+        XCTAssertEqual(rooms.map(\.name), ["Sunroom"])
+        // …selected for the batch, and the flow advanced.
+        XCTAssertEqual(vm.selectedRoom?.name, "Sunroom")
+        XCTAssertEqual(vm.step, .plants)
+        XCTAssertTrue(vm.availableRooms.contains { $0.name == "Sunroom" })
+    }
+
+    func testCreateRoomIgnoresBlankName() throws {
+        let vm = makeVM()
+        vm.createRoom(name: "   ", directSun: .high, indirectSun: .high, humidity: .dry)
+        XCTAssertTrue(try repo.allRooms().isEmpty)
+        XCTAssertEqual(vm.step, .room, "a blank room keeps the flow on the room step")
+    }
+
+    func testBackToRoomStepKeepsTheBasket() {
+        let vm = makeVM()
+        vm.chooseRoom(Room(name: "Den"))
+        vm.add(profile("Pothos"))
+        vm.backToRoomStep()
+        XCTAssertEqual(vm.step, .room)
+        XCTAssertEqual(vm.basket.map(\.species), ["Pothos"], "stepping back doesn't clear the basket")
+    }
+
+    func testRoomFirstCommitLandsEveryPlantInTheChosenRoom() throws {
+        let vm = makeVM()
+        vm.createRoom(name: "Studio", directSun: .high, indirectSun: .high, humidity: .dry)
+        let roomID = try XCTUnwrap(vm.selectedRoom?.id)
+        vm.add(profile("Pothos"))
+        vm.add(profile("Snake Plant"))
+        let created = try vm.commit()
+        XCTAssertEqual(created.map(\.roomID), [roomID, roomID])
+    }
+
     func testCommitAssignsRoomAndShortensInABrightDryRoom() throws {
         let now = Date(timeIntervalSince1970: 1_000_000)
 

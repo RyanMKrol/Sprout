@@ -91,7 +91,7 @@ source of truth):
 | T218 | ✅ done | My Plants swipe-to-delete + edit rework (drop species) |
 | T219 | ✅ done | Edit flow: change a plant's photo |
 | T220 | ✅ done | Room light model — direct/indirect sliders → brightness + tooltips |
-| T221 | ⏳ pending | Room-first "Add plants" flow |
+| T221 | ✅ done | Room-first "Add plants" flow (choose/add room, then add its plants) |
 | T222 | ⏳ pending | Square-tile home redesign + split Water / Full check-in |
 | T223 | ⏳ pending | Fix multi-add photo prompt (decline + connected presentation) |
 | T224 | ⏳ pending | Care DB audit + source research → gap list |

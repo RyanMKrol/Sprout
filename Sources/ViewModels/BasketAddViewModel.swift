@@ -39,6 +39,14 @@ final class BasketAddViewModel: ObservableObject {
         }
     }
 
+    /// The two ordered stages of the **room-first** add flow (T221): first choose or
+    /// create the room the batch lives in, then add the plants into it.
+    enum Step: Equatable { case room, plants }
+
+    /// Which step the flow is on. Starts on `.room` — a room is chosen/created before
+    /// any plant is added, so every committed plant inherits it.
+    @Published private(set) var step: Step = .room
+
     /// The pending plants, in the order they'll be created.
     @Published private(set) var basket: [Entry] = []
     /// The species-picker search query; filters `speciesResults`.
@@ -68,6 +76,34 @@ final class BasketAddViewModel: ObservableObject {
     /// Load the rooms available for assignment (call on appear).
     func loadRooms() {
         availableRooms = (try? repository.allRooms()) ?? []
+    }
+
+    // MARK: - Room step (T221 — room-first ordering)
+
+    /// Choose the room (or `nil` for no room) the whole batch lives in and advance to
+    /// the plant-adding step. The selection drives both each plant's `roomID` and its
+    /// initial cadence at `commit()`.
+    func chooseRoom(_ room: Room?) {
+        selectedRoom = room
+        step = .plants
+    }
+
+    /// Create a new room from the editor inputs, select it for the batch, and advance
+    /// to the plant-adding step. Reuses the same two-input light model as the Rooms
+    /// editor (T220). Blank names are ignored (the flow stays on the room step).
+    func createRoom(name: String, directSun: LightLevel, indirectSun: LightLevel, humidity: RoomHumidity) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let room = Room(name: trimmed, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
+        try? repository.addRoom(room)
+        loadRooms()
+        chooseRoom(room)
+    }
+
+    /// Step back to room selection (e.g. to pick a different room) without losing the
+    /// basket already assembled.
+    func backToRoomStep() {
+        step = .room
     }
 
     // MARK: - Species picker (sourced from the care database)

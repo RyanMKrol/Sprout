@@ -104,7 +104,7 @@ struct PlantListView: View {
         }
         .sheet(isPresented: $basketPresented, onDismiss: offerPhotosIfJustCreated) {
             if let makeBasket {
-                BasketAddView(viewModel: makeBasket()) { result in
+                AddFlowView(viewModel: makeBasket()) { result in
                     // Stash created plants so `onDismiss` can offer to photograph
                     // them once the sheet has fully closed (avoids a present-while-
                     // dismissing race).
@@ -166,7 +166,7 @@ struct PlantListView: View {
     }
 
     /// Screenshot deep-link (T002 convention): when launched with
-    /// `SPROUT_SCREEN=add` (or `basket`), auto-present the basket add flow once; with
+    /// `SPROUT_SCREEN=add`/`basket`/`addflow`, auto-present the room-first add flow once; with
     /// `SPROUT_SCREEN=edit`, open the narrowed edit form (T218) for the first plant;
     /// with `SPROUT_SCREEN=detail` (or `checkin`), push the first plant's detail screen
     /// so the seeded run captures it — the detail screen then auto-opens its check-in
@@ -176,7 +176,7 @@ struct PlantListView: View {
         guard !didDeepLink else { return }
         didDeepLink = true
         switch DemoSeed.requestedScreen {
-        case "add", "basket":
+        case "add", "basket", "addflow":
             if makeBasket != nil { basketPresented = true }
         case "edit" where makeEditor != nil:
             if let first = viewModel.items.first { editorMode = .edit(plantID: first.id) }

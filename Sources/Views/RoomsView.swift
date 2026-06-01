@@ -110,8 +110,9 @@ private struct RoomRow: View {
 
 /// Add/Edit form for a room — name + two light inputs (direct/indirect) that infer
 /// an overall brightness + humidity. Each light input carries a small info (ⓘ)
-/// tooltip explaining what it means (T220).
-private struct RoomEditorView: View {
+/// tooltip explaining what it means (T220). Internal (not `private`) so the room-first
+/// add flow (T221) can reuse the very same editor for its "add a new room" step.
+struct RoomEditorView: View {
     @State private var name: String
     @State private var directSun: LightLevel
     @State private var indirectSun: LightLevel
