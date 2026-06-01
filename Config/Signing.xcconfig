@@ -1,0 +1,16 @@
+// Signing configuration (committed).
+//
+// Device builds need a DEVELOPMENT_TEAM, but we don't commit a personal team ID.
+// Instead, each developer drops their team into Config/Signing.local.xcconfig
+// (gitignored). The optional include below pulls it in when present and is
+// silently skipped when absent — so the autonomous harness / CI, which only
+// builds for the simulator (no team required), is unaffected.
+//
+// To sign for a real device, create Config/Signing.local.xcconfig containing:
+//
+//     DEVELOPMENT_TEAM = XXXXXXXXXX
+//
+// (Find your Team ID in Xcode → Settings → Accounts, or via:
+//   security find-certificate -c "Apple Development" -p | openssl x509 -noout -subject
+//  — it's the OU field.)
+#include? "Signing.local.xcconfig"
