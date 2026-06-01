@@ -46,23 +46,23 @@ final class PlantDetailViewModel: ObservableObject {
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
     private let explanationBuilder: ScheduleExplanationBuilder
-    /// The current weather multiplier fed into the "why" explanation (T016), so a
-    /// warm/cold spell surfaces in the sentence. Neutral (`1.0`) until weather is
-    /// wired in; `ContentView` injects the forecast-derived factor.
-    private let weatherFactor: Double
+    /// The plant's room environment multiplier (T212), fed into the "why" explanation
+    /// so a bright/dry or dim/humid spot surfaces in the sentence. Neutral (`1.0`)
+    /// when the plant has no room; `ContentView` injects the room-derived factor.
+    private let environmentFactor: Double
 
     init(
         plantID: UUID,
         repository: PlantRepository,
         careDatabase: CareDatabase,
         explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder(),
-        weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
+        environmentFactor: Double = ScheduleEngine.defaultWeatherFactor
     ) {
         self.plantID = plantID
         self.repository = repository
         self.careDatabase = careDatabase
         self.explanationBuilder = explanationBuilder
-        self.weatherFactor = weatherFactor
+        self.environmentFactor = environmentFactor
     }
 
     /// Load (or reload) the plant and its history from the repository. A missing
@@ -92,7 +92,7 @@ final class PlantDetailViewModel: ObservableObject {
                 profile: profile,
                 adj: plant.adj,
                 lastCheckIn: plant.checkIns.max { $0.date < $1.date },
-                weatherFactor: weatherFactor
+                environmentFactor: environmentFactor
             )
         }
 

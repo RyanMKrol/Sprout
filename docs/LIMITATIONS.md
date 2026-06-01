@@ -164,6 +164,28 @@ keep them here so the design's compromises live in one place alongside your proj
   error. Acceptable for a single-user local store.
   *Revisit:* switch to a real `@Relationship` if room membership ever needs cascade/inverse guarantees.
 
+- **Phone weather retired (T212) in favour of room environment; weather source files left dormant.**
+  *Why:* outdoor forecast/GPS is a poor proxy for indoor conditions (AC, window light). The schedule
+  multiplier now comes from the plant's room (`RoomEnvironment.factor`) instead of `WeatherFactorService`.
+  The weather Settings toggle + temperature unit were removed from `AppSettings`/`SettingsView`. The
+  `Sources/Weather/*` and `Sources/Engine/WeatherFactor.swift` files (and `DemoSeed.weatherFactor`) are left
+  in the repo but **no longer wired into any live path** — to keep the diff contained rather than a large
+  deletion. The pure `ScheduleEngine`/`AdaptiveEngine` parameter is still named `weatherFactor` (a generic
+  multiplier); the app/VM/explanation layer calls it `environmentFactor`.
+  *Impact:* dead weather code remains compiled in (its tests still pass against it). `NSLocationWhenInUseUsageDescription`
+  is still in the Info.plist though location is no longer used. The schedule no longer reacts to real
+  outdoor weather at all.
+  *Revisit:* delete `Sources/Weather/*` + `WeatherFactor` + the location permission if weather is never
+  coming back; or reintroduce it as an *outdoor-plant* factor combined with the room factor.
+
+- **Initial cadence (T212) assumes a freshly-added plant was just watered.**
+  *Why:* a basket-added plant now gets a real starting schedule (`lastWatered = add date`,
+  `nextDue = add date + effectiveInterval(species, room factor)`) instead of `nextDue = nil` until the first
+  check-in — so it appears in the due list and guided watering with a sensible date.
+  *Impact:* if the plant was *not* actually just watered, its first due date can be up to one interval late;
+  the first check-in corrects it. Plants whose species isn't in the care DB still get `nextDue = nil`.
+  *Revisit:* ask "just watered?" in the add flow, or anchor the first due date at the add date itself.
+
 - **Plant photos (T201) are JPEG blobs stored in SwiftData (`Plant.photoData: Data?`, `@Attribute(.externalStorage)`).**
   *Why:* the simplest single-store model — no separate file manager or asset table. `.externalStorage`
   spills the blob to a sidecar file so the common `allPlants()` scalar fetch stays cheap, and

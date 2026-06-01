@@ -34,11 +34,13 @@ struct ScheduleExplanation: Equatable, Sendable {
         case drooping
         /// Last check-in: droopy leaves over wet soil — looked overwatered.
         case overwatered
-        /// A warm spell pulled the interval in (`weatherFactor < 1`). Wired for T016.
-        case warmSpell
-        /// A cold spell stretched the interval out (`weatherFactor > 1`). Wired for T016.
-        case coldSpell
-        /// No check-ins yet and neutral weather — the species' starting cadence.
+        /// The room's environment dries the soil faster (`environmentFactor < 1`) —
+        /// e.g. a bright, dry spot (T212).
+        case driesFaster
+        /// The room's environment dries the soil more slowly (`environmentFactor > 1`)
+        /// — e.g. a low-light or humid spot (T212).
+        case driesSlower
+        /// No check-ins yet and a neutral room — the species' starting cadence.
         case startingCadence
         /// Learned cadence has settled back onto the species seed (`adj ≈ 1`, with history).
         case settled
@@ -91,8 +93,8 @@ struct ScheduleExplanation: Equatable, Sendable {
         case .stillMoist: return "the soil was still moist last time"
         case .drooping: return "its leaves were drooping"
         case .overwatered: return "it looked overwatered"
-        case .warmSpell: return "of a warm spell"
-        case .coldSpell: return "of a cold spell"
+        case .driesFaster: return "its spot dries out faster than average"
+        case .driesSlower: return "its spot dries out more slowly than average"
         case .startingCadence, .settled: return "of your check-ins"
         }
     }
@@ -112,15 +114,15 @@ struct ScheduleExplanationBuilder {
 
     /// Build the explanation for a plant of species `profile` with learned `adj`,
     /// optionally informed by its most recent `lastCheckIn` and the current
-    /// `weatherFactor` (1.0 until T015/T016 feed a real forecast).
+    /// `environmentFactor` (the plant's room; 1.0 when it has no room).
     func explanation(
         species: String,
         profile: CareProfile,
         adj: Double,
         lastCheckIn: CheckIn?,
-        weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
+        environmentFactor: Double = ScheduleEngine.defaultWeatherFactor
     ) -> ScheduleExplanation {
-        let effective = schedule.effectiveInterval(for: profile, adj: adj, weatherFactor: weatherFactor)
+        let effective = schedule.effectiveInterval(for: profile, adj: adj, weatherFactor: environmentFactor)
         let base = profile.baseIntervalDays
 
         let direction: ScheduleExplanation.Direction
@@ -132,7 +134,7 @@ struct ScheduleExplanationBuilder {
             direction = .unchanged
         }
 
-        let cause = chooseCause(adj: adj, weatherFactor: weatherFactor, lastCheckIn: lastCheckIn)
+        let cause = chooseCause(adj: adj, environmentFactor: environmentFactor, lastCheckIn: lastCheckIn)
 
         return ScheduleExplanation(
             species: species,
@@ -144,20 +146,20 @@ struct ScheduleExplanationBuilder {
     }
 
     /// Pick the dominant influence. A recent check-in that actually moved the learned
-    /// `adj` explains the schedule first; otherwise an off-neutral `weatherFactor`
-    /// does (the hook T016 leans on); otherwise it's the seed cadence (or a settled
-    /// one if there's history).
+    /// `adj` explains the schedule first; otherwise an off-neutral `environmentFactor`
+    /// (the plant's room) does; otherwise it's the seed cadence (or a settled one if
+    /// there's history).
     private func chooseCause(
         adj: Double,
-        weatherFactor: Double,
+        environmentFactor: Double,
         lastCheckIn: CheckIn?
     ) -> ScheduleExplanation.Cause {
         let adjMoved = abs(adj - Plant.defaultAdj) > 0.0001
         if let last = lastCheckIn, adjMoved {
             return causeFromCheckIn(last)
         }
-        if weatherFactor < 1.0 { return .warmSpell }
-        if weatherFactor > 1.0 { return .coldSpell }
+        if environmentFactor < 1.0 { return .driesFaster }
+        if environmentFactor > 1.0 { return .driesSlower }
         return lastCheckIn == nil ? .startingCadence : .settled
     }
 

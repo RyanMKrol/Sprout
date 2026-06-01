@@ -62,8 +62,6 @@ final class SettingsViewModelTests: XCTestCase {
         let (store, _) = ephemeralStore(suite: "sprout.settings.tests.defaults")
         let vm = SettingsViewModel(store: store)
         XCTAssertEqual(vm.reminderHour, WateringNotificationScheduler.defaultReminderHour)
-        XCTAssertEqual(vm.temperatureUnit, .celsius)
-        XCTAssertTrue(vm.weatherEnabled)
     }
 
     // MARK: - persistence across launches
@@ -74,14 +72,10 @@ final class SettingsViewModelTests: XCTestCase {
 
         let first = SettingsViewModel(store: store)
         await first.updateReminderHour(7)
-        first.setTemperatureUnit(.fahrenheit)
-        first.setWeatherEnabled(false)
 
         // A new view model over the same defaults simulates a relaunch.
         let relaunched = SettingsViewModel(store: UserDefaultsSettingsStore(defaults: defaults))
         XCTAssertEqual(relaunched.reminderHour, 7)
-        XCTAssertEqual(relaunched.temperatureUnit, .fahrenheit)
-        XCTAssertFalse(relaunched.weatherEnabled)
     }
 
     // MARK: - reminder time → reschedule
@@ -151,18 +145,4 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(utcCalendar.component(.hour, from: vm.reminderTime), WateringNotificationScheduler.defaultReminderHour)
     }
 
-    // MARK: - units / weather persist without rescheduling
-
-    func testUnitAndWeatherTogglePersistIndependently() {
-        let (store, defaults) = ephemeralStore(suite: "sprout.settings.tests.units")
-        let vm = SettingsViewModel(store: store)
-        vm.setTemperatureUnit(.fahrenheit)
-        vm.setWeatherEnabled(false)
-
-        let reloaded = UserDefaultsSettingsStore(defaults: defaults).load()
-        XCTAssertEqual(reloaded.temperatureUnit, .fahrenheit)
-        XCTAssertFalse(reloaded.weatherEnabled)
-        // Reminder hour untouched by unit/weather changes.
-        XCTAssertEqual(reloaded.reminderHour, WateringNotificationScheduler.defaultReminderHour)
-    }
 }

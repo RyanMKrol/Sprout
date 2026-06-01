@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// The **Settings** screen (T014). Three preferences — the preferred watering
-/// reminder time-of-day, the temperature unit, and the weather toggle — each
-/// bound to `SettingsViewModel`, which persists every change immediately and
-/// reschedules pending reminders when the time moves. Reached for screenshots via
-/// the `SPROUT_SCREEN=settings` deep-link.
+/// The **Settings** screen (T014). The preferred watering reminder time-of-day,
+/// bound to `SettingsViewModel`, which persists the change immediately and
+/// reschedules pending reminders when the time moves. (The temperature unit and the
+/// weather toggle were removed in T212 with the phone-weather retirement.) Reached
+/// for screenshots via the `SPROUT_SCREEN=settings` deep-link.
 ///
 /// Pure presentation: all persistence + rescheduling wiring lives in the view
 /// model; this view only binds the controls.
@@ -32,32 +32,6 @@ struct SettingsView: View {
                     Text("Reminders")
                 } footer: {
                     Text("Watering reminders arrive at this time on the day a plant is due — pick a window you're usually home.")
-                }
-
-                Section("Units") {
-                    Picker(
-                        "Temperature",
-                        selection: Binding(
-                            get: { viewModel.temperatureUnit },
-                            set: { viewModel.setTemperatureUnit($0) }
-                        )
-                    ) {
-                        ForEach(TemperatureUnit.allCases, id: \.self) { unit in
-                            Text(unit.label).tag(unit)
-                        }
-                    }
-                }
-
-                Section {
-                    Toggle(
-                        "Adjust for weather",
-                        isOn: Binding(
-                            get: { viewModel.weatherEnabled },
-                            set: { viewModel.setWeatherEnabled($0) }
-                        )
-                    )
-                } footer: {
-                    Text("When on, Sprout shortens schedules in hot spells and lengthens them in cold ones.")
                 }
             }
             .navigationTitle("Settings")
