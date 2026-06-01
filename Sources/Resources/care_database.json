@@ -313,5 +313,75 @@
     "minIntervalDays": 4,
     "maxIntervalDays": 9,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Alocasia Polly",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Kris Plant",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Giant Taro",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 11,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Alocasia Zebrina",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Alocasia Dragon Scale",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Alocasia Black Velvet",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Taro",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Black Magic Elephant Ear",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Angel Wings",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Caladium White Christmas",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "evenlyMoist"
   }
 ]

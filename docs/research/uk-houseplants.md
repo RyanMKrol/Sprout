@@ -65,7 +65,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 02 ✅ | T102 | Philodendron — climbing & upright (heartleaf, brasil, birkin, congo…) |
 | 03 ✅ | T103 | Monstera, Rhaphidophora, Syngonium |
 | 04 ✅ | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
-| 05 | T105 | Alocasia, Colocasia, Caladium |
+| 05 ✅ | T105 | Alocasia, Colocasia, Caladium |
 | 06 | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
 | 07 | T107 | Sansevieria / snake plants & cultivars |
 | 08 | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
@@ -139,3 +139,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Red Aglaonema | Aglaonema 'Siam Aurora' | evenlyMoist | 9 / 7–14 | Genus anchor (Aglaonema) — pink/red cultivar with moisture-storing stems, standard Chinese-evergreen cadence |
 | Sensation Peace Lily | Spathiphyllum 'Sensation' | evenlyMoist | 6 / 4–9 | Love That Leaf — giant peace lily; keep evenly moist, good drench every 1–2 weeks, droops when thirsty |
 | Domino Peace Lily | Spathiphyllum 'Domino' | evenlyMoist | 6 / 4–9 | Genus anchor (Spathiphyllum) — variegated peace lily, same keep-evenly-moist cadence as the species |
+| Alocasia Polly | Alocasia × amazonica 'Polly' | evenlyMoist | 7 / 5–11 | The Little Botanical / Plant Care for Beginners — water ~every 5–7 days, let top 2.5 cm dry; thick stems store moisture so don't keep soggy |
+| Kris Plant | Alocasia sanderiana | evenlyMoist | 7 / 5–11 | Genus anchor (Alocasia) — parent species of 'Polly', same let-top-inch-dry cadence |
+| Giant Taro | Alocasia macrorrhizos | evenlyMoist | 7 / 5–11 | Genus anchor (Alocasia) — large upright elephant ear; thirsty in growth but let top inch dry, robust storage stem |
+| Alocasia Zebrina | Alocasia zebrina | evenlyMoist | 7 / 5–12 | Genus anchor (Alocasia) — let top of soil dry between waterings; zebra-stem storage tolerates slight drying → wider max |
+| Alocasia Dragon Scale | Alocasia baginda 'Dragon Scale' | evenlyMoist | 9 / 6–14 | Genus anchor (jewel Alocasia) — let top 50–75% dry (cf. Black Velvet guidance); slower-growing jewel → longer interval |
+| Alocasia Black Velvet | Alocasia reginula | evenlyMoist | 9 / 6–14 | Smart Garden Guide / Soltech — allow top 50–75% of soil to dry between waterings; small slow jewel alocasia → longest Alocasia interval |
+| Taro | Colocasia esculenta | staysMoist | 4 / 2–7 | Gardeners' World / Gardenia — bog plant, loves wet soil, "never allow to dry out"; keep constantly moist, may need daily water in heat |
+| Black Magic Elephant Ear | Colocasia esculenta 'Black Magic' | staysMoist | 4 / 2–7 | Genus anchor (Colocasia) — dark-leaved esculenta cultivar, same keep-wet bog cadence as the species |
+| Angel Wings | Caladium bicolor | evenlyMoist | 5 / 3–8 | Patch / ukhouseplants — keep evenly/lightly moist in growth, water when top 2–3 cm dry; tubers rot if waterlogged, drier in winter dormancy |
+| Caladium White Christmas | Caladium 'White Christmas' | evenlyMoist | 5 / 3–8 | Genus anchor (Caladium) — white-leaved cultivar, same keep-lightly-moist cadence as C. bicolor |
