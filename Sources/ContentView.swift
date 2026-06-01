@@ -167,4 +167,9 @@ private struct EmptyPlantRepository: PlantRepository {
     func update(_ plant: Plant) throws {}
     func delete(id: UUID) throws {}
     func addCheckIn(_ checkIn: CheckIn, toPlant plantID: UUID) throws {}
+    func allRooms() throws -> [Room] { [] }
+    func room(id: UUID) throws -> Room? { nil }
+    func addRoom(_ room: Room) throws {}
+    func updateRoom(_ room: Room) throws {}
+    func deleteRoom(id: UUID) throws {}
 }

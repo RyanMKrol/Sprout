@@ -2,7 +2,7 @@ import Foundation
 
 /// Errors surfaced by a `PlantRepository` implementation.
 enum PlantRepositoryError: Error, Equatable {
-    /// No plant with the given identifier exists in the store.
+    /// No record (plant or room) with the given identifier exists in the store.
     case notFound(UUID)
 }
 
@@ -36,4 +36,24 @@ protocol PlantRepository {
     /// Append a check-in to an existing plant.
     /// - Throws: `PlantRepositoryError.notFound` if no such plant exists.
     func addCheckIn(_ checkIn: CheckIn, toPlant plantID: UUID) throws
+
+    // MARK: - Rooms
+
+    /// Every stored room, sorted by name.
+    func allRooms() throws -> [Room]
+
+    /// The room with `id`, or `nil` if none exists.
+    func room(id: UUID) throws -> Room?
+
+    /// Insert a new room.
+    func addRoom(_ room: Room) throws
+
+    /// Update an existing room's fields.
+    /// - Throws: `PlantRepositoryError.notFound` if no such room exists.
+    func updateRoom(_ room: Room) throws
+
+    /// Delete the room with `id`, clearing `roomID` on any plants assigned to it
+    /// (plants are never deleted with their room).
+    /// - Throws: `PlantRepositoryError.notFound` if no such room exists.
+    func deleteRoom(id: UUID) throws
 }

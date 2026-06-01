@@ -94,6 +94,73 @@ final class PersistenceTests: XCTestCase {
         XCTAssertNil(try XCTUnwrap(repo.plant(id: plant.id)).photoData)
     }
 
+    // MARK: rooms (T211)
+
+    func testRoomRoundTrips() throws {
+        let room = Room(name: "Office", sunlight: .direct, humidity: .dry)
+        try repo.addRoom(room)
+        let fetched = try XCTUnwrap(repo.room(id: room.id))
+        XCTAssertEqual(fetched, room)
+    }
+
+    func testAllRoomsSortedByName() throws {
+        try repo.addRoom(Room(name: "Lounge"))
+        try repo.addRoom(Room(name: "Bedroom"))
+        XCTAssertEqual(try repo.allRooms().map(\.name), ["Bedroom", "Lounge"])
+    }
+
+    func testUpdateRoomPersists() throws {
+        var room = Room(name: "Hall", sunlight: .low, humidity: .normal)
+        try repo.addRoom(room)
+        room.name = "Hallway"
+        room.sunlight = .indirect
+        try repo.updateRoom(room)
+        let fetched = try XCTUnwrap(repo.room(id: room.id))
+        XCTAssertEqual(fetched.name, "Hallway")
+        XCTAssertEqual(fetched.sunlight, .indirect)
+    }
+
+    func testUpdateMissingRoomThrows() {
+        XCTAssertThrowsError(try repo.updateRoom(Room(name: "Ghost")))
+    }
+
+    func testPlantRoomIDRoundTrips() throws {
+        let room = Room(name: "Kitchen")
+        try repo.addRoom(room)
+        var plant = makePlant()
+        plant.roomID = room.id
+        try repo.add(plant)
+        XCTAssertEqual(try XCTUnwrap(repo.plant(id: plant.id)).roomID, room.id)
+    }
+
+    func testPlantWithoutRoomRoundTripsAsNil() throws {
+        let plant = makePlant()
+        try repo.add(plant)
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: plant.id)).roomID)
+    }
+
+    func testDeleteRoomNilsAssignedPlantsButKeepsThem() throws {
+        let room = Room(name: "Studio")
+        try repo.addRoom(room)
+        var a = makePlant(nickname: "A")
+        var b = makePlant(nickname: "B")
+        a.roomID = room.id
+        b.roomID = room.id
+        try repo.add(a)
+        try repo.add(b)
+
+        try repo.deleteRoom(id: room.id)
+
+        XCTAssertNil(try repo.room(id: room.id))
+        XCTAssertEqual(try repo.allPlants().count, 2, "plants survive their room")
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: a.id)).roomID)
+        XCTAssertNil(try XCTUnwrap(repo.plant(id: b.id)).roomID)
+    }
+
+    func testDeleteMissingRoomThrows() {
+        XCTAssertThrowsError(try repo.deleteRoom(id: UUID()))
+    }
+
     func testPlantNotFoundReturnsNil() throws {
         XCTAssertNil(try repo.plant(id: UUID()))
     }

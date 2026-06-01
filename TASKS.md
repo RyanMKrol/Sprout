@@ -154,7 +154,7 @@ sign-off and tweaks.
 **Phase 9 — Rooms, room-driven schedules, tile home & guided watering**
 - [x] T209 Balanced ~300-name pool (gender-split, testable)
 - [x] T210 Room domain model + environment factor (sunlight × humidity, pure)
-- [ ] T211 Room persistence + plant→room link (StoredRoom, schema, room CRUD)
+- [x] T211 Room persistence + plant→room link (StoredRoom, schema, room CRUD)
 - [ ] T212 Drive schedule from rooms; retire phone weather; initial cadence at add-time
 - [ ] T213 Rooms UI + room assignment (rooms screen, basket/edit room picker)
 - [ ] T214 Tile home page (Plants/Rooms/Water) + show plant photos

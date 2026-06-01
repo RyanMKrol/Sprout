@@ -34,6 +34,9 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
     /// `nil` until the user captures one; kept as raw `Data` so this stays a pure
     /// value type with no UIKit dependency.
     var photoData: Data?
+    /// The room the plant lives in, if assigned. The room's environment drives the
+    /// plant's watering cadence (see `RoomEnvironment`). `nil` → neutral schedule.
+    var roomID: UUID?
 
     init(
         id: UUID = UUID(),
@@ -43,7 +46,8 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         lastWatered: Date? = nil,
         nextDue: Date? = nil,
         checkIns: [CheckIn] = [],
-        photoData: Data? = nil
+        photoData: Data? = nil,
+        roomID: UUID? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -53,5 +57,6 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         self.nextDue = nextDue
         self.checkIns = checkIns
         self.photoData = photoData
+        self.roomID = roomID
     }
 }

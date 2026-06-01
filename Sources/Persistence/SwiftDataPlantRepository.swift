@@ -52,9 +52,55 @@ final class SwiftDataPlantRepository: PlantRepository {
         try context.save()
     }
 
-    /// Fetch the single stored record for `id`, if any.
+    // MARK: - Rooms
+
+    func allRooms() throws -> [Room] {
+        let descriptor = FetchDescriptor<StoredRoom>(sortBy: [SortDescriptor(\.name)])
+        return try context.fetch(descriptor).map { $0.toDomain() }
+    }
+
+    func room(id: UUID) throws -> Room? {
+        try fetchRoom(id: id)?.toDomain()
+    }
+
+    func addRoom(_ room: Room) throws {
+        context.insert(StoredRoom(domain: room))
+        try context.save()
+    }
+
+    func updateRoom(_ room: Room) throws {
+        guard let stored = try fetchRoom(id: room.id) else {
+            throw PlantRepositoryError.notFound(room.id)
+        }
+        stored.applyScalars(from: room)
+        try context.save()
+    }
+
+    func deleteRoom(id: UUID) throws {
+        guard let stored = try fetchRoom(id: id) else {
+            throw PlantRepositoryError.notFound(id)
+        }
+        // Detach the room from any plants assigned to it (don't delete the plants).
+        let assigned = try context.fetch(
+            FetchDescriptor<StoredPlant>(predicate: #Predicate { $0.roomID == id })
+        )
+        for plant in assigned { plant.roomID = nil }
+        context.delete(stored)
+        try context.save()
+    }
+
+    /// Fetch the single stored plant for `id`, if any.
     private func fetch(id: UUID) throws -> StoredPlant? {
         var descriptor = FetchDescriptor<StoredPlant>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        return try context.fetch(descriptor).first
+    }
+
+    /// Fetch the single stored room for `id`, if any.
+    private func fetchRoom(id: UUID) throws -> StoredRoom? {
+        var descriptor = FetchDescriptor<StoredRoom>(
             predicate: #Predicate { $0.id == id }
         )
         descriptor.fetchLimit = 1
@@ -67,7 +113,7 @@ final class SwiftDataPlantRepository: PlantRepository {
 /// import SwiftData themselves.
 enum PlantStore {
     /// The model types this store manages.
-    static let schema = Schema([StoredPlant.self, StoredCheckIn.self])
+    static let schema = Schema([StoredPlant.self, StoredCheckIn.self, StoredRoom.self])
 
     /// A repository backed by a fresh in-memory container — for tests and
     /// ephemeral previews. Nothing is written to disk.

@@ -19,6 +19,10 @@ final class StoredPlant {
     /// `allPlants()` fetch (which only needs scalars) stays cheap.
     @Attribute(.externalStorage) var photoData: Data?
 
+    /// The id of the room this plant lives in, if any (linked by id, not a SwiftData
+    /// relationship — `RoomRepository` deletion nils this rather than cascading).
+    var roomID: UUID?
+
     /// Check-ins for this plant. Cascade-deleting the plant removes them too.
     @Relationship(deleteRule: .cascade, inverse: \StoredCheckIn.plant)
     var checkIns: [StoredCheckIn]
@@ -31,7 +35,8 @@ final class StoredPlant {
         lastWatered: Date?,
         nextDue: Date?,
         checkIns: [StoredCheckIn] = [],
-        photoData: Data? = nil
+        photoData: Data? = nil,
+        roomID: UUID? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -41,6 +46,24 @@ final class StoredPlant {
         self.nextDue = nextDue
         self.checkIns = checkIns
         self.photoData = photoData
+        self.roomID = roomID
+    }
+}
+
+/// SwiftData persistence record for a `Room`. Linked to plants by `StoredPlant.roomID`
+/// (no SwiftData relationship), so deleting a room simply nils its plants' `roomID`.
+@Model
+final class StoredRoom {
+    @Attribute(.unique) var id: UUID
+    var name: String
+    var sunlight: SunlightLevel
+    var humidity: RoomHumidity
+
+    init(id: UUID, name: String, sunlight: SunlightLevel, humidity: RoomHumidity) {
+        self.id = id
+        self.name = name
+        self.sunlight = sunlight
+        self.humidity = humidity
     }
 }
 
@@ -105,7 +128,8 @@ extension StoredPlant {
             lastWatered: plant.lastWatered,
             nextDue: plant.nextDue,
             checkIns: plant.checkIns.map(StoredCheckIn.init(domain:)),
-            photoData: plant.photoData
+            photoData: plant.photoData,
+            roomID: plant.roomID
         )
     }
 
@@ -122,7 +146,8 @@ extension StoredPlant {
             checkIns: checkIns
                 .sorted { $0.date < $1.date }
                 .map { $0.toDomain() },
-            photoData: photoData
+            photoData: photoData,
+            roomID: roomID
         )
     }
 
@@ -135,5 +160,25 @@ extension StoredPlant {
         lastWatered = plant.lastWatered
         nextDue = plant.nextDue
         photoData = plant.photoData
+        roomID = plant.roomID
+    }
+}
+
+extension StoredRoom {
+    /// Build a persistence record from a domain room.
+    convenience init(domain room: Room) {
+        self.init(id: room.id, name: room.name, sunlight: room.sunlight, humidity: room.humidity)
+    }
+
+    /// Project back to the pure domain value type.
+    func toDomain() -> Room {
+        Room(id: id, name: name, sunlight: sunlight, humidity: humidity)
+    }
+
+    /// Copy the mutable scalar fields of a domain room onto this record.
+    func applyScalars(from room: Room) {
+        name = room.name
+        sunlight = room.sunlight
+        humidity = room.humidity
     }
 }

@@ -154,6 +154,16 @@ keep them here so the design's compromises live in one place alongside your proj
   enums are stable and the only persistent store is the user's local device.
   *Revisit:* add a `SchemaMigrationPlan` / `VersionedSchema` if the model evolves after release.
 
+- **Rooms (T211) link to plants by a scalar `roomID`, not a SwiftData relationship; deleting a room nils it.**
+  *Why:* a `Plant.roomID: UUID?` keeps `Plant` a pure value type and avoids a SwiftData inverse
+  relationship + cascade rules. `deleteRoom` fetches plants with that `roomID` and nils them, so plants
+  survive their room (falling back to the neutral environment factor). `roomID`/`StoredRoom` are additive
+  (optional field + new model), so the change is migration-free.
+  *Impact:* room membership isn't referentially enforced — an orphaned `roomID` (e.g. a future bug that
+  deletes a `StoredRoom` without going through `deleteRoom`) would resolve to "no room" (neutral), not an
+  error. Acceptable for a single-user local store.
+  *Revisit:* switch to a real `@Relationship` if room membership ever needs cascade/inverse guarantees.
+
 - **Plant photos (T201) are JPEG blobs stored in SwiftData (`Plant.photoData: Data?`, `@Attribute(.externalStorage)`).**
   *Why:* the simplest single-store model — no separate file manager or asset table. `.externalStorage`
   spills the blob to a sidecar file so the common `allPlants()` scalar fetch stays cheap, and
