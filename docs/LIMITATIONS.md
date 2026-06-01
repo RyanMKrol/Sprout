@@ -86,6 +86,17 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* T006+ replace `DemoPlant`/`DemoPlantListView` with the real model + repository while
   keeping the same `-seedDemoData YES` / `SPROUT_SCREEN` launch contract.
 
+- **Domain types (T003) don't enforce their invariant at construction — `CareProfile.isValid` must be checked separately.**
+  *Why:* the types are pure, `Codable` value types; a throwing/failable initialiser would
+  complicate JSON decoding and force every call site (incl. T004's bulk decode) to handle
+  errors. Instead `CareProfile` is freely constructible and exposes `isValid`
+  (`min ≤ base ≤ max`, positive, non-blank species) as a predicate.
+  *Impact:* an invalid `CareProfile` (e.g. `base` outside `[min, max]`) can exist in memory; it
+  is only rejected when something calls `isValid`. The single-record check also doesn't cover
+  dataset-level rules (unique `species`) — that's the reusable validator T004 builds on top.
+  *Revisit:* if invalid records start slipping past, move validation into a throwing factory or
+  have T004's loader reject the whole file on any `!isValid` row.
+
 - **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
   *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
   Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,
