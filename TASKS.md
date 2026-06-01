@@ -139,7 +139,7 @@ sign-off and tweaks.
 - [x] T131 Care database complete — ~300 plants, deduped & reviewed
 
 **Phase 7 — Final review**
-- [ ] T200 Compile key-decision review packet for human sign-off
+- [x] T200 Compile key-decision review packet for human sign-off
 
 **Phase 8 — Streamlined add plants (basket multi-add + photo capture)**
 - [x] T201 Photo blob on the model (Plant/StoredPlant.photoData + PlantPhoto encode)

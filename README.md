@@ -70,7 +70,7 @@ source of truth):
 | T016 | ✅ done | Feed weather into the schedule engine |
 | T101–T130 | ✅ done (30/30) | Care DB build-out — 30 batches × 10 researched UK houseplants (305 species) |
 | T131 | ✅ done | Care database complete — 305 species, deduped & validated, provenance complete |
-| T200 | ⏳ pending | Final review — compile key decisions for sign-off |
+| T200 | ✅ done | Final review — [`docs/REVIEW.md`](./docs/REVIEW.md) key-decision packet for sign-off |
 | T201 | ✅ done | Photo blob on the model (`Plant`/`StoredPlant.photoData` + `PlantPhoto` encode) |
 | T202 | ✅ done | Random nickname provider (curated English names) |
 | T203 | ✅ done | Basket add view model (multi-add + auto-naming) |
@@ -100,6 +100,6 @@ source of truth):
 | T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
-packet (`docs/REVIEW.md`) of the key decisions for you to check and tweak once everything is
-built. Full specs + the per-batch plant categories are in [`TASKS.md`](./TASKS.md) and
+packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once
+everything is built. Full specs + the per-batch plant categories are in [`TASKS.md`](./TASKS.md) and
 [`docs/research/uk-houseplants.md`](./docs/research/uk-houseplants.md).
