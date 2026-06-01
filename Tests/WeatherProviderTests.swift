@@ -114,7 +114,9 @@ final class WeatherProviderTests: XCTestCase {
     }
 
     /// With a location *and* a forecast, the service surfaces the decoded
-    /// forecast. The factor is neutral in T015 (T016 lands the real mapping).
+    /// forecast. The London fixture is mild (≈17 °C daily mean, inside the T016
+    /// neutral band), so its weather factor is `1.0` — genuinely neutral, not a
+    /// placeholder. The hot/cold mapping is exercised in `WeatherFactorTests`.
     func testAvailableLocationAndForecastSurfacesForecast() async throws {
         let decoded = try WeatherForecast(openMeteoData: loadFixtureData())
         let service = WeatherFactorService(

@@ -8,11 +8,10 @@ import Foundation
 /// throws, resolve to the **neutral** `ScheduleEngine.defaultWeatherFactor`
 /// (`1.0`) — no error reaches the UI, watering just isn't weather-nudged.
 ///
-/// T015 deliberately stops at "fetch a forecast and fall back safely": the real
-/// hot/cold → factor mapping is **T016**, which replaces `factor(for:)` below.
-/// Until then every *available* forecast also maps to the neutral factor, so
-/// this task's observable behaviour is exactly the fallback contract:
-/// **a denied/unavailable location yields `weatherFactor == 1.0`.**
+/// T015 stopped at "fetch a forecast and fall back safely"; **T016** lands the
+/// real hot/cold → factor mapping, which lives in the pure `WeatherFactor`
+/// (engine) and is delegated to by `factor(for:)` below. The fallback contract is
+/// unchanged: **a denied/unavailable location still yields `weatherFactor == 1.0`.**
 struct WeatherFactorService {
     private let locationProvider: LocationProviding
     private let weatherProvider: WeatherProviding

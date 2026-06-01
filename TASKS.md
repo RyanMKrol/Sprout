@@ -101,7 +101,7 @@ sign-off and tweaks.
 
 **Phase 5 — Weather adaptation**
 - [x] T015 Weather provider (Open-Meteo + CoreLocation)
-- [ ] T016 Feed weather into the schedule engine
+- [x] T016 Feed weather into the schedule engine
 
 **Phase 6 — Care database build-out (30 × 10 plants → ~300)**
 > Each batch researches & adds 10 new unique UK houseplants per `docs/research/uk-houseplants.md`.

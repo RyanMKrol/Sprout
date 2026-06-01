@@ -13,6 +13,11 @@ struct ContentView: View {
     /// The bundled care database (T004), the source of the editor's species picker.
     @State private var careDatabase: CareDatabase
     @StateObject private var listViewModel: PlantListViewModel
+    /// The current forecast-derived weather multiplier (T016), fed into the detail
+    /// "why" explanation and the check-in recompute. Neutral until the live fetch
+    /// resolves; a fixed warm-spell value under `-seedDemoData` so screenshots are
+    /// deterministic (no CoreLocation prompt).
+    @State private var weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
 
     init() {
         let repository = Self.makeRepository()
@@ -22,6 +27,7 @@ struct ContentView: View {
         _listViewModel = StateObject(
             wrappedValue: PlantListViewModel(repository: repository, careDatabase: careDatabase)
         )
+        _weatherFactor = State(initialValue: Self.initialWeatherFactor())
     }
 
     var body: some View {
@@ -32,6 +38,7 @@ struct ContentView: View {
             makeCheckIn: makeCheckIn,
             makeSettings: makeSettings
         )
+        .task { await refreshWeatherFactor() }
     }
 
     /// Build the Add/Edit view model against the shared repository + care database.
@@ -42,19 +49,53 @@ struct ContentView: View {
     /// Build the Plant Detail view model (T008) for a plant id against the shared
     /// repository + care database.
     private func makeDetail(_ plantID: UUID) -> PlantDetailViewModel {
-        PlantDetailViewModel(plantID: plantID, repository: repository, careDatabase: careDatabase)
+        PlantDetailViewModel(
+            plantID: plantID,
+            repository: repository,
+            careDatabase: careDatabase,
+            weatherFactor: weatherFactor
+        )
     }
 
     /// Build the Check-in view model (T011) for a plant id against the shared
-    /// repository + care database.
+    /// repository + care database, with the current weather factor (T016).
     private func makeCheckIn(_ plantID: UUID) -> CheckInViewModel {
-        CheckInViewModel(plantID: plantID, repository: repository, careDatabase: careDatabase)
+        CheckInViewModel(
+            plantID: plantID,
+            repository: repository,
+            careDatabase: careDatabase,
+            weatherFactor: weatherFactor
+        )
     }
 
     /// Build the Settings view model (T014): persisted preferences plus the shared
     /// repository so a reminder-time change reschedules every plant's reminder.
     private func makeSettings() -> SettingsViewModel {
         SettingsViewModel(store: UserDefaultsSettingsStore(), repository: repository)
+    }
+
+    /// The factor to start with before any live fetch resolves. Under
+    /// `-seedDemoData` this is the fixed demo warm-spell factor so screenshots are
+    /// deterministic and never trigger a location prompt; otherwise neutral.
+    private static func initialWeatherFactor() -> Double {
+        DemoSeed.isActive ? DemoSeed.weatherFactor : ScheduleEngine.defaultWeatherFactor
+    }
+
+    /// Refresh `weatherFactor` from the live forecast (T015/T016). Skipped under the
+    /// demo seed (kept at the fixed factor) and when the user has turned weather
+    /// adaptation off in Settings; any location/network failure falls back to the
+    /// neutral factor inside `WeatherFactorService`, so this never throws or blocks.
+    private func refreshWeatherFactor() async {
+        guard !DemoSeed.isActive else { return }
+        guard UserDefaultsSettingsStore().load().weatherEnabled else {
+            weatherFactor = ScheduleEngine.defaultWeatherFactor
+            return
+        }
+        let service = WeatherFactorService(
+            locationProvider: CoreLocationProvider(),
+            weatherProvider: OpenMeteoWeatherProvider()
+        )
+        weatherFactor = await service.currentWeatherFactor()
     }
 
     /// Resolve the repository for this launch: seeded in-memory under

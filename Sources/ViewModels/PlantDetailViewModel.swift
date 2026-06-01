@@ -46,17 +46,23 @@ final class PlantDetailViewModel: ObservableObject {
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
     private let explanationBuilder: ScheduleExplanationBuilder
+    /// The current weather multiplier fed into the "why" explanation (T016), so a
+    /// warm/cold spell surfaces in the sentence. Neutral (`1.0`) until weather is
+    /// wired in; `ContentView` injects the forecast-derived factor.
+    private let weatherFactor: Double
 
     init(
         plantID: UUID,
         repository: PlantRepository,
         careDatabase: CareDatabase,
-        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder()
+        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder(),
+        weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
     ) {
         self.plantID = plantID
         self.repository = repository
         self.careDatabase = careDatabase
         self.explanationBuilder = explanationBuilder
+        self.weatherFactor = weatherFactor
     }
 
     /// Load (or reload) the plant and its history from the repository. A missing
@@ -85,7 +91,8 @@ final class PlantDetailViewModel: ObservableObject {
                 species: plant.species,
                 profile: profile,
                 adj: plant.adj,
-                lastCheckIn: plant.checkIns.max { $0.date < $1.date }
+                lastCheckIn: plant.checkIns.max { $0.date < $1.date },
+                weatherFactor: weatherFactor
             )
         }
 

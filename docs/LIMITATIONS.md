@@ -182,13 +182,11 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* T011 (recompute on check-in) and T012 (explanation) are the first consumers; until then
   the engine is verified by `ScheduleEngineTests` only, not on screen.
 
-- **`weatherFactor` is a neutral `1.0` everywhere until T015/T016.**
-  *Why:* the engine accepts an injected `weatherFactor` (default `ScheduleEngine.defaultWeatherFactor`
-  = `1.0`) but there is no weather provider yet — T015 adds Open-Meteo + CoreLocation, T016 maps a
-  forecast to the factor and feeds it in.
-  *Impact:* intervals currently reflect only the species seed and the learned `adj`; hot/cold spells
-  have no effect on the schedule.
-  *Revisit:* T016 passes a forecast-derived factor into `effectiveInterval`/`nextDue`.
+- **~~`weatherFactor` is a neutral `1.0` everywhere until T015/T016.~~ Resolved by T016.**
+  `WeatherFactor.factor(for:)` (engine) now maps the forecast to a real factor (hot/dry `< 1`,
+  cold `> 1`), `WeatherFactorService` delegates to it, and `ContentView` feeds the live
+  forecast-derived factor into the detail "why" explanation and the check-in recompute (gated on
+  `AppSettings.weatherEnabled`). See the T016 rows below for the residual limits.
 
 - **Plant Detail (T008) required small edits to `ContentView`/`PlantListView` and to `DemoSeed` (outside T008's listed scope).**
   *Why:* a detail screen is unreachable/unverifiable without navigation, so `PlantListView` gained a
@@ -318,11 +316,12 @@ keep them here so the design's compromises live in one place alongside your proj
   toggle. T014's `Scope:` is `Sources/Views/Settings*` + `Sources/ViewModels/Settings*`, so it
   stores both as a single source of truth (`AppSettings` via `UserDefaultsSettingsStore`) without
   reaching into the engine.
-  *Impact:* changing the unit or the weather toggle has **no visible effect** today — no
-  temperature is shown anywhere, and the schedule ignores weather (`weatherFactor` is still `1.0`
-  everywhere). Only the **reminder time** is wired live (see below).
-  *Revisit:* T016 reads `AppSettings.weatherEnabled`/`temperatureUnit` when feeding weather into
-  the schedule and surfacing the "why" explanation.
+  *Impact:* **T016 now consumes `weatherEnabled`** — `ContentView.refreshWeatherFactor` skips the
+  live forecast (factor stays neutral) when the toggle is off. The **temperature unit is still
+  unconsumed**: no temperature is shown anywhere, and the engine works in °C internally regardless
+  of the °C/°F preference.
+  *Revisit:* read `AppSettings.temperatureUnit` if/when a forecast temperature is ever displayed
+  in the UI.
 
 - **Settings (T014): only the *reminder-time* change reschedules reminders; add/check-in/delete still don't schedule.**
   *Why:* T014 wires the preferred-time control to reschedule **every plant's** pending reminder at
@@ -357,15 +356,53 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* when navigation grows further, promote the shared store to an app-level environment
   dependency (carried over from earlier notes).
 
-- **Weather (T015): a present forecast still maps to the neutral `weatherFactor = 1.0`.**
-  *Why:* T015 only delivers the *provider* — `WeatherProviding`/Open-Meteo decoding, the
-  injectable `LocationProviding` wrapper, and `WeatherFactorService`'s safe fallback. The real
-  forecast → factor mapping (hot/dry `< 1.0`, cold `> 1.0`) is **T016**, which replaces
-  `WeatherFactorService.factor(for:)`. Until then *every* outcome — forecast present or absent —
-  resolves to `1.0`.
-  *Impact:* installing the provider changes no watering interval yet; weather has zero schedule
-  effect until T016 lands and is wired into the engine.
-  *Revisit:* T016 — implement `factor(for:)` and feed it into `ScheduleEngine`.
+- **~~Weather (T015): a present forecast still maps to the neutral `weatherFactor = 1.0`.~~ Resolved by T016.**
+  `WeatherFactor.factor(for:)` now maps a forecast to a real factor and `WeatherFactorService`
+  delegates to it; the mild London fixture genuinely lands in the neutral band, so its factor is
+  `1.0` for the right reason (not a placeholder). See the T016 rows below.
+
+- **Weather (T016): the forecast → factor mapping is a hand-tuned linear curve, not a calibrated agronomic model.**
+  *Why:* `WeatherFactor` maps the **daily-mean** temperature against a neutral band (`16–24 °C`)
+  with a fixed slope (`±0.02`/°C) clamped to `[0.7, 1.3]`. The constants are reasonable defaults
+  chosen for testability, not derived from evapotranspiration data; the factor also averages the
+  whole multi-day forecast into one number rather than weighting near-term days.
+  *Impact:* a hot/cold spell nudges the interval in the right direction and by a bounded amount,
+  but the exact day counts are heuristic; a brief spike inside a mild week is diluted by the mean.
+  *Revisit:* tune the band/slope (or switch to a max-temp or ET-based signal) once there's real
+  feedback on whether intervals move enough.
+
+- **Weather (T016): the precipitation term exists but is never used in production (no indoor/outdoor flag).**
+  *Why:* `WeatherFactor.factor(for:outdoor:)` lengthens the interval for recent rain, but a `Plant`
+  has no indoor/outdoor attribute, so every caller passes the default `outdoor: false`. Sprout's
+  care DB is UK **houseplants**, for which rain is irrelevant.
+  *Impact:* rainfall has zero effect on any real plant's schedule today; the term is unit-tested but
+  dormant.
+  *Revisit:* add an `isOutdoor` flag to `Plant`/the editor and pass it through when outdoor plants
+  are supported.
+
+- **Weather (T016): the detail "why" interval can disagree with the persisted `nextDue`.**
+  *Why:* the detail explanation recomputes the effective interval against the *current* live
+  `weatherFactor`, while the persisted `nextDue` was last computed at the previous check-in (under
+  whatever weather applied then). Feeding the live factor into the *displayed* cadence is cheap and
+  always current; rewriting `nextDue` on every forecast change would make the due date jitter with
+  forecast noise between check-ins.
+  *Impact:* the "Every N days" sentence can read one day off from the actual next-due/notification
+  date during a spell; the schedule re-syncs at the next check-in (which recomputes with weather).
+  *Revisit:* if the drift is confusing, recompute and persist `nextDue` on a debounced forecast
+  refresh, or surface the live cadence and the scheduled date separately.
+
+- **Weather (T016): the live forecast→factor wiring required edits outside the literal `Sources/Engine`/`Sources/Views`/`Tests` scope.**
+  *Why:* the factor has to reach the engine through the app. `ContentView` gained a `weatherFactor`
+  state + a `.task` that fetches it (gated on `weatherEnabled`, demo-fixed under `-seedDemoData`),
+  `PlantDetailViewModel`/`CheckInViewModel` gained a defaulted `weatherFactor` parameter, and
+  `WeatherFactorService` now delegates to the engine's `WeatherFactor` — none of which live under
+  the listed globs, but all are the minimal plumbing the `Done-when:` (end-to-end recompute +
+  weather surfaced in the screenshot) requires. The demo seed also makes Lily weather-dominant
+  (neutral `adj` + history) so the `SPROUT_SCREEN=detail` shot shows the warm spell.
+  *Impact:* a handful of wiring files changed beyond the literal scope; same minimal-wiring
+  precedent as T007/T008/T011/T014.
+  *Revisit:* promote the shared store + weather factor to an app-level environment dependency when
+  navigation/state grows.
 
 - **Weather (T015): `CoreLocationProvider` is not unit-tested and fetches a single coarse fix.**
   *Why:* exercising `CLLocationManager` needs a real device/simulator location and a permission

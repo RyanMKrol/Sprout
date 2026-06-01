@@ -55,6 +55,19 @@ enum DemoSeed {
         #endif
     }
 
+    /// A fixed forecast-derived weather multiplier for seeded screenshots (T016):
+    /// a deterministic **warm spell** so the detail "why" explanation visibly
+    /// mentions weather, without invoking CoreLocation/network in the simulator.
+    /// Neutral (`1.0`) outside DEBUG / when the seed isn't active.
+    static var weatherFactor: Double {
+        #if DEBUG
+        guard isActive else { return ScheduleEngine.defaultWeatherFactor }
+        return WeatherFactor.factor(for: warmSpellForecast)
+        #else
+        return ScheduleEngine.defaultWeatherFactor
+        #endif
+    }
+
     /// A fresh in-memory repository pre-loaded with `plants`, for seeded
     /// screenshots. DEBUG-only; callers fall back to an empty store when inactive.
     static func seededRepository() throws -> PlantRepository {
@@ -68,6 +81,19 @@ enum DemoSeed {
     }
 
     #if DEBUG
+    /// A clearly-hot 5-day forecast (≈30 °C daily mean) so `weatherFactor` lands
+    /// well below 1.0 — enough to shorten Peace Lily's 6-day cadence to 5.
+    private static var warmSpellForecast: WeatherForecast {
+        WeatherForecast(days: (0..<5).map { i in
+            WeatherForecast.Day(
+                date: "2026-07-0\(i + 1)",
+                temperatureMaxC: 35.0,
+                temperatureMinC: 25.0,
+                precipitationMM: 0.0
+            )
+        })
+    }
+
     private static var sampleData: [Plant] {
         let now = Date()
         func day(_ days: Int) -> Date {
@@ -81,9 +107,11 @@ enum DemoSeed {
             CheckIn(date: day(-2), soil: .dry, leaves: .fine, watered: true),
         ]
         return [
-            // Lily carries a learned `adj` below 1.0 so its detail screen shows a
-            // real "shortened" explanation (T012) rather than the seed cadence.
-            Plant(nickname: "Lily", species: "Peace Lily", adj: 0.7, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
+            // Lily is first in due order, so the `SPROUT_SCREEN=detail` deep-link
+            // lands on her. With a neutral learned `adj` and a real check-in history,
+            // the demo warm-spell `weatherFactor` (T016) becomes the dominant cause —
+            // her detail screen shows "shortened … because of a warm spell".
+            Plant(nickname: "Lily", species: "Peace Lily", adj: Plant.defaultAdj, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory),
             Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0)),
             Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2)),
             Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3)),
