@@ -124,7 +124,7 @@ sign-off and tweaks.
 - [x] T116 Care DB batch 16 — add 10 UK houseplants (Ctenanthe / Fittonia / Pilea)
 - [x] T117 Care DB batch 17 — add 10 UK houseplants (Peperomia)
 - [x] T118 Care DB batch 18 — add 10 UK houseplants (Begonia)
-- [ ] T119 Care DB batch 19 — add 10 UK houseplants (Tradescantia / Ceropegia)
+- [x] T119 Care DB batch 19 — add 10 UK houseplants (Tradescantia / Ceropegia)
 - [ ] T120 Care DB batch 20 — add 10 UK houseplants (spider plant / Aspidistra)
 - [ ] T121 Care DB batch 21 — add 10 UK houseplants (palms)
 - [ ] T122 Care DB batch 22 — add 10 UK houseplants (Ficus)

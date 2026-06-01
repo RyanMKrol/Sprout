@@ -79,7 +79,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 16 ✅ | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
 | 17 ✅ | T117 | Peperomia — common cultivars |
 | 18 ✅ | T118 | Begonia — rex, maculata, rhizomatous |
-| 19 | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
+| 19 ✅ | T119 | Tradescantia, Callisia & inch plants; Ceropegia |
 | 20 | T120 | Spider plant, Chlorophytum, Asparagus fern, Aspidistra (cast-iron) |
 | 21 | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
 | 22 | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
@@ -279,3 +279,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Tuberous Begonia | Begonia × tuberhybrida | evenlyMoist | 5 / 4–8 | RHS — tuberous begonia; keep evenly moist while in active growth/flower, water when the surface dries, avoid waterlogging the tuber; reduce sharply as it dies back |
 | Dragon Wing Begonia | Begonia 'Dragon Wing' | evenlyMoist | 6 / 4–9 | Genus anchor (cane × fibrous hybrid) — vigorous angel-wing-type; keep evenly moist in growth, let the surface dry slightly between waterings (genus anchor cadence) |
 | Palm-leaf Begonia | Begonia luxurians | evenlyMoist | 6 / 4–9 | Genus anchor (cane begonia) — tall palmate-leaved species; keep evenly moist in growth, water when the top few cm dry, dislikes both drying out fully and waterlogging |
+| Silver Inch Plant | Tradescantia zebrina | evenlyMoist | 7 / 5–10 | RHS / The Sill — vigorous trailing spiderwort; keep evenly moist in growth, water when the top inch dries (~weekly), reduce in winter; fast grower, droops/browns if left dry |
+| Small-leaf Spiderwort | Tradescantia fluminensis | evenlyMoist | 7 / 5–10 | Genus anchor (Tradescantia) — fast trailing inch plant; keep lightly moist, water when the top inch dries, same ~weekly cadence as T. zebrina |
+| Tradescantia Nanouk | Tradescantia 'Nanouk' (albiflora hybrid) | evenlyMoist | 7 / 5–12 | Genus anchor (Tradescantia) — robust thick-stemmed variegated cultivar storing a little more water → slightly longer max than the species; keep evenly moist, let the top inch dry |
+| Purple Heart | Tradescantia pallida (syn. Setcreasea purpurea) | evenlyMoist | 9 / 6–14 | RHS / Gardening Know How — fleshy semi-succulent purple stems store water and tolerate drying; water when the top 2–3 cm dry, more drought-tolerant → longer interval than the trailing species |
+| Moses-in-the-Cradle | Tradescantia spathacea (syn. Rhoeo spathacea) | evenlyMoist | 9 / 6–14 | Genus anchor (Tradescantia) — semi-succulent rosette (oyster plant) storing water in thick leaves; let the top 2–3 cm dry between waterings, more drought-tolerant than the trailing inch plants |
+| White Velvet Tradescantia | Tradescantia sillamontana | driesOut | 12 / 8–18 | World of Succulents / Gardenia — xeric woolly-leaved spiderwort, the most succulent of the genus; soak-and-dry, water only when the soil has dried out, sparingly in winter |
+| Tahitian Bridal Veil | Gibasis pellucida (syn. Tradescantia multiflora) | evenlyMoist | 6 / 4–9 | Genus anchor (inch-plant relative, Commelinaceae) — fine-leaved trailing veil; keep consistently lightly moist, water when the surface starts to dry, dislikes drying out fully → shorter interval |
+| Turtle Vine | Callisia repens | evenlyMoist | 8 / 5–12 | Genus anchor (Callisia, inch-plant relative) — small semi-succulent creeping leaves store some water; keep lightly moist but let the top inch dry, more forgiving of missed waterings than Tradescantia |
+| Basket Plant | Callisia fragrans | evenlyMoist | 9 / 6–14 | Genus anchor (Callisia) — larger fleshy rosette/runner storing water; let the top 2–3 cm dry between waterings, more drought-tolerant → longer interval than the small turtle vine |
+| String of Hearts | Ceropegia woodii | driesOut | 14 / 10–21 | RHS / The Sill — semi-succulent trailing chain of hearts with water-storing tubers; soak-and-dry, water every 2–3 weeks only when the soil is dry, very prone to root rot if kept wet |
