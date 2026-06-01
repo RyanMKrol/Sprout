@@ -34,6 +34,7 @@ struct ContentView: View {
         PlantListView(
             viewModel: listViewModel,
             makeEditor: makeEditor,
+            makeBasket: makeBasket,
             makeDetail: makeDetail,
             makeCheckIn: makeCheckIn,
             makeSettings: makeSettings
@@ -41,9 +42,31 @@ struct ContentView: View {
         .task { await refreshWeatherFactor() }
     }
 
-    /// Build the Add/Edit view model against the shared repository + care database.
+    /// Build the Edit view model against the shared repository + care database. (Used
+    /// only for the edit-swipe path now; adding goes through the basket — `makeBasket`.)
     private func makeEditor(_ mode: PlantEditViewModel.Mode) -> PlantEditViewModel {
         PlantEditViewModel(mode: mode, repository: repository, careDatabase: careDatabase)
+    }
+
+    /// Build the basket add view model (T204) against the shared repository + care
+    /// database. Under the demo seed it uses a fixed RNG seed and pre-fills a couple
+    /// of entries so the `SPROUT_SCREEN=basket` screenshot shows a populated basket
+    /// with stable names.
+    private func makeBasket() -> BasketAddViewModel {
+        let vm: BasketAddViewModel
+        if DemoSeed.isActive {
+            vm = BasketAddViewModel(
+                repository: repository,
+                careDatabase: careDatabase,
+                rng: SeededRandomNumberGenerator(seed: 20_260_601)
+            )
+            for species in DemoSeed.basketSampleSpecies {
+                if let profile = careDatabase.profile(forSpecies: species) { vm.add(profile) }
+            }
+        } else {
+            vm = BasketAddViewModel(repository: repository, careDatabase: careDatabase)
+        }
+        return vm
     }
 
     /// Build the Plant Detail view model (T008) for a plant id against the shared

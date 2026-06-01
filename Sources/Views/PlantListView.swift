@@ -8,10 +8,13 @@ import SwiftUI
 /// presentation, verified by the `-seedDemoData YES` screenshot convention (T002).
 struct PlantListView: View {
     @StateObject private var viewModel: PlantListViewModel
-    /// Builds the editor view model for an add/edit (T007). When `nil`, the add
-    /// button and edit affordance are hidden — keeps the list usable on its own
-    /// (e.g. in T006 contexts) without an editor wired in.
+    /// Builds the editor view model for editing an existing plant (T007). When
+    /// `nil`, the edit swipe-action is hidden. (Adding now goes through the basket
+    /// flow — see `makeBasket` — so this drives the edit path only.)
     private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
+    /// Builds the basket add view model (T204) — the "+" multi-add flow. When `nil`,
+    /// the add button is hidden — keeps the list usable on its own.
+    private let makeBasket: (() -> BasketAddViewModel)?
     /// Builds the detail view model for a plant (T008). When `nil`, cards are not
     /// tappable into a detail screen — keeps the list usable on its own.
     private let makeDetail: ((UUID) -> PlantDetailViewModel)?
@@ -22,6 +25,7 @@ struct PlantListView: View {
     /// hidden — keeps the list usable on its own (e.g. in early tests).
     private let makeSettings: (() -> SettingsViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
+    @State private var basketPresented = false
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
     @State private var didDeepLink = false
@@ -29,12 +33,14 @@ struct PlantListView: View {
     init(
         viewModel: PlantListViewModel,
         makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
+        makeBasket: (() -> BasketAddViewModel)? = nil,
         makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
         makeCheckIn: ((UUID) -> CheckInViewModel)? = nil,
         makeSettings: (() -> SettingsViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
+        self.makeBasket = makeBasket
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
         self.makeSettings = makeSettings
@@ -77,12 +83,12 @@ struct PlantListView: View {
                         }
                     }
                 }
-                if makeEditor != nil {
+                if makeBasket != nil {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
-                            editorMode = .add
+                            basketPresented = true
                         } label: {
-                            Label("Add Plant", systemImage: "plus")
+                            Label("Add Plants", systemImage: "plus")
                         }
                     }
                 }
@@ -93,6 +99,17 @@ struct PlantListView: View {
                 PlantEditView(viewModel: makeEditor(mode)) {
                     editorMode = nil
                     viewModel.load()
+                }
+            }
+        }
+        .sheet(isPresented: $basketPresented) {
+            if let makeBasket {
+                BasketAddView(viewModel: makeBasket()) { result in
+                    basketPresented = false
+                    viewModel.load()
+                    if case .created = result {
+                        // T208 will offer to photograph the newly-created plants here.
+                    }
                 }
             }
         }
@@ -122,16 +139,17 @@ struct PlantListView: View {
     }
 
     /// Screenshot deep-link (T002 convention): when launched with
-    /// `SPROUT_SCREEN=add`, auto-present the Add form once; with `SPROUT_SCREEN=detail`
-    /// (or `checkin`), push the first plant's detail screen so the seeded run
-    /// captures it — the detail screen then auto-opens its check-in sheet for
-    /// `checkin`. No-op in release builds (`requestedScreen` is always `"list"`).
+    /// `SPROUT_SCREEN=add` (or `basket`), auto-present the basket add flow once; with
+    /// `SPROUT_SCREEN=detail` (or `checkin`), push the first plant's detail screen so
+    /// the seeded run captures it — the detail screen then auto-opens its check-in
+    /// sheet for `checkin`. No-op in release builds (`requestedScreen` is always
+    /// `"list"`).
     private func deepLinkIfRequested() {
         guard !didDeepLink else { return }
         didDeepLink = true
         switch DemoSeed.requestedScreen {
-        case "add" where makeEditor != nil:
-            editorMode = .add
+        case "add", "basket":
+            if makeBasket != nil { basketPresented = true }
         case "settings" where makeSettings != nil:
             settingsPresented = true
         case "detail", "checkin":

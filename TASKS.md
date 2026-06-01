@@ -145,7 +145,7 @@ sign-off and tweaks.
 - [x] T201 Photo blob on the model (Plant/StoredPlant.photoData + PlantPhoto encode)
 - [x] T202 Random nickname provider (curated English names + injectable RNG)
 - [x] T203 Basket add view model (multi-add state, auto-naming, batch commit)
-- [ ] T204 Basket add view + "+" rewiring (basket replaces single-add)
+- [x] T204 Basket add view + "+" rewiring (basket replaces single-add)
 - [ ] T205 Camera seam + stub + camera permission
 - [ ] T206 Photo-capture coordinator (sequential capture→save→advance)
 - [ ] T207 Camera overlay view + AVFoundation capture

@@ -68,6 +68,18 @@ enum DemoSeed {
         #endif
     }
 
+    /// Species pre-filled into the basket for the `SPROUT_SCREEN=basket` screenshot
+    /// (T204) so it lands on a populated basket. Empty outside DEBUG / when inactive.
+    /// Names must exist in the bundled care database to resolve.
+    static var basketSampleSpecies: [String] {
+        #if DEBUG
+        guard isActive else { return [] }
+        return ["Pothos", "Snake Plant", "Monstera deliciosa"]
+        #else
+        return []
+        #endif
+    }
+
     /// A fresh in-memory repository pre-loaded with `plants`, for seeded
     /// screenshots. DEBUG-only; callers fall back to an empty store when inactive.
     static func seededRepository() throws -> PlantRepository {
