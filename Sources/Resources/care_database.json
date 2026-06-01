@@ -1643,5 +1643,75 @@
     "minIntervalDays": 7,
     "maxIntervalDays": 15,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Wax Plant",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Krimson Queen Hoya",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Krimson Princess Hoya",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Hindu Rope Plant",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Sweetheart Hoya",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Hoya Pubicalyx",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Hoya Linearis",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Miniature Wax Plant",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Hoya Obovata",
+    "baseIntervalDays": 12,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Common Waxflower",
+    "baseIntervalDays": 11,
+    "minIntervalDays": 8,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
   }
 ]

@@ -84,7 +84,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 21 ✅ | T121 | Palms — parlour, areca, kentia, majesty, ponytail |
 | 22 ✅ | T122 | Ficus — rubber, fiddle-leaf, weeping fig, ginseng |
 | 23 ✅ | T123 | Large foliage — Schefflera, Dieffenbachia, Yucca, Pachira (money tree) |
-| 24 | T124 | Hoya — common wax plants |
+| 24 ✅ | T124 | Hoya — common wax plants |
 | 25 | T125 | Orchids — Phalaenopsis & common houseplant orchids |
 | 26 | T126 | Bromeliads — Guzmania, Aechmea, Vriesea, Neoregelia, Tillandsia (air plants) |
 | 27 | T127 | Flowering — African violet, cyclamen, anthurium (if new), kalanchoe blossfeldiana |
@@ -329,3 +329,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Spineless Yucca | Yucca elephantipes (syn. Yucca gigantea) | driesOut | 14 / 10–24 | RHS / Hortology — woody desert plant; let the soil dry out fully, water sparingly every 2–3 weeks; overwatering rots the cane |
 | Adam's Needle | Yucca aloifolia | driesOut | 14 / 10–24 | Genus anchor (Yucca) — drought-hardy rosette yucca; same dry-out-fully, water-every-2–3-weeks cadence as the species |
 | Money Tree | Pachira aquatica | evenlyMoist | 10 / 7–15 | Hortology / RHS — water when the top 50–75% of compost dries; the swollen trunk stores water, so let it dry well between drenches → slightly longer than the moist-loving anchor |
+| Wax Plant | Hoya carnosa | evenlyMoist | 11 / 8–18 | RHS / Hortology — semi-succulent epiphyte; water when the top two-thirds of compost has dried, ~every 1–2 weeks in growth, sparingly in winter; thick waxy leaves store water → longer than the foliage anchor |
+| Krimson Queen Hoya | Hoya carnosa 'Krimson Queen' | evenlyMoist | 12 / 9–18 | Genus anchor (Hoya carnosa) + cream-margined variegation → less chlorophyll, slower growth → slightly longer interval than the species |
+| Krimson Princess Hoya | Hoya carnosa 'Krimson Princess' | evenlyMoist | 12 / 9–18 | Genus anchor (Hoya carnosa) + cream-centred variegation → slower growth → slightly longer interval than the species |
+| Hindu Rope Plant | Hoya carnosa 'Compacta' | evenlyMoist | 12 / 9–21 | Genus anchor (Hoya carnosa) — densely curled thick leaves hold extra water and dry slowly → longer/wider interval than the species |
+| Sweetheart Hoya | Hoya kerrii | driesOut | 14 / 10–24 | Hortology / Patch — very thick succulent heart-shaped leaves store abundant water; treat like a succulent, let the soil dry out fully, water every 2–3 weeks |
+| Hoya Pubicalyx | Hoya pubicalyx | evenlyMoist | 11 / 8–18 | Genus anchor (Hoya) — vigorous waxy-leaved climber, same let-top-two-thirds-dry cadence as H. carnosa |
+| Hoya Linearis | Hoya linearis | evenlyMoist | 9 / 6–14 | Genus anchor (Hoya) — fine soft trailing leaves hold less water than typical Hoyas → shorter interval; keep lightly moist, don't let it dry fully |
+| Miniature Wax Plant | Hoya bella | evenlyMoist | 9 / 6–14 | Genus anchor (Hoya, Hoya lanceolata subsp. bella) — small thin-leaved miniature, less drought-tolerant than carnosa → shorter interval |
+| Hoya Obovata | Hoya obovata | evenlyMoist | 12 / 9–18 | Genus anchor (Hoya) — large round thick succulent leaves store plenty of water → longer interval, let top two-thirds dry |
+| Common Waxflower | Hoya australis | evenlyMoist | 11 / 8–18 | Genus anchor (Hoya) — robust waxy-leaved climber, same let-top-two-thirds-dry cadence as H. carnosa |
