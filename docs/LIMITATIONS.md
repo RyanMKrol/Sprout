@@ -97,6 +97,18 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* if invalid records start slipping past, move validation into a throwing factory or
   have T004's loader reject the whole file on any `!isValid` row.
 
+- **The care database is an unversioned top-level JSON array keyed on the display `species` string.**
+  *Why:* a bare array (`[ {record}, … ]`) lets every Phase 6 batch (T101–T130) append rows with a
+  trivial diff, and reusing `CareProfile.species` as the uniqueness key avoids a second identifier
+  field. Uniqueness is enforced case-/whitespace-insensitively by `CareDatabaseValidator`.
+  *Impact:* (1) no `version`/schema field, so a future format change has no migration anchor;
+  (2) the design speaks of unique *scientific* names but the key is the **display** name — two
+  records with different display names for the same plant would not be caught as duplicates;
+  (3) `CareDatabaseTests` loads the *shipped* file via a `#filePath`-relative path, coupling that
+  one test to the repo layout (the resource isn't copied into the test bundle).
+  *Revisit:* wrap the array in `{ "version": n, "plants": [...] }` if the schema ever changes; add a
+  distinct scientific-name field if display-name collisions become a real risk (checked again at T131).
+
 - **`build_run.sh`'s incremental build can install a stale binary → blank screenshots.**
   *Why:* `build_run.sh` runs `xcodebuild … build` (incremental) and `simctl install`; on this
   Xcode 26.x / iOS 26 simulator, a view-only source change sometimes isn't relinked/reinstalled,

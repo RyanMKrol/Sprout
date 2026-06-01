@@ -1,0 +1,37 @@
+[
+  {
+    "species": "Pothos",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Monstera deliciosa",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Boston Fern",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Peace Lily",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  }
+]
