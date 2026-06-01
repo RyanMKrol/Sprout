@@ -171,6 +171,25 @@ keep them here so the design's compromises live in one place alongside your proj
   *Revisit:* T009 replaces `scheduleSummary` with the engine's effective interval + next-due; T012
   adds the "why this schedule" explanation on the same screen.
 
+- **Schedule engine (T009) is a pure library not yet wired into any screen or persisted state.**
+  *Why:* T009's scope is `Sources/Engine/Schedule*` only — the pure effective-interval / next-due
+  function. Consuming it (recomputing a plant's `nextDue`, replacing T008's placeholder
+  `scheduleSummary`) belongs to later tasks: T011 recomputes on check-in, T012 surfaces the "why",
+  T016 supplies a real `weatherFactor`. So `ScheduleEngine` is fully tested but **nothing calls it
+  yet** — the detail screen still shows the starting-cadence placeholder noted above.
+  *Impact:* persisted `nextDue` values are still whatever was seeded/edited; the engine's result is
+  not reflected in the UI until T011/T012 integrate it.
+  *Revisit:* T011 (recompute on check-in) and T012 (explanation) are the first consumers; until then
+  the engine is verified by `ScheduleEngineTests` only, not on screen.
+
+- **`weatherFactor` is a neutral `1.0` everywhere until T015/T016.**
+  *Why:* the engine accepts an injected `weatherFactor` (default `ScheduleEngine.defaultWeatherFactor`
+  = `1.0`) but there is no weather provider yet — T015 adds Open-Meteo + CoreLocation, T016 maps a
+  forecast to the factor and feeds it in.
+  *Impact:* intervals currently reflect only the species seed and the learned `adj`; hot/cold spells
+  have no effect on the schedule.
+  *Revisit:* T016 passes a forecast-derived factor into `effectiveInterval`/`nextDue`.
+
 - **Plant Detail (T008) required small edits to `ContentView`/`PlantListView` and to `DemoSeed` (outside T008's listed scope).**
   *Why:* a detail screen is unreachable/unverifiable without navigation, so `PlantListView` gained a
   `NavigationStack(path:)` + `NavigationLink`/`navigationDestination` and a `makeDetail` factory from

@@ -60,7 +60,7 @@ source of truth):
 | T006 | ✅ done | My Plants list + empty state |
 | T007 | ✅ done | Add / Edit Plant (species picker) |
 | T008 | ✅ done | Plant Detail + check-in history |
-| T009 | ⏳ pending | Schedule engine — effective interval (pure) |
+| T009 | ✅ done | Schedule engine — effective interval (pure) |
 | T010 | ⏳ pending | Adaptive update from a check-in (pure) |
 | T011 | ⏳ pending | Check-in flow UI (soil / leaves / watered) |
 | T012 | ⏳ pending | "Why this schedule" explanation text |
