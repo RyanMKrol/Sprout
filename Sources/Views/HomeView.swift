@@ -24,10 +24,15 @@ struct HomeView: View {
     // Add-plants flow + its "take photos?" follow-up (T208 pattern), launched from the
     // home Add tile.
     @State private var addFlowPresented = false
-    @State private var pendingPhotoPlants: [Plant] = []
+    /// The just-created plants the "take photos?" prompt offers to photograph, and whether
+    /// that prompt sheet is showing (T223 — now a connected sheet, not a floating dialog).
+    @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPromptPresented = false
     @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPresented = false
+    /// Set when the photo prompt's "Take Photos" is tapped, so the camera launches from
+    /// the prompt sheet's `onDismiss` (avoids a present-while-dismissing race).
+    @State private var startPhotosOnDismiss = false
 
     /// Push destinations for the tiles.
     private enum Route: Hashable { case plants, rooms }
@@ -118,24 +123,26 @@ struct HomeView: View {
         .sheet(isPresented: $addFlowPresented, onDismiss: offerPhotosIfJustCreated) {
             if let makeBasket {
                 AddFlowView(viewModel: makeBasket()) { result in
-                    if case let .created(plants) = result { pendingPhotoPlants = plants }
+                    if case let .created(plants) = result {
+                        promptTargets = plants.map(PhotoCaptureCoordinator.Target.init(plant:))
+                    }
                     addFlowPresented = false
                 }
             }
         }
-        .confirmationDialog(
-            "Take a photo of each new plant?",
-            isPresented: $photoPromptPresented,
-            titleVisibility: .visible
-        ) {
-            Button("Take Photos") {
-                photoTargets = pendingPhotoPlants.map(PhotoCaptureCoordinator.Target.init(plant:))
-                pendingPhotoPlants = []
-                photoPresented = true
-            }
-            Button("Not Now", role: .cancel) { pendingPhotoPlants = [] }
-        } message: {
-            Text("You can walk through your new plants one at a time.")
+        .sheet(isPresented: $photoPromptPresented, onDismiss: launchPhotosIfRequested) {
+            PhotoPromptView(
+                plants: promptTargets,
+                onTakePhotos: {
+                    photoTargets = promptTargets
+                    startPhotosOnDismiss = true
+                    photoPromptPresented = false
+                },
+                onSkip: {
+                    promptTargets = []
+                    photoPromptPresented = false
+                }
+            )
         }
         .fullScreenCover(isPresented: $photoPresented) {
             if let makePhotoCapture {
@@ -164,9 +171,17 @@ struct HomeView: View {
     /// only once the sheet has fully gone.
     private func offerPhotosIfJustCreated() {
         listViewModel.load()
-        if makePhotoCapture != nil, !pendingPhotoPlants.isEmpty {
+        if makePhotoCapture != nil, !promptTargets.isEmpty {
             photoPromptPresented = true
         }
+    }
+
+    /// After the photo-prompt sheet closes: if the user chose "Take Photos", launch the
+    /// sequential camera now (the prompt has fully dismissed, so no presentation race).
+    private func launchPhotosIfRequested() {
+        guard startPhotosOnDismiss else { return }
+        startPhotosOnDismiss = false
+        photoPresented = true
     }
 
     /// Build the guided coordinator for `mode` and present the walkthrough.

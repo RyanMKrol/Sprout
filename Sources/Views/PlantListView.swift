@@ -31,10 +31,13 @@ struct PlantListView: View {
     /// Targets for the sequential photo flow + whether it's presented (T207/T208).
     @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPresented = false
-    /// Plants just created by a basket commit, awaiting the "take photos?" prompt
-    /// (T208), and whether that prompt is showing.
-    @State private var pendingPhotoPlants: [Plant] = []
+    /// The just-created plants the "take photos?" prompt offers to photograph (T208),
+    /// and whether that prompt sheet is showing (T223 — now a connected sheet).
+    @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPromptPresented = false
+    /// Set when the photo prompt's "Take Photos" is tapped, so the camera launches from
+    /// the prompt sheet's `onDismiss` (avoids a present-while-dismissing race).
+    @State private var startPhotosOnDismiss = false
 
     init(
         viewModel: PlantListViewModel,
@@ -105,27 +108,29 @@ struct PlantListView: View {
         .sheet(isPresented: $basketPresented, onDismiss: offerPhotosIfJustCreated) {
             if let makeBasket {
                 AddFlowView(viewModel: makeBasket()) { result in
-                    // Stash created plants so `onDismiss` can offer to photograph
-                    // them once the sheet has fully closed (avoids a present-while-
-                    // dismissing race).
-                    if case let .created(plants) = result { pendingPhotoPlants = plants }
+                    // Stash created plants (as photo targets) so `onDismiss` can offer to
+                    // photograph them once the sheet has fully closed (avoids a present-
+                    // while-dismissing race).
+                    if case let .created(plants) = result {
+                        promptTargets = plants.map(PhotoCaptureCoordinator.Target.init(plant:))
+                    }
                     basketPresented = false
                 }
             }
         }
-        .confirmationDialog(
-            "Take a photo of each new plant?",
-            isPresented: $photoPromptPresented,
-            titleVisibility: .visible
-        ) {
-            Button("Take Photos") {
-                photoTargets = pendingPhotoPlants.map(PhotoCaptureCoordinator.Target.init(plant:))
-                pendingPhotoPlants = []
-                photoPresented = true
-            }
-            Button("Not Now", role: .cancel) { pendingPhotoPlants = [] }
-        } message: {
-            Text("You can walk through your new plants one at a time.")
+        .sheet(isPresented: $photoPromptPresented, onDismiss: launchPhotosIfRequested) {
+            PhotoPromptView(
+                plants: promptTargets,
+                onTakePhotos: {
+                    photoTargets = promptTargets
+                    startPhotosOnDismiss = true
+                    photoPromptPresented = false
+                },
+                onSkip: {
+                    promptTargets = []
+                    photoPromptPresented = false
+                }
+            )
         }
         .fullScreenCover(isPresented: $photoPresented) {
             if let makePhotoCapture {
@@ -146,9 +151,17 @@ struct PlantListView: View {
     /// prompt appears only once the sheet has fully gone.
     private func offerPhotosIfJustCreated() {
         viewModel.load()
-        if makePhotoCapture != nil, !pendingPhotoPlants.isEmpty {
+        if makePhotoCapture != nil, !promptTargets.isEmpty {
             photoPromptPresented = true
         }
+    }
+
+    /// After the photo-prompt sheet closes: if the user chose "Take Photos", launch the
+    /// sequential camera now (the prompt has fully dismissed, so no presentation race).
+    private func launchPhotosIfRequested() {
+        guard startPhotosOnDismiss else { return }
+        startPhotosOnDismiss = false
+        photoPresented = true
     }
 
     /// A list row: a tappable `NavigationLink` into the plant's detail (T008) when a
@@ -186,6 +199,11 @@ struct PlantListView: View {
             }
             photoPresented = true
         case "photoprompt" where makePhotoCapture != nil:
+            // Seed the prompt with the seeded plants so the screenshot shows the
+            // connected sheet with real content (T223).
+            promptTargets = viewModel.items.map {
+                PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)
+            }
             photoPromptPresented = true
         default:
             break

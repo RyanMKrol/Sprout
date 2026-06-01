@@ -613,3 +613,15 @@ keep them here so the design's compromises live in one place alongside your proj
   so T223 now has two presentation sites to update. *Revisit:* T223 — when reworking the multi-add
   photo prompt into a connected sheet, extract the shared offer-photos flow into one reusable
   component/modifier so both entry points drive a single implementation.
+
+- **Connected photo prompt (T223): the prompt *view* is shared, but its state wiring is still
+  duplicated.** *Why:* T223 replaced the bare `confirmationDialog` with a connected sheet
+  (`PhotoPromptView`) — a proper screen anchored to the add flow, listing the new plants with a clear
+  **Take Photos** vs **Skip photos** choice. The view itself is now a single reusable component, but
+  the surrounding wiring (the `promptTargets`/`photoPromptPresented`/`startPhotosOnDismiss` state, the
+  `onDismiss` → prompt-sheet → `onDismiss` → `PhotoCaptureView` sequencing) still lives in **both**
+  `HomeView` and `PlantListView`, since each owns its own presentation context and camera cover.
+  *Impact:* the shared view removes the copy-pasted *dialog body*, but ~15 lines of state + sheet
+  wiring remain in two places; a change to the sequencing must be made in both. *Revisit:* if a third
+  entry point appears, extract the whole offer-photos flow into a single view modifier driving one
+  implementation.
