@@ -67,7 +67,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 04 ✅ | T104 | Aroids — Anthurium, Aglaonema, Spathiphyllum |
 | 05 ✅ | T105 | Alocasia, Colocasia, Caladium |
 | 06 ✅ | T106 | ZZ, Dracaena (marginata, fragrans, lucky bamboo), Cordyline |
-| 07 | T107 | Sansevieria / snake plants & cultivars |
+| 07 ✅ | T107 | Sansevieria / snake plants & cultivars |
 | 08 | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
 | 09 | T109 | Crassula (jade), Sedum, Sempervivum |
 | 10 | T110 | Haworthia, Gasteria, Aloe |
@@ -159,3 +159,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Song of India | Dracaena reflexa | driesOut | 12 / 8–21 | Genus anchor (Dracaena) — woody cane shrub, let top half dry between waterings like D. marginata |
 | Lucky Bamboo | Dracaena sanderiana | evenlyMoist | 7 / 5–10 | Genus anchor (Dracaena, water-grown form) — usually grown in water; in soil keep consistently moist, never let dry fully |
 | Hawaiian Ti Plant | Cordyline fruticosa | evenlyMoist | 6 / 4–10 | Almanac / Bouqs — likes consistently/evenly moist soil (not soggy), water when top 1–2" dry; chlorine-sensitive |
+| Variegated Snake Plant | Sansevieria trifasciata 'Laurentii' | driesOut | 14 / 10–28 | Greenery Unlimited / Bloomscape — water every ~2 weeks, only when soil dry all through; overwatering is the #1 killer |
+| Moonshine Snake Plant | Sansevieria trifasciata 'Moonshine' | driesOut | 14 / 10–24 | Genus anchor (Sansevieria) — silvery trifasciata cultivar, same let-soil-dry-fully every 2–3 weeks cadence |
+| Bird's Nest Snake Plant | Sansevieria trifasciata 'Hahnii' | driesOut | 14 / 10–24 | Genus anchor (Sansevieria) — compact rosette trifasciata, same dry-out cadence; less leaf mass but same drought tolerance |
+| Golden Birds Nest Snake Plant | Sansevieria trifasciata 'Golden Hahnii' | driesOut | 14 / 10–24 | Genus anchor (Sansevieria) — gold-margined dwarf rosette, same trifasciata dry-out cadence |
+| Cylindrical Snake Plant | Sansevieria cylindrica | driesOut | 16 / 12–30 | Joy Us Garden / Bloomscape — thick cylindrical leaves store water, very drought-tolerant; water every 2–4 weeks, dry out fully |
+| Starfish Snake Plant | Sansevieria cylindrica 'Boncel' | driesOut | 16 / 12–30 | Genus anchor (S. cylindrica) — fan-shaped cylindrical cultivar, same thick-leaf dry-out cadence as the species |
+| Whale Fin Snake Plant | Sansevieria masoniana | driesOut | 16 / 12–30 | Plant Orbit / Ohio Tropics — single thick paddle leaf stores water, dry out completely, water every 2–3 weeks (monthly in winter) |
+| Ceylon Bowstring Hemp | Sansevieria zeylanica | driesOut | 14 / 10–28 | Genus anchor (Sansevieria) — dark-banded upright species, same trifasciata-type dry-out cadence |
+| White Snake Plant | Sansevieria trifasciata 'Bantel's Sensation' | driesOut | 14 / 10–24 | Genus anchor (Sansevieria) — slim white-striped cultivar; less chlorophyll but same dry-out cadence |
+| Black Coral Snake Plant | Sansevieria trifasciata 'Black Coral' | driesOut | 14 / 10–28 | Genus anchor (Sansevieria) — dark-green trifasciata cultivar, same every-2-weeks dry-out cadence as the species |

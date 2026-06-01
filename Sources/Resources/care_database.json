@@ -453,5 +453,75 @@
     "minIntervalDays": 4,
     "maxIntervalDays": 10,
     "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Variegated Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Moonshine Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Bird's Nest Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Golden Birds Nest Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Cylindrical Snake Plant",
+    "baseIntervalDays": 16,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 30,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Starfish Snake Plant",
+    "baseIntervalDays": 16,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 30,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Whale Fin Snake Plant",
+    "baseIntervalDays": 16,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 30,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Ceylon Bowstring Hemp",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "White Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Black Coral Snake Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
   }
 ]

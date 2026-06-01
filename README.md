@@ -68,7 +68,7 @@ source of truth):
 | T014 | ✅ done | Settings — preferred reminder time, units, weather toggle |
 | T015 | ✅ done | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ✅ done | Feed weather into the schedule engine |
-| T101–T130 | 🔨 in progress (6/30) | Care DB build-out — 30 batches × 10 researched UK houseplants (→ ~300) |
+| T101–T130 | 🔨 in progress (7/30) | Care DB build-out — 30 batches × 10 researched UK houseplants (→ ~300) |
 | T131 | ⏳ pending | Care database complete — deduped & reviewed |
 | T200 | ⏳ pending | Final review — compile key decisions for sign-off |
 
