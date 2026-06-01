@@ -124,6 +124,30 @@ final class PersistenceTests: XCTestCase {
         XCTAssertThrowsError(try repo.updateRoom(Room(name: "Ghost")))
     }
 
+    func testRoomLightLevelsRoundTrip() throws {
+        // T220: the two-input light model persists and infers brightness on read-back.
+        let room = Room(name: "Sunroom", directSun: .high, indirectSun: .medium, humidity: .dry)
+        try repo.addRoom(room)
+        let fetched = try XCTUnwrap(repo.room(id: room.id))
+        XCTAssertEqual(fetched.directSun, .high)
+        XCTAssertEqual(fetched.indirectSun, .medium)
+        XCTAssertEqual(fetched.brightness, .bright)
+        XCTAssertEqual(fetched, room)
+    }
+
+    func testUpdateRoomLightLevelsPersist() throws {
+        var room = Room(name: "Study", directSun: .low, indirectSun: .low, humidity: .normal)
+        try repo.addRoom(room)
+        XCTAssertEqual(room.brightness, .dark)
+        room.directSun = .high
+        room.indirectSun = .high
+        try repo.updateRoom(room)
+        let fetched = try XCTUnwrap(repo.room(id: room.id))
+        XCTAssertEqual(fetched.directSun, .high)
+        XCTAssertEqual(fetched.indirectSun, .high)
+        XCTAssertEqual(fetched.brightness, .bright)
+    }
+
     func testPlantRoomIDRoundTrips() throws {
         let room = Room(name: "Kitchen")
         try repo.addRoom(room)

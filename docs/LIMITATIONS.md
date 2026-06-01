@@ -577,3 +577,17 @@ keep them here so the design's compromises live in one place alongside your proj
   replace it). On the simulator/DEBUG the stub returns a generated leaf placeholder, so the screenshot
   shows the seam, not a real camera frame. *Revisit:* when a richer photo flow lands (library import,
   preview + retake, explicit "remove photo"), extend the seam rather than the single `capture()` call.
+
+- **Room light model (T220): brightness collapses 9 light combinations into 3 levels; legacy `sunlight` field is vestigial.**
+  *Why:* T220 replaced the single coarse `sunlight` enum with two independent low/medium/high inputs
+  (`directSun` + `indirectSun`) that infer an overall `Brightness` (dark/medium/bright), which is what
+  `RoomEnvironment.factor` consumes (× humidity, clamped to ±30%). The schema change is **additive** —
+  the new `StoredRoom.directSun/indirectSun` are optional (nil for pre-T220 rows, derived from the kept
+  `sunlight` field on read-back), so existing stores open with no migration. *Impact:* the two inputs
+  carry 9 combinations but the factor only sees 3 brightness buckets, so distinct light settings can
+  yield an identical schedule (e.g. direct=high alone and direct=high+indirect=high are both "bright").
+  The legacy `sunlight` field is now derived/vestigial — it persists for store compatibility but no
+  longer drives anything. *Revisit:* if the schedule needs finer light granularity, widen `Brightness`
+  (or factor directly off the weighted score) and, once no old stores remain, drop the legacy `sunlight`
+  field. To wire the new inputs through the room editor's add path, `RoomsViewModel` gained an additive
+  `add(name:directSun:indirectSun:humidity:)` overload alongside the retained legacy `add(...:sunlight:...)`.

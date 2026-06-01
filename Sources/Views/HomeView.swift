@@ -138,7 +138,8 @@ struct HomeView: View {
         guard !didDeepLink else { return }
         didDeepLink = true
         switch DemoSeed.requestedScreen {
-        case "rooms":
+        case "rooms", "roomeditor":
+            // `roomeditor` pushes Rooms, which then auto-opens its editor (T220 screenshot).
             path.append(Route.rooms)
         case "settings":
             settingsPresented = true

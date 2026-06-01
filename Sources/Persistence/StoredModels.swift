@@ -56,13 +56,27 @@ final class StoredPlant {
 final class StoredRoom {
     @Attribute(.unique) var id: UUID
     var name: String
+    /// Legacy coarse sunlight (T211) — kept defaulted so existing stores still open.
     var sunlight: SunlightLevel
+    /// T220 light inputs. Optional + additive: existing rows open as `nil` and fall
+    /// back to values derived from `sunlight`, so there is no migration.
+    var directSun: LightLevel?
+    var indirectSun: LightLevel?
     var humidity: RoomHumidity
 
-    init(id: UUID, name: String, sunlight: SunlightLevel, humidity: RoomHumidity) {
+    init(
+        id: UUID,
+        name: String,
+        sunlight: SunlightLevel,
+        directSun: LightLevel? = nil,
+        indirectSun: LightLevel? = nil,
+        humidity: RoomHumidity
+    ) {
         self.id = id
         self.name = name
         self.sunlight = sunlight
+        self.directSun = directSun
+        self.indirectSun = indirectSun
         self.humidity = humidity
     }
 }
@@ -167,18 +181,36 @@ extension StoredPlant {
 extension StoredRoom {
     /// Build a persistence record from a domain room.
     convenience init(domain room: Room) {
-        self.init(id: room.id, name: room.name, sunlight: room.sunlight, humidity: room.humidity)
+        self.init(
+            id: room.id,
+            name: room.name,
+            sunlight: room.sunlight,
+            directSun: room.directSun,
+            indirectSun: room.indirectSun,
+            humidity: room.humidity
+        )
     }
 
-    /// Project back to the pure domain value type.
+    /// Project back to the pure domain value type. Rows written before T220 have nil
+    /// light levels — fall back to values derived from the legacy `sunlight` field.
     func toDomain() -> Room {
-        Room(id: id, name: name, sunlight: sunlight, humidity: humidity)
+        let fallback = Room.lightLevels(for: sunlight)
+        return Room(
+            id: id,
+            name: name,
+            directSun: directSun ?? fallback.direct,
+            indirectSun: indirectSun ?? fallback.indirect,
+            humidity: humidity,
+            sunlight: sunlight
+        )
     }
 
     /// Copy the mutable scalar fields of a domain room onto this record.
     func applyScalars(from room: Room) {
         name = room.name
         sunlight = room.sunlight
+        directSun = room.directSun
+        indirectSun = room.indirectSun
         humidity = room.humidity
     }
 }

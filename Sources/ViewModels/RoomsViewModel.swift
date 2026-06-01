@@ -43,6 +43,17 @@ final class RoomsViewModel: ObservableObject {
         load()
     }
 
+    /// Create a new room from the T220 two-input light model, then reload. Blank
+    /// names are ignored.
+    func add(name: String, directSun: LightLevel, indirectSun: LightLevel, humidity: RoomHumidity) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        try? repository.addRoom(
+            Room(name: trimmed, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
+        )
+        load()
+    }
+
     /// Persist edits to an existing room, then reload. Blank names are ignored.
     func update(_ room: Room) {
         guard !room.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
