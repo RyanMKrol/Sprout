@@ -35,6 +35,10 @@ struct PlantListView: View {
     /// Targets for the sequential photo flow + whether it's presented (T207/T208).
     @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPresented = false
+    /// Plants just created by a basket commit, awaiting the "take photos?" prompt
+    /// (T208), and whether that prompt is showing.
+    @State private var pendingPhotoPlants: [Plant] = []
+    @State private var photoPromptPresented = false
 
     init(
         viewModel: PlantListViewModel,
@@ -110,14 +114,14 @@ struct PlantListView: View {
                 }
             }
         }
-        .sheet(isPresented: $basketPresented) {
+        .sheet(isPresented: $basketPresented, onDismiss: offerPhotosIfJustCreated) {
             if let makeBasket {
                 BasketAddView(viewModel: makeBasket()) { result in
+                    // Stash created plants so `onDismiss` can offer to photograph
+                    // them once the sheet has fully closed (avoids a present-while-
+                    // dismissing race).
+                    if case let .created(plants) = result { pendingPhotoPlants = plants }
                     basketPresented = false
-                    viewModel.load()
-                    if case .created = result {
-                        // T208 will offer to photograph the newly-created plants here.
-                    }
                 }
             }
         }
@@ -125,6 +129,20 @@ struct PlantListView: View {
             if let makeSettings {
                 SettingsView(viewModel: makeSettings())
             }
+        }
+        .confirmationDialog(
+            "Take a photo of each new plant?",
+            isPresented: $photoPromptPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Take Photos") {
+                photoTargets = pendingPhotoPlants.map(PhotoCaptureCoordinator.Target.init(plant:))
+                pendingPhotoPlants = []
+                photoPresented = true
+            }
+            Button("Not Now", role: .cancel) { pendingPhotoPlants = [] }
+        } message: {
+            Text("You can walk through your new plants one at a time.")
         }
         .fullScreenCover(isPresented: $photoPresented) {
             if let makePhotoCapture {
@@ -137,6 +155,16 @@ struct PlantListView: View {
         .onAppear {
             viewModel.load()
             deepLinkIfRequested()
+        }
+    }
+
+    /// Called after the basket sheet closes: refresh the list, and if the user just
+    /// created plants, offer to photograph them (T208). Runs in `onDismiss` so the
+    /// prompt appears only once the sheet has fully gone.
+    private func offerPhotosIfJustCreated() {
+        viewModel.load()
+        if makePhotoCapture != nil, !pendingPhotoPlants.isEmpty {
+            photoPromptPresented = true
         }
     }
 
@@ -171,6 +199,8 @@ struct PlantListView: View {
                 PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)
             }
             photoPresented = true
+        case "photoprompt" where makePhotoCapture != nil:
+            photoPromptPresented = true
         case "settings" where makeSettings != nil:
             settingsPresented = true
         case "detail", "checkin":
