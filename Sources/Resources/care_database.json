@@ -873,5 +873,75 @@
     "minIntervalDays": 14,
     "maxIntervalDays": 35,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Moon Cactus",
+    "baseIntervalDays": 16,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Fairy Castle Cactus",
+    "baseIntervalDays": 18,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Rat Tail Cactus",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 18,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Star Cactus",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Ladyfinger Cactus",
+    "baseIntervalDays": 18,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "African Milk Tree",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Crown of Thorns",
+    "baseIntervalDays": 10,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Firestick Plant",
+    "baseIntervalDays": 16,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 30,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Baseball Plant",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Medusa's Head",
+    "baseIntervalDays": 18,
+    "minIntervalDays": 12,
+    "maxIntervalDays": 30,
+    "moisture": "driesOut"
   }
 ]

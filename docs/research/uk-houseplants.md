@@ -73,7 +73,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 10 ✅ | T110 | Haworthia, Gasteria, Aloe |
 | 11 ✅ | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
-| 13 | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
+| 13 ✅ | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
 | 14 | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
 | 15 | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
 | 16 | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
@@ -219,3 +219,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Powder Puff Cactus | Mammillaria bocasana | driesOut | 18 / 12–35 | Genus anchor (Mammillaria) — clustering globular desert cactus, same soak-and-dry every 2–3 weeks cadence as M. hahniana |
 | Bishop's Cap Cactus | Astrophytum myriostigma | driesOut | 21 / 14–35 | Genus anchor (desert cactus) — slow ribbed globular cactus, soak-and-dry every ~3 weeks in growth, very sparingly in winter |
 | Peruvian Apple Cactus | Cereus repandus | driesOut | 21 / 14–35 | Genus anchor (columnar desert cactus) — thick water-storing stem, soak-and-dry every ~3 weeks in growth, monthly or less in winter |
+| Moon Cactus | Gymnocalycium mihanovichii | driesOut | 16 / 10–28 | Gardenia / Succulents & Sunshine — water ~every 2 weeks and let soil dry out completely; grafted onto a tropical Hylocereus rootstock that rots if overwatered → slightly thirstier base than pure desert globulars |
+| Fairy Castle Cactus | Acanthocereus tetragonus | driesOut | 18 / 12–35 | Genus anchor (columnar desert cactus) — branching water-storing stems, soak-and-dry every ~3 weeks in growth, very sparingly in winter |
+| Rat Tail Cactus | Disocactus flagelliformis | evenlyMoist | 10 / 7–18 | Genus anchor (epiphytic/forest cactus) — trailing jungle cactus wanting more even moisture than desert cacti; water ~weekly in growth, let top inch dry, reduce at winter rest |
+| Star Cactus | Astrophytum asterias | driesOut | 21 / 14–35 | Genus anchor (Astrophytum, cf. A. myriostigma) — slow flattened ribbed globular cactus, soak-and-dry every ~3 weeks in growth, very sparingly in winter |
+| Ladyfinger Cactus | Mammillaria elongata | driesOut | 18 / 12–35 | Genus anchor (Mammillaria, cf. M. hahniana/bocasana) — clustering finger-like desert cactus storing water in its bodies, soak-and-dry every 2–3 weeks in growth |
+| African Milk Tree | Euphorbia trigona | driesOut | 14 / 10–24 | BBC Gardeners' World / Healthy Houseplants — succulent euphorbia, water only when compost dries out completely (~every 2–3 weeks in summer), once a month or less in winter; thick fleshy stems, rots if soggy |
+| Crown of Thorns | Euphorbia milii | driesOut | 10 / 7–21 | RHS / Gardening Know How — soak-and-dry but thirstier flowering euphorbia: water ~every 7–10 days in summer when top inch dry, every 2–4 weeks in winter; water sparingly when in growth |
+| Firestick Plant | Euphorbia tirucalli | driesOut | 16 / 12–30 | Genus anchor (succulent euphorbia / pencil cactus) — exceptionally drought-tolerant water-storing stems, soak-and-dry every 2–4 weeks in growth, very sparingly in winter |
+| Baseball Plant | Euphorbia obesa | driesOut | 21 / 14–35 | Gardening Know How / World of Succulents — very sparing; water roughly once a month in the growing season and every few months in winter, always letting soil dry out completely (overwatering is the #1 killer) |
+| Medusa's Head | Euphorbia flanaganii | driesOut | 18 / 12–30 | Genus anchor (caudiciform succulent euphorbia) — water-storing caudex + finger-like arms, soak-and-dry every ~3 weeks in growth, very sparingly in winter |

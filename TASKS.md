@@ -118,7 +118,7 @@ sign-off and tweaks.
 - [x] T110 Care DB batch 10 — add 10 UK houseplants (Haworthia / Gasteria / Aloe)
 - [x] T111 Care DB batch 11 — add 10 UK houseplants (Kalanchoe / trailing succulents)
 - [x] T112 Care DB batch 12 — add 10 UK houseplants (cacti I)
-- [ ] T113 Care DB batch 13 — add 10 UK houseplants (cacti II / Euphorbia)
+- [x] T113 Care DB batch 13 — add 10 UK houseplants (cacti II / Euphorbia)
 - [ ] T114 Care DB batch 14 — add 10 UK houseplants (ferns)
 - [ ] T115 Care DB batch 15 — add 10 UK houseplants (Calathea / Maranta)
 - [ ] T116 Care DB batch 16 — add 10 UK houseplants (Ctenanthe / Fittonia / Pilea)
