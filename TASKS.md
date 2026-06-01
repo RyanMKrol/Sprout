@@ -149,7 +149,7 @@ sign-off and tweaks.
 - [x] T205 Camera seam + stub + camera permission
 - [x] T206 Photo-capture coordinator (sequential capture→save→advance)
 - [x] T207 Camera overlay view + AVFoundation capture
-- [ ] T208 Wire post-create photo flow ("take photos?" → sequential camera)
+- [x] T208 Wire post-create photo flow ("take photos?" → sequential camera)
 ---
 
 ## Tasks

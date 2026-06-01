@@ -78,7 +78,7 @@ source of truth):
 | T205 | ✅ done | Camera seam + stub + camera permission |
 | T206 | ✅ done | Photo-capture coordinator (sequential capture) |
 | T207 | ✅ done | Camera overlay view + AVFoundation capture |
-| T208 | ⏳ pending | Wire post-create photo flow ("take photos?" → camera) |
+| T208 | ✅ done | Wire post-create photo flow ("take photos?" → camera) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet (`docs/REVIEW.md`) of the key decisions for you to check and tweak once everything is
