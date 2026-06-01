@@ -663,5 +663,75 @@
     "minIntervalDays": 10,
     "maxIntervalDays": 24,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Zebra Haworthia",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Zebra Cactus",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Window Haworthia",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Star Window Plant",
+    "baseIntervalDays": 13,
+    "minIntervalDays": 9,
+    "maxIntervalDays": 21,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Pearl Plant",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Ox Tongue",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Warty Aloe",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Aloe Vera",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 28,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Lace Aloe",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Tiger Tooth Aloe",
+    "baseIntervalDays": 14,
+    "minIntervalDays": 10,
+    "maxIntervalDays": 24,
+    "moisture": "driesOut"
   }
 ]

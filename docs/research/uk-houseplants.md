@@ -70,7 +70,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 07 ✅ | T107 | Sansevieria / snake plants & cultivars |
 | 08 ✅ | T108 | Echeveria, Graptopetalum, Pachyphytum & rosette succulents |
 | 09 ✅ | T109 | Crassula (jade), Sedum, Sempervivum |
-| 10 | T110 | Haworthia, Gasteria, Aloe |
+| 10 ✅ | T110 | Haworthia, Gasteria, Aloe |
 | 11 | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
 | 13 | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
@@ -189,3 +189,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Coppertone Stonecrop | Sedum nussbaumerianum | driesOut | 13 / 9–21 | Genus anchor (Sedum leaf succulent) — fleshy rosettes store water, soak-and-dry cadence |
 | Common Houseleek | Sempervivum tectorum | driesOut | 14 / 10–24 | Almanac / Gardenia — water every 1–2 weeks in growth (let dry ~an inch deep), every 4–6 weeks in winter; exceptionally drought-tolerant, rots if kept wet |
 | Cobweb Houseleek | Sempervivum arachnoideum | driesOut | 14 / 10–24 | Genus anchor (Sempervivum) — alpine rosette storing water in cobwebbed leaves, same infrequent soak-and-dry cadence as S. tectorum |
+| Zebra Haworthia | Haworthiopsis fasciata | driesOut | 14 / 10–24 | Joy Us Garden / Ottershaw Cacti — soak-and-dry, water every 2–3 weeks in growth, sparingly in winter; thick leaves store water, far more tolerant of under- than over-watering |
+| Zebra Cactus | Haworthiopsis attenuata | driesOut | 14 / 10–24 | Genus anchor (hard-leaved Haworthia) — near-identical care to H. fasciata, soak-and-dry every 2–3 weeks |
+| Window Haworthia | Haworthia cooperi | driesOut | 13 / 9–21 | Genus anchor (soft-leaved Haworthia) — translucent window leaves store water but tolerate slightly more frequent watering than hard-leaf types; soak-and-dry |
+| Star Window Plant | Haworthia cymbiformis | driesOut | 13 / 9–21 | Genus anchor (soft-leaved Haworthia) — fleshy window-leaf rosette, soak-and-dry like H. cooperi |
+| Pearl Plant | Haworthiopsis pumila | driesOut | 14 / 10–24 | Genus anchor (hard-leaved Haworthia) — pearly-tubercled rosette, soak-and-dry every 2–3 weeks like H. fasciata |
+| Ox Tongue | Gasteria bicolor | driesOut | 14 / 10–24 | ukhouseplants.com / Gardener's Path — water every 2–3 weeks in growth, monthly in winter; thick fleshy leaves, overwatering is the primary threat |
+| Warty Aloe | Gasteria carinata var. verrucosa | driesOut | 14 / 10–24 | Genus anchor (Gasteria) — rough thick-leaved succulent, same soak-and-dry every 2–3 weeks as G. bicolor |
+| Aloe Vera | Aloe vera | driesOut | 14 / 10–28 | Old Farmer's Almanac / Joy Us Garden — water every 2–3 weeks spring/summer, every 4–6 weeks in winter; let top third dry, leaves store water (wider max) |
+| Lace Aloe | Aristaloe aristata (syn. Aloe aristata) | driesOut | 14 / 10–24 | Genus anchor (aloe relative) — rosette succulent, soak-and-dry every 2–3 weeks like Aloe vera |
+| Tiger Tooth Aloe | Aloe juvenna | driesOut | 14 / 10–24 | Genus anchor (Aloe) — small stacking aloe storing water in toothed leaves, soak-and-dry every 2–3 weeks |
