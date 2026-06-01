@@ -13,9 +13,13 @@ struct HomeView: View {
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
     private let makeRooms: () -> RoomsViewModel
     private let makeSettings: () -> SettingsViewModel
+    private let makeGuidedWatering: (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
 
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
+    @State private var waterChooserPresented = false
+    @State private var guided: GuidedWateringCoordinator?
+    @State private var guidedPresented = false
     @State private var didDeepLink = false
 
     /// Push destinations for the tiles.
@@ -29,7 +33,8 @@ struct HomeView: View {
         makeDetail: @escaping (UUID) -> PlantDetailViewModel,
         makeCheckIn: @escaping (UUID) -> CheckInViewModel,
         makeRooms: @escaping () -> RoomsViewModel,
-        makeSettings: @escaping () -> SettingsViewModel
+        makeSettings: @escaping () -> SettingsViewModel,
+        makeGuidedWatering: @escaping (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
     ) {
         _listViewModel = StateObject(wrappedValue: listViewModel)
         self.makeEditor = makeEditor
@@ -39,6 +44,7 @@ struct HomeView: View {
         self.makeCheckIn = makeCheckIn
         self.makeRooms = makeRooms
         self.makeSettings = makeSettings
+        self.makeGuidedWatering = makeGuidedWatering
     }
 
     var body: some View {
@@ -55,8 +61,7 @@ struct HomeView: View {
                     }
                     HomeTile(title: "Water your plants", systemImage: "drop.fill",
                              subtitle: waterSubtitle, tint: .blue) {
-                        // T215 replaces this with the guided watering flow.
-                        path.append(Route.plants)
+                        waterChooserPresented = true
                     }
                 }
                 .padding()
@@ -88,6 +93,21 @@ struct HomeView: View {
         .sheet(isPresented: $settingsPresented) {
             SettingsView(viewModel: makeSettings())
         }
+        .confirmationDialog("Water your plants", isPresented: $waterChooserPresented, titleVisibility: .visible) {
+            Button("Plants due now (\(listViewModel.dueCount))") { startGuided(.due) }
+            Button("Full check-in (\(listViewModel.items.count))") { startGuided(.all) }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Go through the plants that need water, or check in on every plant.")
+        }
+        .fullScreenCover(isPresented: $guidedPresented) {
+            if let guided {
+                GuidedWateringView(coordinator: guided) {
+                    guidedPresented = false
+                    listViewModel.load()
+                }
+            }
+        }
         .onAppear {
             listViewModel.load()
             deepLinkIfRequested()
@@ -104,6 +124,12 @@ struct HomeView: View {
         return n == 0 ? "Nothing due — you're on top of it" : "\(n) due now"
     }
 
+    /// Build the guided coordinator for `mode` and present the walkthrough.
+    private func startGuided(_ mode: GuidedWateringCoordinator.Mode) {
+        guided = makeGuidedWatering(mode)
+        guidedPresented = true
+    }
+
     /// Screenshot deep-link (T002 convention). `home`/`list` (default) lands on the
     /// tiles; `plants`/`add`/`basket`/`camera`/`photoprompt` push the list (which
     /// handles its own sheet deep-links); `rooms` pushes Rooms; `settings` opens the
@@ -116,8 +142,10 @@ struct HomeView: View {
             path.append(Route.rooms)
         case "settings":
             settingsPresented = true
-        case "plants", "add", "basket", "camera", "photoprompt", "water":
+        case "plants", "add", "basket", "camera", "photoprompt":
             path.append(Route.plants)
+        case "water":
+            startGuided(.all)
         default:
             break // "home" / "list" → the tiles
         }
