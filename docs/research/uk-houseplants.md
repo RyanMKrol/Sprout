@@ -74,7 +74,7 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | 11 ✅ | T111 | Kalanchoe, Senecio & trailing succulents (string-of-pearls/hearts/dolphins) |
 | 12 | T112 | Cacti I — Mammillaria, Gymnocalycium, Echinopsis, Opuntia |
 | 13 ✅ | T113 | Cacti II + holiday cacti (Schlumbergera), Euphorbia (trigona, milii) |
-| 14 | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
+| 14 ✅ | T114 | Ferns — Boston, maidenhair, bird's nest, blue star, button |
 | 15 | T115 | Calathea / Goeppertia & Maranta (prayer plants) |
 | 16 | T116 | Ctenanthe, Stromanthe, Fittonia, Pilea (incl. peperomioides) |
 | 17 | T117 | Peperomia — common cultivars |
@@ -229,3 +229,13 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Firestick Plant | Euphorbia tirucalli | driesOut | 16 / 12–30 | Genus anchor (succulent euphorbia / pencil cactus) — exceptionally drought-tolerant water-storing stems, soak-and-dry every 2–4 weeks in growth, very sparingly in winter |
 | Baseball Plant | Euphorbia obesa | driesOut | 21 / 14–35 | Gardening Know How / World of Succulents — very sparing; water roughly once a month in the growing season and every few months in winter, always letting soil dry out completely (overwatering is the #1 killer) |
 | Medusa's Head | Euphorbia flanaganii | driesOut | 18 / 12–30 | Genus anchor (caudiciform succulent euphorbia) — water-storing caudex + finger-like arms, soak-and-dry every ~3 weeks in growth, very sparingly in winter |
+| Maidenhair Fern | Adiantum raddianum | staysMoist | 4 / 2–6 | BBC Gardeners' World / Gardening Know How — keep soil consistently moist, never let it dry out (not drought-tolerant; deteriorates fast if neglected); thirstiest fern in the batch |
+| Bird's Nest Fern | Asplenium nidus | staysMoist | 5 / 3–8 | RHS / Clemson HGIC — water when the top inch feels dry (~weekly), keep compost moist but not soggy; water along the pot edge to avoid rotting the crown; slightly more forgiving than maidenhair |
+| Blue Star Fern | Phlebodium aureum | evenlyMoist | 6 / 4–10 | Gardens Illustrated / Patch — epiphytic rainforest fern; keep consistently moist but never wet, water once the top inch dries; use a loose, well-draining mix |
+| Button Fern | Pellaea rotundifolia | evenlyMoist | 6 / 4–10 | Soltech / Gardenia — slightly more drought-tolerant than other ferns; let the top inch dry between waterings, forgiving of the odd missed watering but still wants consistent moisture |
+| Staghorn Fern | Platycerium bifurcatum | evenlyMoist | 7 / 5–14 | Pistils Nursery / Almanac — epiphytic; soak ~weekly in warm months and every 1–2 weeks when cooler, letting the substrate dry slightly between soakings (absorbs water through fronds and roots) |
+| Kangaroo Paw Fern | Microsorum diversifolium | evenlyMoist | 6 / 4–10 | Genus anchor (epiphytic fern, cf. Phlebodium) — leathery-fronded epiphyte; keep evenly moist and water when the top inch dries, never waterlogged |
+| Rabbit's Foot Fern | Davallia fejeensis | staysMoist | 5 / 3–8 | Genus anchor (epiphytic Davallia) — lacy fronds on furry surface rhizomes; keep evenly moist, water once the surface is barely dry; dislikes drying out fully |
+| Crocodile Fern | Microsorum musifolium | staysMoist | 5 / 3–8 | Genus anchor (tropical epiphytic Microsorum) — broad textured fronds; keep soil consistently moist with high humidity, never let it dry out |
+| Lemon Button Fern | Nephrolepis cordifolia | staysMoist | 4 / 2–6 | Genus anchor (Nephrolepis, cf. Boston Fern) — dwarf Boston relative; keep consistently moist, same thirsty cadence as its larger cousin |
+| Cretan Brake Fern | Pteris cretica | staysMoist | 4 / 3–7 | Genus anchor (ribbon/brake fern, Pteris) — keep soil consistently moist and never let it dry out fully; tolerates a touch more variability than maidenhair |

@@ -943,5 +943,75 @@
     "minIntervalDays": 12,
     "maxIntervalDays": 30,
     "moisture": "driesOut"
+  },
+  {
+    "species": "Maidenhair Fern",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Bird's Nest Fern",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Blue Star Fern",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Button Fern",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Staghorn Fern",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Kangaroo Paw Fern",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Rabbit's Foot Fern",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Crocodile Fern",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Lemon Button Fern",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 2,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Cretan Brake Fern",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 7,
+    "moisture": "staysMoist"
   }
 ]
