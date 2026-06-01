@@ -80,7 +80,7 @@ source of truth):
 | T207 | ✅ done | Camera overlay view + AVFoundation capture |
 | T208 | ✅ done | Wire post-create photo flow ("take photos?" → camera) |
 | T209 | ✅ done | Balanced ~300-name pool (gender-split) |
-| T210 | ⏳ pending | Room domain model + environment factor (sunlight × humidity) |
+| T210 | ✅ done | Room domain model + environment factor (sunlight × humidity) |
 | T211 | ⏳ pending | Room persistence + plant→room link |
 | T212 | ⏳ pending | Drive schedule from rooms; retire phone weather |
 | T213 | ⏳ pending | Rooms UI + room assignment |
