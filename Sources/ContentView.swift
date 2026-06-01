@@ -29,7 +29,8 @@ struct ContentView: View {
             viewModel: listViewModel,
             makeEditor: makeEditor,
             makeDetail: makeDetail,
-            makeCheckIn: makeCheckIn
+            makeCheckIn: makeCheckIn,
+            makeSettings: makeSettings
         )
     }
 
@@ -48,6 +49,12 @@ struct ContentView: View {
     /// repository + care database.
     private func makeCheckIn(_ plantID: UUID) -> CheckInViewModel {
         CheckInViewModel(plantID: plantID, repository: repository, careDatabase: careDatabase)
+    }
+
+    /// Build the Settings view model (T014): persisted preferences plus the shared
+    /// repository so a reminder-time change reschedules every plant's reminder.
+    private func makeSettings() -> SettingsViewModel {
+        SettingsViewModel(store: UserDefaultsSettingsStore(), repository: repository)
     }
 
     /// Resolve the repository for this launch: seeded in-memory under

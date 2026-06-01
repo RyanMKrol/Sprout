@@ -18,20 +18,26 @@ struct PlantListView: View {
     /// Builds the check-in view model for a plant (T011), threaded through to the
     /// detail screen's "Check in" affordance. When `nil`, detail hides check-in.
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
+    /// Builds the Settings view model (T014). When `nil`, the settings button is
+    /// hidden — keeps the list usable on its own (e.g. in early tests).
+    private let makeSettings: (() -> SettingsViewModel)?
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var path = NavigationPath()
+    @State private var settingsPresented = false
     @State private var didDeepLink = false
 
     init(
         viewModel: PlantListViewModel,
         makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
         makeDetail: ((UUID) -> PlantDetailViewModel)? = nil,
-        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil
+        makeCheckIn: ((UUID) -> CheckInViewModel)? = nil,
+        makeSettings: (() -> SettingsViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.makeEditor = makeEditor
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
+        self.makeSettings = makeSettings
     }
 
     var body: some View {
@@ -62,6 +68,15 @@ struct PlantListView: View {
                 }
             }
             .toolbar {
+                if makeSettings != nil {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            settingsPresented = true
+                        } label: {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                    }
+                }
                 if makeEditor != nil {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
@@ -79,6 +94,11 @@ struct PlantListView: View {
                     editorMode = nil
                     viewModel.load()
                 }
+            }
+        }
+        .sheet(isPresented: $settingsPresented) {
+            if let makeSettings {
+                SettingsView(viewModel: makeSettings())
             }
         }
         .onAppear {
@@ -112,6 +132,8 @@ struct PlantListView: View {
         switch DemoSeed.requestedScreen {
         case "add" where makeEditor != nil:
             editorMode = .add
+        case "settings" where makeSettings != nil:
+            settingsPresented = true
         case "detail", "checkin":
             if makeDetail != nil, let first = viewModel.items.first {
                 path.append(first.id)

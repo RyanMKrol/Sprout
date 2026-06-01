@@ -311,3 +311,48 @@ keep them here so the design's compromises live in one place alongside your proj
   notification toggle; wire `scheduleReminder` into the check-in flow (reschedule on each
   check-in) and `cancelReminder` into plant deletion there, and add a "notifications are off"
   hint when authorization is denied.
+
+- **Settings (T014): the temperature unit and weather toggle are persisted but not yet *consumed*.**
+  *Why:* °C/°F and the weather on/off switch only influence behaviour once the weather feature
+  exists — T015 adds the provider, T016 maps a forecast to `weatherFactor` and gates it on the
+  toggle. T014's `Scope:` is `Sources/Views/Settings*` + `Sources/ViewModels/Settings*`, so it
+  stores both as a single source of truth (`AppSettings` via `UserDefaultsSettingsStore`) without
+  reaching into the engine.
+  *Impact:* changing the unit or the weather toggle has **no visible effect** today — no
+  temperature is shown anywhere, and the schedule ignores weather (`weatherFactor` is still `1.0`
+  everywhere). Only the **reminder time** is wired live (see below).
+  *Revisit:* T016 reads `AppSettings.weatherEnabled`/`temperatureUnit` when feeding weather into
+  the schedule and surfacing the "why" explanation.
+
+- **Settings (T014): only the *reminder-time* change reschedules reminders; add/check-in/delete still don't schedule.**
+  *Why:* T014 wires the preferred-time control to reschedule **every plant's** pending reminder at
+  the new hour (rebuilding a `WateringNotificationScheduler` per change and iterating
+  `repository.allPlants()`), which is the part its `Done-when:` requires. Wiring `scheduleReminder`
+  into the add/check-in paths and `cancelReminder` into deletion is broader app-flow plumbing that
+  was flagged in T013's note and remains outside a Settings-scoped task.
+  *Impact:* a reminder only exists for a plant once *some* path schedules it; until that plumbing
+  lands, a plant gets a reminder only when the user changes the reminder time after it has a
+  `nextDue`. The reschedule also re-requests authorization lazily and no-ops if denied. With no
+  plants, the reschedule is a harmless no-op.
+  *Revisit:* schedule on plant add and on each check-in (reschedule), and cancel on delete — a
+  small "reminder coordinator" called from the repository-mutating paths would centralise this.
+
+- **Settings (T014): the reminder "time-of-day window" is modelled as a single hour (minutes pinned to 0).**
+  *Why:* `WateringNotificationScheduler` fires on a `UNCalendarNotificationTrigger` at
+  `hour:00`, so settings store only `reminderHour`; the `DatePicker` shows hour-and-minute but the
+  minute is discarded on save (and re-projected as `:00`).
+  *Impact:* the user can't pick, say, 8:30 — only the top of an hour. "Window" is really a single
+  fire time, not a range.
+  *Revisit:* store hour + minute (and optionally a range) if finer control is wanted; the trigger
+  already supports a minute component.
+
+- **Settings (T014) entry point + deep-link required small edits to `ContentView`/`PlantListView` (outside the literal Settings scope).**
+  *Why:* a settings screen is unreachable/unverifiable without an entry point, so `PlantListView`
+  gained a gear toolbar button + a `makeSettings` factory threaded from `ContentView` (built
+  against the same shared repository so a reminder-time change reschedules the real plants), and a
+  `SPROUT_SCREEN=settings` deep-link case for the screenshot — extending the T002
+  `-seedDemoData`/`SPROUT_SCREEN` contract.
+  *Impact:* two files outside the literal `Scope:` globs changed, but only for the minimal
+  presentation wiring; the same precedent as T007/T008/T011.
+  *Revisit:* when navigation grows further, promote the shared store to an app-level environment
+  dependency (carried over from earlier notes).

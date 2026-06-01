@@ -97,7 +97,7 @@ sign-off and tweaks.
 
 **Phase 4 — Reminders & settings**
 - [x] T013 Local watering notifications
-- [ ] T014 Settings — preferred reminder time, units, weather toggle
+- [x] T014 Settings — preferred reminder time, units, weather toggle
 
 **Phase 5 — Weather adaptation**
 - [ ] T015 Weather provider (Open-Meteo + CoreLocation)
