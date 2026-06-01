@@ -155,7 +155,7 @@ sign-off and tweaks.
 - [x] T209 Balanced ~300-name pool (gender-split, testable)
 - [x] T210 Room domain model + environment factor (sunlight × humidity, pure)
 - [x] T211 Room persistence + plant→room link (StoredRoom, schema, room CRUD)
-- [ ] T212 Drive schedule from rooms; retire phone weather; initial cadence at add-time
+- [x] T212 Drive schedule from rooms; retire phone weather; initial cadence at add-time
 - [ ] T213 Rooms UI + room assignment (rooms screen, basket/edit room picker)
 - [ ] T214 Tile home page (Plants/Rooms/Water) + show plant photos
 - [ ] T215 Guided watering walkthrough (two modes, photo + report → water/skip)

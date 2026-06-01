@@ -44,9 +44,14 @@ final class BasketAddViewModel: ObservableObject {
     /// The species-picker search query; filters `speciesResults`.
     @Published var speciesQuery: String = ""
 
+    /// The room all basket plants are added to (T213's picker sets this). `nil` → no
+    /// room; a neutral initial cadence. Drives both `roomID` and the initial schedule.
+    @Published var selectedRoom: Room?
+
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
     private var nicknameProvider: RandomNicknameProvider<AnyRandomNumberGenerator>
+    private let schedule = ScheduleEngine()
 
     init(
         repository: PlantRepository,
@@ -117,19 +122,34 @@ final class BasketAddViewModel: ObservableObject {
 
     /// Insert every basket entry via the repository and return the created plants
     /// **in basket order**. A blank nickname is resolved to a fresh unique random
-    /// name. Clears the basket on success.
+    /// name. Each plant is assigned to `selectedRoom` and given an **initial cadence**
+    /// from its species and the room's environment factor (anchored at `now`, assuming
+    /// a freshly-added plant was just watered). Clears the basket on success.
     /// - Throws: `BasketAddError.incomplete` if `canCommit` is `false`, or a
     ///   `PlantRepositoryError` from the store.
     @discardableResult
-    func commit() throws -> [Plant] {
+    func commit(now: Date = Date()) throws -> [Plant] {
         guard canCommit else { throw BasketAddError.incomplete }
+        let factor = RoomEnvironment.factor(for: selectedRoom)
         var taken = takenNames()
         var created: [Plant] = []
         for entry in basket {
             let trimmed = entry.nickname.trimmingCharacters(in: .whitespacesAndNewlines)
             let name = trimmed.isEmpty ? nicknameProvider.next(avoiding: taken) : trimmed
             taken.insert(name)
-            let plant = Plant(nickname: name, species: entry.species)
+
+            // Seed an initial schedule from the species cadence + room environment.
+            var nextDue: Date?
+            if let profile = careDatabase.profile(forSpecies: entry.species) {
+                nextDue = schedule.nextDue(for: profile, adj: Plant.defaultAdj, lastWatered: now, weatherFactor: factor)
+            }
+            let plant = Plant(
+                nickname: name,
+                species: entry.species,
+                lastWatered: now,
+                nextDue: nextDue,
+                roomID: selectedRoom?.id
+            )
             try repository.add(plant)
             created.append(plant)
         }

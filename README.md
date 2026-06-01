@@ -82,7 +82,7 @@ source of truth):
 | T209 | ✅ done | Balanced ~300-name pool (gender-split) |
 | T210 | ✅ done | Room domain model + environment factor (sunlight × humidity) |
 | T211 | ✅ done | Room persistence + plant→room link |
-| T212 | ⏳ pending | Drive schedule from rooms; retire phone weather |
+| T212 | ✅ done | Drive schedule from rooms; retire phone weather |
 | T213 | ⏳ pending | Rooms UI + room assignment |
 | T214 | ⏳ pending | Tile home page (Plants/Rooms/Water) + show photos |
 | T215 | ⏳ pending | Guided watering walkthrough (two modes) |

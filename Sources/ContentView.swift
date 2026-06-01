@@ -13,11 +13,6 @@ struct ContentView: View {
     /// The bundled care database (T004), the source of the editor's species picker.
     @State private var careDatabase: CareDatabase
     @StateObject private var listViewModel: PlantListViewModel
-    /// The current forecast-derived weather multiplier (T016), fed into the detail
-    /// "why" explanation and the check-in recompute. Neutral until the live fetch
-    /// resolves; a fixed warm-spell value under `-seedDemoData` so screenshots are
-    /// deterministic (no CoreLocation prompt).
-    @State private var weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
 
     init() {
         let repository = Self.makeRepository()
@@ -25,9 +20,12 @@ struct ContentView: View {
         _repository = State(initialValue: repository)
         _careDatabase = State(initialValue: careDatabase)
         _listViewModel = StateObject(
-            wrappedValue: PlantListViewModel(repository: repository, careDatabase: careDatabase)
+            wrappedValue: PlantListViewModel(
+                repository: repository,
+                careDatabase: careDatabase,
+                environmentFactor: { Self.environmentFactor(for: $0, repository: repository) }
+            )
         )
-        _weatherFactor = State(initialValue: Self.initialWeatherFactor())
     }
 
     var body: some View {
@@ -40,7 +38,6 @@ struct ContentView: View {
             makeCheckIn: makeCheckIn,
             makeSettings: makeSettings
         )
-        .task { await refreshWeatherFactor() }
     }
 
     /// Build the photo-capture source. The real `AVFoundationCamera` only runs on a
@@ -88,25 +85,34 @@ struct ContentView: View {
     }
 
     /// Build the Plant Detail view model (T008) for a plant id against the shared
-    /// repository + care database.
+    /// repository + care database, with the plant's room environment factor (T212).
     private func makeDetail(_ plantID: UUID) -> PlantDetailViewModel {
         PlantDetailViewModel(
             plantID: plantID,
             repository: repository,
             careDatabase: careDatabase,
-            weatherFactor: weatherFactor
+            environmentFactor: environmentFactor(forPlantID: plantID)
         )
     }
 
     /// Build the Check-in view model (T011) for a plant id against the shared
-    /// repository + care database, with the current weather factor (T016).
+    /// repository + care database, with the plant's room environment factor (T212).
     private func makeCheckIn(_ plantID: UUID) -> CheckInViewModel {
         CheckInViewModel(
             plantID: plantID,
             repository: repository,
             careDatabase: careDatabase,
-            weatherFactor: weatherFactor
+            environmentFactor: environmentFactor(forPlantID: plantID)
         )
+    }
+
+    /// The room environment factor for a plant by id (neutral if the plant or its
+    /// room can't be resolved).
+    private func environmentFactor(forPlantID plantID: UUID) -> Double {
+        guard let plant = (try? repository.plant(id: plantID)) ?? nil else {
+            return ScheduleEngine.defaultWeatherFactor
+        }
+        return Self.environmentFactor(for: plant, repository: repository)
     }
 
     /// Build the Settings view model (T014): persisted preferences plus the shared
@@ -115,28 +121,15 @@ struct ContentView: View {
         SettingsViewModel(store: UserDefaultsSettingsStore(), repository: repository)
     }
 
-    /// The factor to start with before any live fetch resolves. Under
-    /// `-seedDemoData` this is the fixed demo warm-spell factor so screenshots are
-    /// deterministic and never trigger a location prompt; otherwise neutral.
-    private static func initialWeatherFactor() -> Double {
-        DemoSeed.isActive ? DemoSeed.weatherFactor : ScheduleEngine.defaultWeatherFactor
-    }
-
-    /// Refresh `weatherFactor` from the live forecast (T015/T016). Skipped under the
-    /// demo seed (kept at the fixed factor) and when the user has turned weather
-    /// adaptation off in Settings; any location/network failure falls back to the
-    /// neutral factor inside `WeatherFactorService`, so this never throws or blocks.
-    private func refreshWeatherFactor() async {
-        guard !DemoSeed.isActive else { return }
-        guard UserDefaultsSettingsStore().load().weatherEnabled else {
-            weatherFactor = ScheduleEngine.defaultWeatherFactor
-            return
+    /// The schedule multiplier for a plant, derived from its room's environment
+    /// (T212) — the indoor replacement for the retired phone-weather factor. Neutral
+    /// when the plant has no room or the room can't be resolved.
+    static func environmentFactor(for plant: Plant, repository: PlantRepository) -> Double {
+        guard let roomID = plant.roomID,
+              let room = (try? repository.room(id: roomID)) ?? nil else {
+            return ScheduleEngine.defaultWeatherFactor
         }
-        let service = WeatherFactorService(
-            locationProvider: CoreLocationProvider(),
-            weatherProvider: OpenMeteoWeatherProvider()
-        )
-        weatherFactor = await service.currentWeatherFactor()
+        return RoomEnvironment.factor(for: room)
     }
 
     /// Resolve the repository for this launch: seeded in-memory under

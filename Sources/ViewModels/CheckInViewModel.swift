@@ -85,23 +85,23 @@ final class CheckInViewModel: ObservableObject {
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
     private let engine: AdaptiveEngine
-    /// Weather multiplier fed into the adaptive recompute (T016), so a watering
-    /// recorded during a hot/cold spell advances the schedule accordingly. Neutral
-    /// (`1.0`) until weather is wired in; `ContentView` injects the live factor.
-    private let weatherFactor: Double
+    /// The plant's room environment multiplier (T212), fed into the adaptive
+    /// recompute so a watering advances the schedule at the room's cadence. Neutral
+    /// (`1.0`) when the plant has no room; `ContentView` injects the room factor.
+    private let environmentFactor: Double
 
     init(
         plantID: UUID,
         repository: PlantRepository,
         careDatabase: CareDatabase,
         engine: AdaptiveEngine = AdaptiveEngine(),
-        weatherFactor: Double = ScheduleEngine.defaultWeatherFactor
+        environmentFactor: Double = ScheduleEngine.defaultWeatherFactor
     ) {
         self.plantID = plantID
         self.repository = repository
         self.careDatabase = careDatabase
         self.engine = engine
-        self.weatherFactor = weatherFactor
+        self.environmentFactor = environmentFactor
     }
 
     /// Load the plant and resolve its care profile so the form can show the plant's
@@ -135,7 +135,7 @@ final class CheckInViewModel: ObservableObject {
         }
 
         let checkIn = CheckIn(date: now, soil: soil, leaves: leaves, watered: watered)
-        let update = engine.update(profile: profile, plant: plant, checkIn: checkIn, weatherFactor: weatherFactor)
+        let update = engine.update(profile: profile, plant: plant, checkIn: checkIn, weatherFactor: environmentFactor)
 
         var updated = plant
         updated.adj = update.newAdj

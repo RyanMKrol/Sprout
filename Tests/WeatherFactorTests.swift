@@ -144,10 +144,10 @@ final class WeatherFactorTests: XCTestCase {
         XCTAssertLessThan(update.nextDue, neutralUpdate.nextDue)
 
         let explanation = builder.explanation(
-            species: "Peace Lily", profile: profile, adj: Plant.defaultAdj, lastCheckIn: nil, weatherFactor: hotFactor
+            species: "Peace Lily", profile: profile, adj: Plant.defaultAdj, lastCheckIn: nil, environmentFactor: hotFactor
         )
-        XCTAssertEqual(explanation.cause, .warmSpell)
+        XCTAssertEqual(explanation.cause, .driesFaster)
         XCTAssertEqual(explanation.effectiveDays, 5)
-        XCTAssertTrue(explanation.sentence.contains("warm spell"))
+        XCTAssertTrue(explanation.sentence.contains("dries out faster"))
     }
 }

@@ -94,15 +94,20 @@ final class PlantListViewModel: ObservableObject {
     /// need the list (e.g. early tests) keep working unchanged.
     private let careDatabase: CareDatabase?
     private let explanationBuilder: ScheduleExplanationBuilder
+    /// Resolves a plant's room environment factor (T212) so the card's "why" summary
+    /// reflects its room. Defaults to neutral so contexts without rooms are unchanged.
+    private let environmentFactor: (Plant) -> Double
 
     init(
         repository: PlantRepository,
         careDatabase: CareDatabase? = nil,
-        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder()
+        explanationBuilder: ScheduleExplanationBuilder = ScheduleExplanationBuilder(),
+        environmentFactor: @escaping (Plant) -> Double = { _ in ScheduleEngine.defaultWeatherFactor }
     ) {
         self.repository = repository
         self.careDatabase = careDatabase
         self.explanationBuilder = explanationBuilder
+        self.environmentFactor = environmentFactor
     }
 
     /// `true` when there are no plants — the view shows the first-run empty state.
@@ -134,7 +139,8 @@ final class PlantListViewModel: ObservableObject {
             species: plant.species,
             profile: profile,
             adj: plant.adj,
-            lastCheckIn: plant.checkIns.max { $0.date < $1.date }
+            lastCheckIn: plant.checkIns.max { $0.date < $1.date },
+            environmentFactor: environmentFactor(plant)
         ).pillSummary
     }
 

@@ -109,46 +109,46 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because it looked overwatered.")
     }
 
-    // MARK: weather hook (T016 feeds the factor; neutral until then)
+    // MARK: room environment factor (T212 — replaces the weather hook)
 
-    func testWarmSpellShortensWhenNoCheckInDrivenAdj() {
-        // adj neutral, weatherFactor < 1 → weather is the dominant cause.
+    func testBrightDryRoomShortensWhenNoCheckInDrivenAdj() {
+        // adj neutral, environmentFactor < 1 → the room is the dominant cause.
         let e = builder.explanation(
             species: "Peace Lily",
             profile: profile,
             adj: 1.0,
             lastCheckIn: nil,
-            weatherFactor: 0.5
+            environmentFactor: 0.5
         )
         XCTAssertEqual(e.effectiveDays, 4) // round(6 × 0.5) = 3 → clamped to min 4
         XCTAssertEqual(e.direction, .shortened)
-        XCTAssertEqual(e.cause, .warmSpell)
-        XCTAssertEqual(e.sentence, "Every 4 days — shortened from 6 because of a warm spell.")
+        XCTAssertEqual(e.cause, .driesFaster)
+        XCTAssertEqual(e.sentence, "Every 4 days — shortened from 6 because its spot dries out faster than average.")
     }
 
-    func testColdSpellLengthens() {
+    func testLowLightHumidRoomLengthens() {
         let e = builder.explanation(
             species: "Peace Lily",
             profile: profile,
             adj: 1.0,
             lastCheckIn: nil,
-            weatherFactor: 1.5
+            environmentFactor: 1.5
         )
         XCTAssertEqual(e.effectiveDays, 9)
         XCTAssertEqual(e.direction, .lengthened)
-        XCTAssertEqual(e.cause, .coldSpell)
-        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because of a cold spell.")
+        XCTAssertEqual(e.cause, .driesSlower)
+        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because its spot dries out more slowly than average.")
     }
 
-    func testCheckInDrivenAdjTakesPrecedenceOverWeather() {
-        // Both a learned adj (from a check-in) and an off-neutral weather factor are
+    func testCheckInDrivenAdjTakesPrecedenceOverRoom() {
+        // Both a learned adj (from a check-in) and an off-neutral room factor are
         // present; the check-in explains the schedule.
         let e = builder.explanation(
             species: "Peace Lily",
             profile: profile,
             adj: 0.7,
             lastCheckIn: checkIn(soil: .dry, leaves: .fine),
-            weatherFactor: 1.5
+            environmentFactor: 1.5
         )
         XCTAssertEqual(e.cause, .driedOut)
     }

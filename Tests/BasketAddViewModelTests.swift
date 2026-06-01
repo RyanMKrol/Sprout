@@ -145,4 +145,33 @@ final class BasketAddViewModelTests: XCTestCase {
             XCTAssertEqual(error as? BasketAddError, .incomplete)
         }
     }
+
+    // MARK: initial cadence at add-time (T212)
+
+    func testCommitSeedsInitialScheduleFromSpecies() throws {
+        let vm = makeVM()
+        vm.add(profile("Pothos"))
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let created = try vm.commit(now: now)
+        XCTAssertEqual(created[0].lastWatered, now)
+        XCTAssertNotNil(created[0].nextDue, "a new plant gets an initial cadence, not nil")
+    }
+
+    func testCommitAssignsRoomAndShortensInABrightDryRoom() throws {
+        let now = Date(timeIntervalSince1970: 1_000_000)
+
+        // Neutral (no room) cadence.
+        let neutralVM = makeVM()
+        neutralVM.add(profile("Pothos"))
+        let neutralDue = try XCTUnwrap(neutralVM.commit(now: now).first?.nextDue)
+
+        // Bright + dry room → factor < 1 → sooner due date, and roomID is set.
+        let room = Room(name: "Sunroom", sunlight: .direct, humidity: .dry)
+        let roomVM = makeVM()
+        roomVM.selectedRoom = room
+        roomVM.add(profile("Pothos"))
+        let created = try roomVM.commit(now: now)
+        XCTAssertEqual(created[0].roomID, room.id)
+        XCTAssertLessThan(try XCTUnwrap(created[0].nextDue), neutralDue)
+    }
 }

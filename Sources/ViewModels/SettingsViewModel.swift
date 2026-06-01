@@ -1,43 +1,24 @@
 import Foundation
 
-/// Temperature unit preference (T014). Persisted now and consumed by the weather
-/// feature (T015/T016) — stored as a single source of truth so the schedule
-/// wiring and any temperature display agree on °C vs °F.
-enum TemperatureUnit: String, CaseIterable, Codable, Sendable {
-    case celsius
-    case fahrenheit
-
-    /// Short symbol for pills / inline text.
-    var symbol: String { self == .celsius ? "°C" : "°F" }
-    /// Full label for the settings picker.
-    var label: String { self == .celsius ? "Celsius (°C)" : "Fahrenheit (°F)" }
-}
-
-/// The user's app-wide preferences (T014): the hour-of-day watering reminders
-/// fire on a plant's due date, the temperature unit, and whether weather
-/// adaptation is enabled.
+/// The user's app-wide preferences: the hour-of-day watering reminders fire on a
+/// plant's due date. (Temperature unit + the weather toggle were removed in T212 when
+/// the phone-weather schedule input was retired in favour of Rooms.)
 ///
 /// A plain `Codable` value type so it round-trips through `SettingsStore`
-/// (UserDefaults) and unit tests assert the persisted decision, not UI state.
+/// (UserDefaults) and unit tests assert the persisted decision, not UI state. Decoding
+/// ignores any legacy keys (e.g. an old `weatherEnabled`) from a previous install.
 struct AppSettings: Equatable, Codable, Sendable {
     /// Hour-of-day (0–23) that watering reminders fire at on the due date. Drives
     /// `WateringNotificationScheduler`'s `reminderHour` — changing it reschedules
     /// every plant's pending reminder to the new time.
     var reminderHour: Int
-    /// °C / °F preference. Stored now; the weather tasks (T015/T016) read it.
-    var temperatureUnit: TemperatureUnit
-    /// Whether weather adaptation is enabled. Stored now; T016 gates its
-    /// `weatherFactor` on this so the user can opt out of weather nudging.
-    var weatherEnabled: Bool
 
     /// Valid hour-of-day band for `reminderHour`.
     static let reminderHourRange: ClosedRange<Int> = 0...23
 
-    /// First-run defaults: the same reminder hour T013 shipped, °C, weather on.
+    /// First-run default: the same reminder hour T013 shipped.
     static let `default` = AppSettings(
-        reminderHour: WateringNotificationScheduler.defaultReminderHour,
-        temperatureUnit: .celsius,
-        weatherEnabled: true
+        reminderHour: WateringNotificationScheduler.defaultReminderHour
     )
 }
 
@@ -92,10 +73,6 @@ final class SettingsViewModel: ObservableObject {
     /// `updateReminderHour`/`updateReminderTime` so persistence + reschedule stay
     /// coupled to the change.
     @Published private(set) var reminderHour: Int
-    /// Current temperature unit.
-    @Published private(set) var temperatureUnit: TemperatureUnit
-    /// Whether weather adaptation is enabled.
-    @Published private(set) var weatherEnabled: Bool
 
     private let store: SettingsStore
     /// The plant source whose reminders are rescheduled when the time changes.
@@ -116,8 +93,6 @@ final class SettingsViewModel: ObservableObject {
     ) {
         let settings = store.load()
         self.reminderHour = settings.reminderHour
-        self.temperatureUnit = settings.temperatureUnit
-        self.weatherEnabled = settings.weatherEnabled
         self.store = store
         self.repository = repository
         self.makeScheduler = makeScheduler
@@ -151,22 +126,6 @@ final class SettingsViewModel: ObservableObject {
         await rescheduleReminders()
     }
 
-    /// Change the temperature unit and persist it. No reschedule — units don't
-    /// affect reminder timing (weather wiring lands in T016).
-    func setTemperatureUnit(_ unit: TemperatureUnit) {
-        guard unit != temperatureUnit else { return }
-        temperatureUnit = unit
-        persist()
-    }
-
-    /// Toggle weather adaptation and persist it. No reschedule — the schedule only
-    /// reads this once T016 feeds weather into the engine.
-    func setWeatherEnabled(_ enabled: Bool) {
-        guard enabled != weatherEnabled else { return }
-        weatherEnabled = enabled
-        persist()
-    }
-
     /// Reschedule every plant's pending reminder at the current `reminderHour`, so
     /// an existing reminder moves to the newly-chosen window. Repository errors
     /// degrade to a no-op rather than crashing settings.
@@ -181,7 +140,7 @@ final class SettingsViewModel: ObservableObject {
 
     /// The current preferences as a value, for persistence.
     private var settings: AppSettings {
-        AppSettings(reminderHour: reminderHour, temperatureUnit: temperatureUnit, weatherEnabled: weatherEnabled)
+        AppSettings(reminderHour: reminderHour)
     }
 
     private func persist() {
