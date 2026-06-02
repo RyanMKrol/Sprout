@@ -641,3 +641,8 @@ keep them here so the design's compromises live in one place alongside your proj
   validator-clean and deduped, with a Provenance row each. Several entries (calatheas,
   peperomias, philodendron/alocasia cultivars) are grounded on the **genus anchor** rather than a
   per-cultivar citation, the same anchor convention as the existing dataset (cf. the T101 row).
+  **Update (T226):** Tier 2's 15 secondary species/cultivars are now shipped too — the dataset
+  stands at **335**, validator-clean and deduped, with a Provenance row each. As flagged above,
+  this Tier-2 batch is deliberately past the ~320 core target: it is popular cultivars (aglaonema,
+  philodendron, calathea, peperomia, hoya, anthurium) mostly grounded on the **genus anchor**, so
+  its marginal coverage value is lower than Tier 1's. T227 is the final reconciling audit.

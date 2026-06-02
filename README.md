@@ -96,7 +96,7 @@ source of truth):
 | T223 | ✅ done | Fix multi-add photo prompt (decline + connected presentation) |
 | T224 | ✅ done | Care DB audit + source research → gap list |
 | T225 | ✅ done | Care DB gap-fill batch 1 — 15 species (incl. Monstera adansonii) → 320 |
-| T226 | ⏳ pending | Care DB gap-fill batch 2 (→ ~320) |
+| T226 | ✅ done | Care DB gap-fill batch 2 — 15 species (Tier 2 cultivars) → 335 |
 | T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review

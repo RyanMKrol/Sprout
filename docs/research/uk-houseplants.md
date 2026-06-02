@@ -425,3 +425,18 @@ pulls the next-most-common UK houseplants not yet present and notes the spill-ov
 | Peperomia Hope | Peperomia tetraphylla 'Hope' | evenlyMoist | 9 / 7–14 | T225 — Hortology: peperomia anchor; semi-succulent trailing leaves, let the top half dry between waterings → longer interval. |
 | Peperomia Rosso | Peperomia caperata 'Rosso' | evenlyMoist | 9 / 7–14 | T225 — Hortology: peperomia anchor; water when the top 2–3 cm dry, stores water in fleshy leaves → longer interval. |
 | Dwarf Banana | Musa acuminata 'Dwarf Cavendish' | staysMoist | 5 / 3–8 | T225 — RHS: very thirsty fast grower; keep the compost consistently moist in growth, never let it dry out → short interval. New genus. |
+| Aglaonema Pink | Aglaonema 'Pink Dalmatian' | evenlyMoist | 9 / 6–14 | T226 (gap-fill batch 2) — Patch: aglaonema anchor; water when the top 2–3 cm dry, drought-tolerant → longer interval. |
+| Philodendron Florida Ghost | Philodendron pedatum 'Florida Ghost' | evenlyMoist | 8 / 5–12 | T226 — Patch: climbing aroid; aroid anchor, let the top 2–3 cm dry → medium interval. |
+| Philodendron Imperial Red | Philodendron 'Imperial Red' | evenlyMoist | 9 / 6–14 | T226 — Hortology: self-heading aroid; water when the top third dries → longer interval. |
+| Monstera Peru | Monstera karstenianum | evenlyMoist | 9 / 6–14 | T226 — Hortology: thick puckered leaves store water; aroid anchor, let the top half dry → longer interval. |
+| Alocasia Stingray | Alocasia macrorrhiza 'Stingray' | evenlyMoist | 7 / 5–10 | T226 — Hortology: alocasia anchor; keep evenly moist, let the surface dry → medium interval. |
+| Calathea Freddie | Goeppertia concinna 'Freddie' | staysMoist | 4 / 3–6 | T226 — Hortology: calathea anchor; keep consistently moist with soft water → short interval. |
+| Calathea Beauty Star | Goeppertia 'Beauty Star' | staysMoist | 4 / 3–6 | T226 — Hortology: calathea anchor; never dry out, high humidity → short interval. |
+| Peperomia Frost | Peperomia caperata 'Frost' | evenlyMoist | 9 / 7–14 | T226 — Hortology: peperomia anchor; let the top half dry between waterings → longer interval. |
+| Hoya Mathilde | Hoya × mathilde | evenlyMoist | 11 / 8–18 | T226 — Hortology: hoya anchor (cf. H. carnosa); semi-succulent leaves, let the top two-thirds dry → long interval. |
+| String of Needles | Ceropegia linearis | driesOut | 14 / 10–21 | T226 — genus anchor (Ceropegia, cf. String of Hearts): semi-succulent trailer with tubers; soak-and-dry, water when dry → long interval. |
+| Sansevieria Fernwood | Dracaena pethera 'Fernwood' | driesOut | 14 / 10–24 | T226 — genus anchor (Sansevieria/Dracaena): narrow upright succulent leaves; dry out fully between waterings → long interval. |
+| Calathea Dottie | Goeppertia roseopicta 'Dottie' | staysMoist | 4 / 3–6 | T226 — Hortology: calathea anchor; keep moist, never soggy → short interval. |
+| Anthurium Black | Anthurium 'Black Beauty' | evenlyMoist | 7 / 5–10 | T226 — Hortology: anthurium anchor (cf. Flamingo Flower); water when the top third dries → medium interval. |
+| Tradescantia Lilac | Tradescantia 'Lilac' (T. fluminensis) | evenlyMoist | 7 / 5–10 | T226 — genus anchor (Tradescantia/inch plant): vigorous trailer; keep lightly moist, let the top inch dry → medium interval. |
+| Pilea Norfolk | Pilea spruceana 'Norfolk' | evenlyMoist | 6 / 4–10 | T226 — genus anchor (Pilea, cf. Friendship Plant): keep evenly moist, water when the surface dries → medium interval. |
