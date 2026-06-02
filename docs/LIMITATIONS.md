@@ -646,3 +646,14 @@ keep them here so the design's compromises live in one place alongside your proj
   this Tier-2 batch is deliberately past the ~320 core target: it is popular cultivars (aglaonema,
   philodendron, calathea, peperomia, hoya, anthurium) mostly grounded on the **genus anchor**, so
   its marginal coverage value is lower than Tier 1's. T227 is the final reconciling audit.
+  **Update (T227 — final audit):** end-to-end reconciliation of the assembled dataset is **clean**:
+  **335 unique** species (≥ 315 target, well past the ~320 core), **zero** normalised-name
+  duplicates, every record valid under the T004 invariant (`min ≤ base ≤ max`, valid `moisture`),
+  and a **1:1 Provenance index** — all 335 species map to exactly one row and vice-versa (0 orphans
+  either way). All **30** Tier-1/Tier-2 gap-list rows from `care-db-audit.md` shipped (gap list fully
+  **closed**), including the *Monstera adansonii* alias alongside "Swiss Cheese Vine". The residual
+  limitation is unchanged: a meaningful share of cultivar intervals rest on the **genus anchor**
+  rather than a per-cultivar citation — acceptable for a watering *starting* cadence the check-in
+  loop then adapts. *Revisit:* if a future per-species sourcing pass is funded, replace anchor-based
+  cultivar rows with cited intervals; no schema/version field still gates dataset migrations (see the
+  T101 care-DB-schema row above).

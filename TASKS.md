@@ -172,7 +172,7 @@ sign-off and tweaks.
 - [x] T224 Care DB audit + source research (Patch / Reddit / web) → gap list
 - [x] T225 Care DB gap-fill batch 1 — ~15 missing common species (incl. Monstera adansonii)
 - [x] T226 Care DB gap-fill batch 2 — ~15 more common species (→ ~320)
-- [ ] T227 Care DB final audit — ~320 unique, deduped, validated, provenance complete
+- [x] T227 Care DB final audit — ~320 unique, deduped, validated, provenance complete
 ---
 
 ## Tasks

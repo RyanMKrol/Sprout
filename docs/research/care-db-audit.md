@@ -124,3 +124,32 @@ ship; each must still pass the T004 validator and get a Provenance row in `uk-ho
   anchor rationale, exactly as the existing rows do.
 - **Sizing:** **Tier 1 → ~320** (the T224 target). Tier 2 is the documented overflow toward ~335
   for T226; reviewers may stop after Tier 1 if ~320 is the firm ceiling.
+
+## 5. Final reconciliation (T227) — gap list closed, dataset validated
+
+End-to-end audit of the assembled dataset after T225 (Tier 1) and T226 (Tier 2), reconciling the
+JSON, the Provenance index, and this gap list against each other. **All checks pass:**
+
+- **Count:** **335 unique** species in `care_database.json` — comfortably past the `Done-when`
+  floor (**≥ 315**) and the ~320 core target. Final **moisture split:** `evenlyMoist` 192 ·
+  `driesOut` 91 · `staysMoist` 52 (the +30 since the T224 baseline of 305 is the Tier-1 + Tier-2
+  fill — aroid/calathea/peperomia/succulent-heavy, matching the gap list's shape).
+- **No duplicates:** all 335 display names are distinct under the validator's normalised key
+  (trim + lowercase) — 0 collisions.
+- **Every record valid:** all 335 satisfy the T004 single-record invariant
+  (`min ≤ base ≤ max`, `moisture ∈ {driesOut, evenlyMoist, staysMoist}`). The shipped-dataset
+  unit test (`testShippedDatabaseDecodesAndValidates`) loads and validates the whole file green.
+- **Provenance 1:1:** the Provenance index in [`uk-houseplants.md`](./uk-houseplants.md) holds
+  **335 rows**, one per species — **0** JSON species without a row and **0** rows without a JSON
+  species. Both the *Monstera adansonii* alias and its "Swiss Cheese Vine" twin carry their own
+  rows.
+- **Gap list closed:** **all 30** Tier-1 (15) + Tier-2 (15) rows from §3 are present in the JSON
+  by display name — including the required *Monstera adansonii* entry (#1), shipped as a
+  display-name alias of "Swiss Cheese Vine" with identical care numbers. **No remaining gaps.**
+
+**Residual (justified, not a gap):** a share of cultivar intervals (calatheas, peperomias,
+philodendron/alocasia/aglaonema/hoya/anthurium cultivars) are grounded on the **genus anchor**
+rather than a per-cultivar citation, recorded as such in each Provenance row — the same
+"never block a batch for lack of a fetchable per-species page" convention the original dataset
+follows. This is acceptable for a *starting* watering cadence the check-in loop then adapts; see
+the care-DB rows in [`../LIMITATIONS.md`](../LIMITATIONS.md).

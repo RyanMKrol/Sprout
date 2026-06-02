@@ -97,7 +97,7 @@ source of truth):
 | T224 | ✅ done | Care DB audit + source research → gap list |
 | T225 | ✅ done | Care DB gap-fill batch 1 — 15 species (incl. Monstera adansonii) → 320 |
 | T226 | ✅ done | Care DB gap-fill batch 2 — 15 species (Tier 2 cultivars) → 335 |
-| T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |
+| T227 | ✅ done | Care DB final audit — 335 unique, deduped, validated, 1:1 provenance |
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once
