@@ -5,6 +5,12 @@ Provenance + method for `Sources/Resources/care_database.json`, the bundled loca
 plant given a genuine look-up. T131 reviews the finished set. Schema + how the numbers are used:
 [`../designs/adaptive-watering.md`](../designs/adaptive-watering.md).
 
+> **Coverage audit & gap list (T224):** [`care-db-audit.md`](./care-db-audit.md) audits the
+> shipped 305 species against the most common UK houseplants (Patch / Reddit / RHS / Gardeners'
+> World) and lists the prioritised gap to reach ~320 — **Tier 1 (top ~15, incl. *Monstera
+> adansonii*) for T225, Tier 2 for T226.** New Provenance rows for those plants land here as the
+> batches add them.
+
 ## Scope
 
 - **Watering only.** Per plant: `baseIntervalDays`, `minIntervalDays`, `maxIntervalDays`,

@@ -169,7 +169,7 @@ sign-off and tweaks.
 - [x] T221 Room-first "Add plants" flow (choose/add room, then add its plants)
 - [x] T222 Square-tile home redesign + split "Water" and "Full check-in" tiles
 - [x] T223 Fix multi-add photo prompt — explicit decline + connected presentation
-- [ ] T224 Care DB audit + source research (Patch / Reddit / web) → gap list
+- [x] T224 Care DB audit + source research (Patch / Reddit / web) → gap list
 - [ ] T225 Care DB gap-fill batch 1 — ~15 missing common species (incl. Monstera adansonii)
 - [ ] T226 Care DB gap-fill batch 2 — ~15 more common species (→ ~320)
 - [ ] T227 Care DB final audit — ~320 unique, deduped, validated, provenance complete

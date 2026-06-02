@@ -94,7 +94,7 @@ source of truth):
 | T221 | ✅ done | Room-first "Add plants" flow (choose/add room, then add its plants) |
 | T222 | ✅ done | Square-tile home redesign + split Water / Full check-in |
 | T223 | ✅ done | Fix multi-add photo prompt (decline + connected presentation) |
-| T224 | ⏳ pending | Care DB audit + source research → gap list |
+| T224 | ✅ done | Care DB audit + source research → gap list |
 | T225 | ⏳ pending | Care DB gap-fill batch 1 (incl. Monstera adansonii) |
 | T226 | ⏳ pending | Care DB gap-fill batch 2 (→ ~320) |
 | T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |

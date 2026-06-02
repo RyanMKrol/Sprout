@@ -625,3 +625,15 @@ keep them here so the design's compromises live in one place alongside your proj
   wiring remain in two places; a change to the sequencing must be made in both. *Revisit:* if a third
   entry point appears, extract the whole offer-photos flow into a single view modifier driving one
   implementation.
+
+- **Care DB audit (T224): the "~320 species" target is already nearly met, so T226 will overshoot.**
+  *Why:* the original dataset plan aimed for ~300 and the loop overshot to **305**; the T224 audit
+  ([`research/care-db-audit.md`](./research/care-db-audit.md)) found the common UK core is already
+  deep, so the genuine prioritised gap is only **~15 species (Tier 1, → ~320)** plus a softer
+  secondary tier. *Impact:* **T225 (Tier 1) alone reaches the ~320 target**; T226's "next ~15"
+  (Tier 2) carries the dataset to **~335** and is made of secondary gaps / popular cultivars rather
+  than core species, so its marginal value is lower. The required *Monstera adansonii* entry is a
+  deliberate **display-name alias** of the existing "Swiss Cheese Vine" profile (same care numbers),
+  mirroring the Pothos / Golden Pothos alias precedent — not a new look-up. *Revisit:* T226/T227 —
+  decide whether ~320 (Tier 1 only) is the firm ceiling or the dataset continues to ~335; if the
+  latter, treat Tier 2 as best-effort coverage, not core.
