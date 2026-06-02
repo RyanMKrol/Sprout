@@ -2133,5 +2133,110 @@
     "minIntervalDays": 3,
     "maxIntervalDays": 6,
     "moisture": "staysMoist"
+  },
+  {
+    "species": "Monstera adansonii",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Bird of Paradise",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Giant White Bird of Paradise",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "English Ivy",
+    "baseIntervalDays": 6,
+    "minIntervalDays": 4,
+    "maxIntervalDays": 9,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Norfolk Island Pine",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Fishbone Cactus",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 6,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Living Stones",
+    "baseIntervalDays": 21,
+    "minIntervalDays": 14,
+    "maxIntervalDays": 35,
+    "moisture": "driesOut"
+  },
+  {
+    "species": "Calathea Network",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Calathea White Fusion",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Calathea Medallion",
+    "baseIntervalDays": 4,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 6,
+    "moisture": "staysMoist"
+  },
+  {
+    "species": "Philodendron Gloriosum",
+    "baseIntervalDays": 8,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 12,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Alocasia Frydek",
+    "baseIntervalDays": 7,
+    "minIntervalDays": 5,
+    "maxIntervalDays": 10,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Peperomia Hope",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Peperomia Rosso",
+    "baseIntervalDays": 9,
+    "minIntervalDays": 7,
+    "maxIntervalDays": 14,
+    "moisture": "evenlyMoist"
+  },
+  {
+    "species": "Dwarf Banana",
+    "baseIntervalDays": 5,
+    "minIntervalDays": 3,
+    "maxIntervalDays": 8,
+    "moisture": "staysMoist"
   }
 ]

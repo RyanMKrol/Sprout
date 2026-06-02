@@ -636,4 +636,8 @@ keep them here so the design's compromises live in one place alongside your proj
   deliberate **display-name alias** of the existing "Swiss Cheese Vine" profile (same care numbers),
   mirroring the Pothos / Golden Pothos alias precedent — not a new look-up. *Revisit:* T226/T227 —
   decide whether ~320 (Tier 1 only) is the firm ceiling or the dataset continues to ~335; if the
-  latter, treat Tier 2 as best-effort coverage, not core.
+  latter, treat Tier 2 as best-effort coverage, not core. **Update (T225):** Tier 1's 15 species
+  (incl. the *Monstera adansonii* alias) are now shipped — the dataset stands at **320**,
+  validator-clean and deduped, with a Provenance row each. Several entries (calatheas,
+  peperomias, philodendron/alocasia cultivars) are grounded on the **genus anchor** rather than a
+  per-cultivar citation, the same anchor convention as the existing dataset (cf. the T101 row).

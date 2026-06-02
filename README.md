@@ -95,7 +95,7 @@ source of truth):
 | T222 | ✅ done | Square-tile home redesign + split Water / Full check-in |
 | T223 | ✅ done | Fix multi-add photo prompt (decline + connected presentation) |
 | T224 | ✅ done | Care DB audit + source research → gap list |
-| T225 | ⏳ pending | Care DB gap-fill batch 1 (incl. Monstera adansonii) |
+| T225 | ✅ done | Care DB gap-fill batch 1 — 15 species (incl. Monstera adansonii) → 320 |
 | T226 | ⏳ pending | Care DB gap-fill batch 2 (→ ~320) |
 | T227 | ⏳ pending | Care DB final audit (~320, deduped, validated) |
 
