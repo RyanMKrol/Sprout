@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 
 /// Boundary for scheduling the app's watering reminders (T013).
 ///
@@ -35,4 +36,8 @@ protocol NotificationScheduling {
     /// Fire a one-off **test** reminder a few seconds out, so the user can confirm
     /// notifications are authorised and delivering (Developer tooling).
     func sendTestReminder(after seconds: TimeInterval) async
+
+    /// The current system authorization status — read **without** prompting, so the UI
+    /// can show whether reminders are enabled and re-prompt only when appropriate.
+    func authorizationStatus() async -> UNAuthorizationStatus
 }

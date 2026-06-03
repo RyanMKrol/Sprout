@@ -13,9 +13,14 @@ protocol UserNotificationCenter {
     func add(_ request: UNNotificationRequest) async throws
     func removePendingNotificationRequests(withIdentifiers identifiers: [String])
     func pendingNotificationRequests() async -> [UNNotificationRequest]
+    func authorizationStatus() async -> UNAuthorizationStatus
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter {}
+extension UNUserNotificationCenter: UserNotificationCenter {
+    func authorizationStatus() async -> UNAuthorizationStatus {
+        await notificationSettings().authorizationStatus
+    }
+}
 
 /// Schedules **daily** watering reminders via `UNUserNotificationCenter` (T013).
 ///
@@ -107,6 +112,10 @@ struct WateringNotificationScheduler: NotificationScheduling {
             )
             try? await center.add(request)
         }
+    }
+
+    func authorizationStatus() async -> UNAuthorizationStatus {
+        await center.authorizationStatus()
     }
 
     func sendTestReminder(after seconds: TimeInterval) async {
