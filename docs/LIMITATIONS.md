@@ -249,14 +249,12 @@ keep them here so the design's compromises live in one place alongside your proj
   an uncatchable Obj-C "no active video connection" exception). Lifecycle is logged via `os.Logger`
   (subsystem `com.ryankrol.sprout`, category `camera`).
 
-- **The Edit-plant "Add/Change photo" captures without a live preview (a blind snap).**
-  *Why:* T219 reused the single-shot `PhotoCapturing.capture()` seam rather than presenting the full
-  camera screen, so editing a plant snaps a frame (after a short sensor settle) without showing a preview to
-  frame the shot. The guided add-flow *does* show a live preview (`PhotoCaptureView`).
-  *Impact:* on device, "Add photo" in Edit grabs whatever the camera sees with no framing/preview/retake; on
-  the simulator it stages the distinct "Demo photo" stub image. Functional, but not a great capture UX.
-  *Revisit:* present the live-preview capture screen for Edit too (single-plant), returning the image to the
-  edit form to stage.
+- **~~The Edit-plant "Add/Change photo" captures without a live preview (a blind snap).~~ Fixed (fix/camera-preview).**
+  Edit now presents `CapturePhotoView` — a single-shot screen with a **live preview + a shutter the user taps**
+  (and a Cancel), so capture is intentional and framed. The screen **starts the session on appear and stops it
+  on `onDisappear`**, so the camera no longer stays active after closing (no lingering green privacy dot). The
+  guided `PhotoCaptureView` also stops on disappear now. `CapturePhotoView` returns the `UIImage` to the edit
+  form to stage (it persists nothing itself); on the simulator it shows the placeholder + returns the stub image.
 
 - **The photo flow's presentation (T207) required wiring outside the literal Camera/View scope.**
   *Why:* the capture screen is unreachable without a presenter, so `PlantListView` gained a

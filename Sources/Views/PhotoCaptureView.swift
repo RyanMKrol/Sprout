@@ -27,11 +27,9 @@ struct PhotoCaptureView: View {
         }
         .task { await previewProvider?.start() }
         .onAppear { if coordinator.isFinished { onFinish() } }
+        .onDisappear { previewProvider?.stop() }
         .onChange(of: coordinator.isFinished) { _, finished in
-            if finished {
-                previewProvider?.stop()
-                onFinish()
-            }
+            if finished { onFinish() }
         }
     }
 

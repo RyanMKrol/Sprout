@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Why a `PlantEditViewModel.save()` could not proceed. A structured error (not a
 /// string) so the view and unit tests assert the *kind* of problem.
@@ -44,21 +45,18 @@ final class PlantEditViewModel: ObservableObject {
     /// `true` if *edit* mode was asked to edit a plant the repository doesn't have.
     @Published private(set) var loadFailed: Bool = false
     /// The plant's photo bytes (T219). Pre-filled from the plant in *edit* mode, then
-    /// replaced in-memory by `changePhoto()` and persisted by `save()` — the form is
-    /// transactional, so a Cancel discards a freshly-captured photo.
+    /// replaced in-memory by `stage(_:)` (from the capture screen) and persisted by
+    /// `save()` — the form is transactional, so a Cancel discards a freshly-staged photo.
     @Published private(set) var photoData: Data?
-    /// `true` while a `changePhoto()` capture is in flight, so the view can show
-    /// progress and avoid overlapping captures.
-    @Published private(set) var isCapturingPhoto: Bool = false
 
     let mode: Mode
     private let repository: PlantRepository
     /// Retained for source compatibility with the presenter (`ContentView.makeEditor`)
     /// and any future add path; the edit form no longer reads the care database.
     private let careDatabase: CareDatabase
-    /// The camera seam (T207) used by `changePhoto()`. The simulator/tests pass the
-    /// stub so the path is screenshottable and unit-tested without hardware.
-    private let camera: PhotoCapturing
+    /// The camera seam (T207) handed to the capture screen (`CapturePhotoView`). The
+    /// simulator/tests pass the stub so the path is screenshottable and testable.
+    let camera: PhotoCapturing
     /// The plant being edited, loaded once in *edit* mode so `save()` can update it
     /// without clobbering its scheduling state. `nil` in *add* mode.
     private var editingPlant: Plant?
@@ -110,18 +108,13 @@ final class PlantEditViewModel: ObservableObject {
     /// photo" vs "Add photo" and show the image rather than a placeholder).
     var hasPhoto: Bool { photoData != nil }
 
-    /// Capture a new photo via the camera seam (T207), square + compress it with
-    /// `PlantPhoto.encode`, and stage it on the form. The preview updates immediately;
+    /// Stage a photo captured by `CapturePhotoView`: square + compress it with
+    /// `PlantPhoto.encode` and hold it on the form. The preview updates immediately;
     /// the bytes are written to the plant by `save()` (the form is transactional, so a
-    /// Cancel discards a just-captured photo). A failed/empty capture leaves the
-    /// existing photo untouched.
-    func changePhoto() async {
-        guard !isCapturingPhoto else { return }
-        isCapturingPhoto = true
-        defer { isCapturingPhoto = false }
-        guard let image = await camera.capture(), let data = PlantPhoto.encode(image) else {
-            return // capture failed — keep the current photo
-        }
+    /// Cancel discards a just-staged photo). An unencodable image is ignored (keeps the
+    /// existing photo).
+    func stage(_ image: UIImage) {
+        guard let data = PlantPhoto.encode(image) else { return }
         photoData = data
     }
 
