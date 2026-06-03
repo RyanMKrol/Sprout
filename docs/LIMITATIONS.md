@@ -656,6 +656,15 @@ keep them here so the design's compromises live in one place alongside your proj
   in `onTakePhotos`. `PhotoCaptureCoordinator` gained an `Identifiable` `id`. *Revisit:* if the
   HomeView/PlantListView wiring is unified (see the row above), this becomes one implementation.
 
+- **Sequential-capture feedback timings are hardcoded and unit-test-blind.** *Why:* the photo flow
+  felt silent (only the banner text changed), so the shutter now plays a fixed feedback sequence — a
+  ~70 ms white flash, then a ~650 ms green "Saved — next plant" pulse + success haptic + a banner slide.
+  *Impact:* the ~0.7 s confirmation hold adds latency between shots (deliberate, so the success is
+  legible), and the animations/haptics are SwiftUI/`UIKit`-only with no unit coverage — verified by the
+  screenshot (static frame) + on-device feel, not XCTest. The success guard keys off the coordinator's
+  `index` advancing, so a failed capture correctly flashes without a confirmation. *Revisit:* if users
+  find the per-shot pause slow, shorten the hold or make it interruptible by the next tap.
+
 - **Care DB audit (T224): the "~320 species" target is already nearly met, so T226 will overshoot.**
   *Why:* the original dataset plan aimed for ~300 and the loop overshot to **305**; the T224 audit
   ([`research/care-db-audit.md`](./research/care-db-audit.md)) found the common UK core is already
