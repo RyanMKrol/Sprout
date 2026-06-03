@@ -36,13 +36,18 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        DiagnosticsView()
+                    } label: {
+                        Label("Camera diagnostics", systemImage: "doc.text.magnifyingglass")
+                    }
                     Button("Delete all plants & rooms", role: .destructive) {
                         resetConfirmationPresented = true
                     }
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("Removes every plant and room from this device. This can't be undone.")
+                    Text("Camera diagnostics captures an on-device log of the photo flow you can copy or share. Delete removes every plant and room — this can't be undone.")
                 }
             }
             .navigationTitle("Settings")

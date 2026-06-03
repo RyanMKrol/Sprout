@@ -19,7 +19,7 @@ final class StubPhotoCapturing: PhotoCapturing {
     }
 
     func capture() async -> UIImage? {
-        cameraLog.info("StubPhotoCapturing.capture() — returning \(self.returnsImage ? "demo image" : "nil")")
+        dlog("StubPhotoCapturing.capture() — returning \(self.returnsImage ? "demo image" : "nil")")
         return returnsImage ? Self.placeholderImage() : nil
     }
 

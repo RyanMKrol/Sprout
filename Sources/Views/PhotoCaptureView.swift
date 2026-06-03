@@ -25,9 +25,13 @@ struct PhotoCaptureView: View {
             }
             .padding()
         }
-        .task { await previewProvider?.start() }
-        .onAppear { if coordinator.isFinished { onFinish() } }
-        .onDisappear { previewProvider?.stop() }
+        .task {
+            dlog("PhotoCaptureView.task — starting preview (provider=\(previewProvider != nil))")
+            await previewProvider?.start()
+            dlog("PhotoCaptureView.task — start() returned")
+        }
+        .onAppear { dlog("PhotoCaptureView.onAppear (finished=\(coordinator.isFinished))"); if coordinator.isFinished { onFinish() } }
+        .onDisappear { dlog("PhotoCaptureView.onDisappear — stopping session"); previewProvider?.stop() }
         .onChange(of: coordinator.isFinished) { _, finished in
             if finished { onFinish() }
         }
@@ -94,6 +98,7 @@ struct PhotoCaptureView: View {
             Spacer()
 
             Button {
+                dlog("PhotoCaptureView — shutter tapped")
                 Task { await coordinator.captureCurrent() }
             } label: {
                 ZStack {

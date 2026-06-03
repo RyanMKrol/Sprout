@@ -138,6 +138,7 @@ struct HomeView: View {
                 plants: promptTargets,
                 onTakePhotos: {
                     // Build the coordinator (and its single camera session) once, now.
+                    dlog("home: 'Take Photos' tapped — building coordinator for \(promptTargets.count) plant(s)")
                     photoCoordinator = makePhotoCapture?(promptTargets)
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
