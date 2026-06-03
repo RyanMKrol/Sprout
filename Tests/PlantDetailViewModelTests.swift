@@ -65,6 +65,38 @@ final class PlantDetailViewModelTests: XCTestCase {
         XCTAssertEqual(vm.baseIntervalDays, 21)
     }
 
+    // MARK: manual schedule override
+
+    func testDaysUntilDueReflectsDueStatusAndFallsBackToBaseInterval() throws {
+        let scheduled = Plant(nickname: "Lily", species: "Peace Lily", nextDue: day(3))
+        try repo.add(scheduled)
+        let vmScheduled = PlantDetailViewModel(plantID: scheduled.id, repository: repo, careDatabase: careDatabase)
+        vmScheduled.load(now: now)
+        XCTAssertEqual(vmScheduled.daysUntilDue, 3)
+
+        // Never-scheduled → the species' starting cadence.
+        let fresh = Plant(nickname: "New", species: "Snake Plant")
+        try repo.add(fresh)
+        let vmFresh = PlantDetailViewModel(plantID: fresh.id, repository: repo, careDatabase: careDatabase)
+        vmFresh.load(now: now)
+        XCTAssertEqual(vmFresh.daysUntilDue, 21)
+    }
+
+    func testSetDueInDaysOverridesScheduleAndPersists() throws {
+        let plant = Plant(nickname: "Lily", species: "Peace Lily", nextDue: day(-1))
+        try repo.add(plant)
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+        XCTAssertEqual(vm.due, .overdue(days: 1))
+
+        vm.setDueInDays(5, now: now)
+
+        XCTAssertEqual(vm.due, .due(days: 5))
+        // Persisted to the repository, not just the view model.
+        let saved = try XCTUnwrap(try repo.plant(id: plant.id))
+        XCTAssertEqual(DueStatus(nextDue: saved.nextDue, now: now), .due(days: 5))
+    }
+
     // MARK: check-in history
 
     func testHistoryIsOrderedMostRecentFirst() throws {

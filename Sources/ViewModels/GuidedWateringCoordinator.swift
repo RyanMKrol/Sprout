@@ -10,9 +10,12 @@ import Foundation
 /// plants, or just the plants that are due. All logic is here behind the
 /// `PhotoCapturing`-free engine seam, so it's unit-tested with an in-memory repo.
 @MainActor
-final class GuidedWateringCoordinator: ObservableObject {
+final class GuidedWateringCoordinator: ObservableObject, Identifiable {
     /// Which plants the walkthrough covers.
     enum Mode { case due, all }
+
+    /// Stable identity so the coordinator can drive a `.fullScreenCover(item:)`.
+    nonisolated let id = UUID()
 
     let plants: [Plant]
     /// The user's report for the current plant.

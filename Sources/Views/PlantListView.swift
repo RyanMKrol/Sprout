@@ -84,6 +84,7 @@ struct PlantListView: View {
             if let makeDetail {
                 PlantDetailView(
                     viewModel: makeDetail(plantID),
+                    makeEditor: makeEditor,
                     makeCheckIn: makeCheckIn
                 )
             }
@@ -263,12 +264,12 @@ struct PlantCardView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            PlantThumbnail(photoData: item.photoData, tint: dueColor)
+            PlantThumbnail(photoData: item.photoData, tint: PlantPalette.color(for: item.id))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.nickname)
                     .font(.headline)
-                Text(item.species)
+                Text(item.species.capitalisedWords)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if let whySummary = item.whySummary {

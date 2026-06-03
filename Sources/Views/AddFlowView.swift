@@ -160,7 +160,7 @@ struct AddFlowView: View {
                             TextField("Nickname", text: nameBinding(for: entry))
                                 .textInputAutocapitalization(.words)
                                 .font(.body)
-                            Text(entry.species)
+                            Text(entry.species.capitalisedWords)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -197,12 +197,12 @@ struct AddFlowView: View {
                     viewModel.add(profile)
                 } label: {
                     HStack {
-                        Text(profile.species)
+                        Text(profile.species.capitalisedWords)
                             .foregroundStyle(.primary)
                         Spacer()
                         Image(systemName: "plus.circle.fill")
                             .foregroundStyle(Color.accentColor)
-                            .accessibilityLabel("Add \(profile.species)")
+                            .accessibilityLabel("Add \(profile.species.capitalisedWords)")
                     }
                 }
             }

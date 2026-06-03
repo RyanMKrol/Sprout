@@ -35,28 +35,33 @@ final class RoomsViewModel: ObservableObject {
         items = rooms.map { Item(room: $0, plantCount: counts[$0.id] ?? 0) }
     }
 
-    /// Create a new room, then reload. Blank names are ignored.
+    /// Create a new room, then reload. Blank names are ignored; the name is stored in
+    /// proper case (each word capitalised).
     func add(name: String, sunlight: SunlightLevel, humidity: RoomHumidity) {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        try? repository.addRoom(Room(name: trimmed, sunlight: sunlight, humidity: humidity))
+        try? repository.addRoom(Room(name: trimmed.capitalisedWords, sunlight: sunlight, humidity: humidity))
         load()
     }
 
     /// Create a new room from the T220 two-input light model, then reload. Blank
-    /// names are ignored.
+    /// names are ignored; the name is stored in proper case (each word capitalised).
     func add(name: String, directSun: LightLevel, indirectSun: LightLevel, humidity: RoomHumidity) {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         try? repository.addRoom(
-            Room(name: trimmed, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
+            Room(name: trimmed.capitalisedWords, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
         )
         load()
     }
 
-    /// Persist edits to an existing room, then reload. Blank names are ignored.
+    /// Persist edits to an existing room, then reload. Blank names are ignored; the name
+    /// is normalised to proper case (each word capitalised).
     func update(_ room: Room) {
-        guard !room.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        let trimmed = room.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        var room = room
+        room.name = trimmed.capitalisedWords
         try? repository.updateRoom(room)
         load()
     }

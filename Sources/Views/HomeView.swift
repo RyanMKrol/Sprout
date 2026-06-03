@@ -18,8 +18,6 @@ struct HomeView: View {
 
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
-    @State private var guided: GuidedWateringCoordinator?
-    @State private var guidedPresented = false
     @State private var didDeepLink = false
     // Add-plants flow + its "take photos?" follow-up (T208 pattern), launched from the
     // home Add tile.
@@ -28,14 +26,27 @@ struct HomeView: View {
     /// that prompt sheet is showing (T223 — now a connected sheet, not a floating dialog).
     @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPromptPresented = false
-    /// The photo-capture coordinator. **It is the single source of truth for the camera
-    /// cover** — the `.fullScreenCover(item:)` presents iff this is non-nil, so the cover
-    /// can never appear with a nil coordinator (the black-screen bug). Built once, when
-    /// the camera launches (so its single `AVCaptureSession` isn't rebuilt per re-render).
-    @State private var photoCoordinator: PhotoCaptureCoordinator?
+    /// The single full-screen flow currently presented (camera or guided watering). **One
+    /// `.fullScreenCover(item:)` for both** — two separate covers on the same view conflict
+    /// on device (one presents an empty/black screen), so they share one source of truth.
+    @State private var cover: FullScreenFlow?
     /// Set when the photo prompt's "Take Photos" is tapped, so the camera launches from
     /// the prompt sheet's `onDismiss` (avoids a present-while-dismissing race).
     @State private var startPhotosOnDismiss = false
+
+    /// The mutually-exclusive full-screen flows the home can present. Identifiable so a
+    /// single `.fullScreenCover(item:)` drives both — it presents iff non-nil and hands
+    /// the unwrapped value to the content closure, so neither can present empty.
+    private enum FullScreenFlow: Identifiable {
+        case camera(PhotoCaptureCoordinator)
+        case guided(GuidedWateringCoordinator)
+        var id: UUID {
+            switch self {
+            case let .camera(coordinator): return coordinator.id
+            case let .guided(coordinator): return coordinator.id
+            }
+        }
+    }
 
     /// Push destinations for the tiles.
     private enum Route: Hashable { case plants, rooms }
@@ -149,17 +160,16 @@ struct HomeView: View {
                 }
             )
         }
-        .fullScreenCover(item: $photoCoordinator) { coordinator in
-            let _ = dlog("home: fullScreenCover content — presenting camera (targets=\(coordinator.targets.count))")
-            PhotoCaptureView(coordinator: coordinator) {
-                self.photoCoordinator = nil
-                listViewModel.load()
-            }
-        }
-        .fullScreenCover(isPresented: $guidedPresented) {
-            if let guided {
-                GuidedWateringView(coordinator: guided) {
-                    guidedPresented = false
+        .fullScreenCover(item: $cover) { flow in
+            switch flow {
+            case let .camera(coordinator):
+                PhotoCaptureView(coordinator: coordinator) {
+                    cover = nil
+                    listViewModel.load()
+                }
+            case let .guided(coordinator):
+                GuidedWateringView(coordinator: coordinator) {
+                    cover = nil
                     listViewModel.load()
                 }
             }
@@ -186,15 +196,16 @@ struct HomeView: View {
         guard startPhotosOnDismiss else { return }
         startPhotosOnDismiss = false
         dlog("home: prompt dismissed — building coordinator + presenting camera cover")
-        // Building the coordinator here sets the cover's `item`, which presents it —
-        // one source of truth, so the cover can't appear without a coordinator.
-        photoCoordinator = makePhotoCapture?(promptTargets)
+        // Setting the cover's `item` presents it — one source of truth, so it can't
+        // appear without a coordinator.
+        if let coordinator = makePhotoCapture?(promptTargets) {
+            cover = .camera(coordinator)
+        }
     }
 
     /// Build the guided coordinator for `mode` and present the walkthrough.
     private func startGuided(_ mode: GuidedWateringCoordinator.Mode) {
-        guided = makeGuidedWatering(mode)
-        guidedPresented = true
+        cover = .guided(makeGuidedWatering(mode))
     }
 
     /// Screenshot deep-link (T002 convention). `home`/`list` (default) lands on the
@@ -212,6 +223,11 @@ struct HomeView: View {
             settingsPresented = true
         case "plants", "add", "basket", "addflow", "camera", "photoprompt", "edit":
             path.append(Route.plants)
+        case "detail", "checkin":
+            // Push the list, then the first plant's detail (the detail screen itself
+            // opens its check-in sheet when the screen is `checkin`).
+            path.append(Route.plants)
+            if let first = listViewModel.items.first?.id { path.append(first) }
         case "water":
             startGuided(.all)
         default:

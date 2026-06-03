@@ -43,9 +43,9 @@ struct GuidedWateringView: View {
         Form {
             Section {
                 VStack(spacing: 8) {
-                    PlantThumbnail(photoData: plant.photoData, tint: .green, size: 120)
+                    PlantThumbnail(photoData: plant.photoData, tint: PlantPalette.color(for: plant.id), size: 120)
                     Text(plant.nickname).font(.title2.bold())
-                    Text(plant.species).font(.subheadline).foregroundStyle(.secondary)
+                    Text(plant.species.capitalisedWords).font(.subheadline).foregroundStyle(.secondary)
                     Text(coordinator.progressText).font(.caption).foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity)

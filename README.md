@@ -99,6 +99,13 @@ source of truth):
 | T226 | ✅ done | Care DB gap-fill batch 2 — 15 species (Tier 2 cultivars) → 335 |
 | T227 | ✅ done | Care DB final audit — 335 unique, deduped, validated, 1:1 provenance |
 
+**Post-backlog polish** (off-loop, device-tested): fixed the camera black screen and the guided-watering
+black screen (both were two-`fullScreenCover` conflicts — now single `item:`-driven covers); added
+satisfying sequential-capture feedback (flash + green pulse + slide); the Plant Detail screen now has a
+larger photo/header, an **Edit** button, and a tappable **manual schedule override** (water-in-N-days
+wheel); species and room names display in proper case; and the leaf-glyph placeholder uses a vibrant
+per-plant colour instead of a uniform blue.
+
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once
 everything is built. Full specs + the per-batch plant categories are in [`TASKS.md`](./TASKS.md) and

@@ -1,26 +1,36 @@
 import SwiftUI
 
-/// The **Plant Detail** screen (T008). Shows a plant's name/species, its current
-/// watering schedule (a placeholder summary until the engine lands in T009), and
-/// its chronological check-in history. Reached by tapping a card in the My Plants
-/// list, and verified by the `-seedDemoData YES` screenshot convention
+/// The **Plant Detail** screen (T008). Shows a plant's photo + name as a prominent
+/// header, its current watering schedule (tappable to override the cadence by hand),
+/// and its chronological check-in history. An **Edit** button (top right) opens the
+/// edit form to change the nickname, room, or photo. Reached by tapping a card in the
+/// My Plants list, and verified by the `-seedDemoData YES` screenshot convention
 /// (`SPROUT_SCREEN=detail`).
 ///
 /// Pure presentation: all loading / ordering / derivation lives in
 /// `PlantDetailViewModel`; this view only renders its published state.
 struct PlantDetailView: View {
     @StateObject private var viewModel: PlantDetailViewModel
+    /// Builds the edit form (T007/T218) for this plant. When `nil`, the Edit button is
+    /// hidden — keeps the detail screen usable on its own.
+    private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
     /// Builds the check-in view model (T011) for this plant. When `nil`, the
     /// "Check in" affordance is hidden — keeps the detail screen usable on its own.
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
     @State private var checkingIn = false
+    @State private var editingPlant = false
+    @State private var editingSchedule = false
+    /// The value bound to the manual "due in N days" wheel while its sheet is open.
+    @State private var scheduleDays = 7
     @State private var didDeepLink = false
 
     init(
         viewModel: PlantDetailViewModel,
+        makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)? = nil,
         makeCheckIn: ((UUID) -> CheckInViewModel)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.makeEditor = makeEditor
         self.makeCheckIn = makeCheckIn
     }
 
@@ -34,28 +44,29 @@ struct PlantDetailView: View {
                 )
             } else {
                 Form {
-                    Section {
-                        HStack {
-                            Spacer()
-                            PlantThumbnail(photoData: viewModel.photoData, tint: dueColor, size: 120)
-                            Spacer()
-                        }
-                        .listRowBackground(Color.clear)
-                    }
-
-                    Section("Species") {
-                        LabeledContent("Species", value: viewModel.species)
-                    }
+                    header
 
                     Section("Schedule") {
-                        HStack {
-                            Image(systemName: "drop.fill")
-                                .foregroundStyle(dueColor)
-                                .accessibilityHidden(true)
-                            Text(viewModel.due.label)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(dueColor)
+                        Button {
+                            scheduleDays = viewModel.daysUntilDue
+                            editingSchedule = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "drop.fill")
+                                    .foregroundStyle(dueColor)
+                                    .accessibilityHidden(true)
+                                Text(viewModel.due.label)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(dueColor)
+                                Spacer()
+                                Image(systemName: "pencil")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .tint(.primary)
+                        .accessibilityHint("Adjust when this plant is next due")
+
                         Text(viewModel.explanation?.sentence ?? viewModel.scheduleSummary)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -88,6 +99,13 @@ struct PlantDetailView: View {
         }
         .navigationTitle(viewModel.loadFailed ? "Plant" : viewModel.nickname)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if makeEditor != nil, !viewModel.loadFailed {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Edit") { editingPlant = true }
+                }
+            }
+        }
         .sheet(isPresented: $checkingIn) {
             if let makeCheckIn {
                 CheckInView(viewModel: makeCheckIn(viewModel.plantID)) {
@@ -96,9 +114,50 @@ struct PlantDetailView: View {
                 }
             }
         }
+        .sheet(isPresented: $editingPlant) {
+            if let makeEditor {
+                PlantEditView(viewModel: makeEditor(.edit(plantID: viewModel.plantID))) {
+                    // Reload so an edited nickname / room / photo shows immediately.
+                    editingPlant = false
+                    viewModel.load()
+                }
+            }
+        }
+        .sheet(isPresented: $editingSchedule) {
+            ScheduleEditorSheet(days: $scheduleDays) {
+                viewModel.setDueInDays(scheduleDays)
+                editingSchedule = false
+            } onCancel: {
+                editingSchedule = false
+            }
+        }
         .onAppear {
             viewModel.load()
             deepLinkIfRequested()
+        }
+    }
+
+    /// The prominent header: a large photo, the nickname, and the species below it.
+    private var header: some View {
+        Section {
+            VStack(spacing: 14) {
+                PlantThumbnail(
+                    photoData: viewModel.photoData,
+                    tint: PlantPalette.color(for: viewModel.plantID),
+                    size: 200
+                )
+                VStack(spacing: 4) {
+                    Text(viewModel.nickname)
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                    Text(viewModel.species.capitalisedWords)
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .listRowBackground(Color.clear)
         }
     }
 
@@ -120,6 +179,47 @@ struct PlantDetailView: View {
         case .dueToday: return .orange
         case .due: return .blue
         case .unscheduled: return .secondary
+        }
+    }
+}
+
+/// A small sheet with a day wheel for overriding when a plant is next due by hand.
+private struct ScheduleEditorSheet: View {
+    @Binding var days: Int
+    let onSave: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Text("Water this plant in")
+                    .font(.headline)
+                    .padding(.top)
+                Picker("Days until due", selection: $days) {
+                    ForEach(0...365, id: \.self) { day in
+                        Text(day == 0 ? "Today" : "\(day) \(day == 1 ? "day" : "days")").tag(day)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(maxHeight: 200)
+                Text("Sets the next-watering date. Future check-ins keep adapting it.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                Spacer()
+            }
+            .navigationTitle("Adjust schedule")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { onCancel() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { onSave() }
+                }
+            }
+            .presentationDetents([.medium])
         }
     }
 }
