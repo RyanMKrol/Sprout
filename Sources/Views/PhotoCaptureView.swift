@@ -1,14 +1,28 @@
 import SwiftUI
+import UIKit
 
 /// The **sequential photo capture** screen (T207). Shows a square camera preview (or
 /// a placeholder when the camera is unavailable — e.g. the simulator), an overlay
 /// banner naming the current plant, a shutter that captures + auto-advances, and a
 /// Skip button. Driven entirely by `PhotoCaptureCoordinator`; no back navigation.
+///
+/// Capturing a photo plays a clear sequence of feedback so it's obvious a shot landed
+/// and the flow has moved on (T207 felt silent — only the text changed): a white
+/// **shutter flash**, a **green "Saved — next plant" pulse** with a checkmark, a
+/// success **haptic**, and an animated **slide** of the banner to the next plant.
 struct PhotoCaptureView: View {
     @StateObject private var coordinator: PhotoCaptureCoordinator
     /// Called once every plant has been photographed or skipped (or immediately if
     /// there were none), so the presenter can dismiss and refresh.
     private let onFinish: () -> Void
+
+    /// Opacity of the white shutter-flash overlay (0 = hidden, ~0.85 = full flash).
+    @State private var flashOpacity: Double = 0
+    /// Whether the green "saved" confirmation overlay is showing.
+    @State private var showSuccess = false
+    /// True while a capture's feedback sequence is running — disables the controls so
+    /// a double-tap can't fire a second capture mid-animation.
+    @State private var isBusy = false
 
     init(coordinator: PhotoCaptureCoordinator, onFinish: @escaping () -> Void = {}) {
         dlog("PhotoCaptureView.init")
@@ -25,6 +39,9 @@ struct PhotoCaptureView: View {
                 controls
             }
             .padding()
+            // Animate the banner's identity swap (and the success border) whenever we
+            // advance to the next plant, so the move is visible rather than instant.
+            .animation(.easeInOut(duration: 0.4), value: coordinator.index)
         }
         .task {
             dlog("PhotoCaptureView.task — starting preview (provider=\(previewProvider != nil))")
@@ -33,9 +50,6 @@ struct PhotoCaptureView: View {
         }
         .onAppear { dlog("PhotoCaptureView.onAppear (finished=\(coordinator.isFinished))"); if coordinator.isFinished { onFinish() } }
         .onDisappear { dlog("PhotoCaptureView.onDisappear — stopping session"); previewProvider?.stop() }
-        .onChange(of: coordinator.isFinished) { _, finished in
-            if finished { onFinish() }
-        }
     }
 
     private var previewProvider: CameraPreviewProviding? {
@@ -59,6 +73,13 @@ struct PhotoCaptureView: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(coordinator.bannerText)
+        // New identity per plant → the asymmetric transition slides the old banner out
+        // to the left and the next plant's banner in from the right ("on to the next").
+        .id(coordinator.index)
+        .transition(.asymmetric(
+            insertion: .move(edge: .trailing).combined(with: .opacity),
+            removal: .move(edge: .leading).combined(with: .opacity)
+        ))
     }
 
     @ViewBuilder
@@ -69,10 +90,41 @@ struct PhotoCaptureView: View {
             } else {
                 placeholder
             }
+
+            // White shutter flash — a quick burst the instant the shutter is tapped.
+            Color.white
+                .opacity(flashOpacity)
+                .allowsHitTesting(false)
+
+            // Green confirmation pulse — appears once the photo is saved.
+            if showSuccess {
+                successOverlay
+                    .transition(.opacity.combined(with: .scale(scale: 0.85)))
+            }
         }
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.3), lineWidth: 1))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(showSuccess ? Color.green : Color.white.opacity(0.3),
+                        lineWidth: showSuccess ? 4 : 1)
+        )
+    }
+
+    /// The green "saved" confirmation shown briefly over the preview after a capture.
+    private var successOverlay: some View {
+        ZStack {
+            Color.green.opacity(0.45)
+            VStack(spacing: 10) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 72))
+                    .foregroundStyle(.white)
+                Text(coordinator.isFinished ? "All done!" : "Saved — next plant")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            }
+        }
+        .accessibilityHidden(true)
     }
 
     /// Shown when no live camera is available (simulator / denied permission).
@@ -92,21 +144,22 @@ struct PhotoCaptureView: View {
 
     private var controls: some View {
         HStack {
-            Button("Skip") { coordinator.skip() }
+            Button("Skip") { skipCurrent() }
                 .foregroundStyle(.white)
                 .frame(width: 80, alignment: .leading)
 
             Spacer()
 
             Button {
-                dlog("PhotoCaptureView — shutter tapped")
-                Task { await coordinator.captureCurrent() }
+                Task { await capture() }
             } label: {
                 ZStack {
                     Circle().fill(.white).frame(width: 72, height: 72)
                     Circle().stroke(.white, lineWidth: 4).frame(width: 84, height: 84)
                 }
             }
+            .scaleEffect(isBusy ? 0.9 : 1)
+            .animation(.easeOut(duration: 0.15), value: isBusy)
             .accessibilityLabel("Take photo")
 
             Spacer()
@@ -114,7 +167,66 @@ struct PhotoCaptureView: View {
             // Balances the Skip button so the shutter stays centred.
             Color.clear.frame(width: 80, height: 1)
         }
+        .disabled(isBusy)
+        .opacity(isBusy ? 0.6 : 1)
         .padding(.horizontal)
+    }
+
+    // MARK: - Capture flow
+
+    /// Take a photo with full feedback: shutter flash → capture → (on success) green
+    /// confirmation pulse + haptic, the banner having slid to the next plant. A failed
+    /// capture flashes but shows no confirmation and stays on the current plant.
+    private func capture() async {
+        guard !isBusy, coordinator.current != nil else { return }
+        dlog("PhotoCaptureView — shutter tapped")
+        isBusy = true
+        defer { isBusy = false }
+
+        // 1. Shutter flash — immediate, responsive feedback on tap.
+        haptic(.shutter)
+        withAnimation(.easeOut(duration: 0.07)) { flashOpacity = 0.85 }
+        try? await Task.sleep(nanoseconds: 70_000_000)
+        withAnimation(.easeIn(duration: 0.3)) { flashOpacity = 0 }
+
+        // 2. Capture + save. captureCurrent advances on success, stays put on failure.
+        let before = coordinator.index
+        await coordinator.captureCurrent()
+        let advanced = coordinator.index != before || coordinator.isFinished
+        guard advanced else { return } // capture failed → no confirmation, retry
+
+        // 3. Green confirmation pulse (the banner has already slid to the next plant).
+        haptic(.success)
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { showSuccess = true }
+        try? await Task.sleep(nanoseconds: 650_000_000)
+        withAnimation(.easeOut(duration: 0.25)) { showSuccess = false }
+
+        if coordinator.isFinished {
+            try? await Task.sleep(nanoseconds: 150_000_000)
+            onFinish()
+        }
+    }
+
+    /// Skip the current plant: animate the banner to the next one (no capture feedback),
+    /// and finish if that was the last plant.
+    private func skipCurrent() {
+        guard !isBusy else { return }
+        haptic(.shutter)
+        coordinator.skip()
+        if coordinator.isFinished { onFinish() }
+    }
+
+    // MARK: - Haptics
+
+    private enum Haptic { case shutter, success }
+
+    private func haptic(_ kind: Haptic) {
+        switch kind {
+        case .shutter:
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        case .success:
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
     }
 }
 
