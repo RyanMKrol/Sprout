@@ -45,59 +45,17 @@ struct PlantDetailView: View {
             } else {
                 Form {
                     header
-
-                    Section("Schedule") {
-                        Button {
-                            scheduleDays = viewModel.daysUntilDue
-                            editingSchedule = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "drop.fill")
-                                    .foregroundStyle(dueColor)
-                                    .accessibilityHidden(true)
-                                Text(viewModel.due.label)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(dueColor)
-                                Spacer()
-                                Image(systemName: "pencil")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .tint(.primary)
-                        .accessibilityHint("Adjust when this plant is next due")
-
-                        Text(viewModel.explanation?.sentence ?? viewModel.scheduleSummary)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    if makeCheckIn != nil {
-                        Section {
-                            Button {
-                                checkingIn = true
-                            } label: {
-                                Label("Check in", systemImage: "checkmark.circle")
-                                    .frame(maxWidth: .infinity)
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                    }
-
-                    Section("Check-in history") {
-                        if viewModel.hasHistory {
-                            ForEach(viewModel.history) { item in
-                                CheckInRow(item: item)
-                            }
-                        } else {
-                            Text("No check-ins yet.")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    scheduleSection
+                    if makeCheckIn != nil { checkInSection }
+                    historySection
                 }
+                // Pull the form up under the bar so the photo isn't floating in empty space.
+                .contentMargins(.top, 8, for: .scrollContent)
             }
         }
-        .navigationTitle(viewModel.loadFailed ? "Plant" : viewModel.nickname)
+        // No title text in the bar: the big in-content header already names the plant,
+        // so a bar title would just duplicate it. (Inline + empty keeps the back chevron.)
+        .navigationTitle(viewModel.loadFailed ? "Plant" : "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if makeEditor != nil, !viewModel.loadFailed {
@@ -137,14 +95,17 @@ struct PlantDetailView: View {
         }
     }
 
-    /// The prominent header: a large photo, the nickname, and the species below it.
+    // MARK: - Sections
+
+    /// The prominent header: a photo, the nickname, and the species below it. Flush at
+    /// the top (no extra section padding) so it doesn't float in empty space.
     private var header: some View {
         Section {
-            VStack(spacing: 14) {
+            VStack(spacing: 12) {
                 PlantThumbnail(
                     photoData: viewModel.photoData,
                     tint: PlantPalette.color(for: viewModel.plantID),
-                    size: 200
+                    size: 170
                 )
                 VStack(spacing: 4) {
                     Text(viewModel.nickname)
@@ -156,8 +117,61 @@ struct PlantDetailView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 4, trailing: 16))
             .listRowBackground(Color.clear)
+        }
+    }
+
+    private var scheduleSection: some View {
+        Section("Schedule") {
+            Button {
+                scheduleDays = viewModel.daysUntilDue
+                editingSchedule = true
+            } label: {
+                HStack {
+                    Image(systemName: "drop.fill")
+                        .foregroundStyle(dueColor)
+                        .accessibilityHidden(true)
+                    Text(viewModel.due.label)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(dueColor)
+                    Spacer()
+                    Image(systemName: "pencil")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .tint(.primary)
+            .accessibilityHint("Adjust when this plant is next due")
+
+            Text(viewModel.explanation?.sentence ?? viewModel.scheduleSummary)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var checkInSection: some View {
+        Section {
+            Button {
+                checkingIn = true
+            } label: {
+                Label("Check in", systemImage: "checkmark.circle")
+                    .frame(maxWidth: .infinity)
+                    .fontWeight(.semibold)
+            }
+        }
+    }
+
+    private var historySection: some View {
+        Section("Check-in history") {
+            if viewModel.hasHistory {
+                ForEach(viewModel.history) { item in
+                    CheckInRow(item: item)
+                }
+            } else {
+                Text("No check-ins yet.")
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

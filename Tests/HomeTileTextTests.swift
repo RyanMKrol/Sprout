@@ -24,4 +24,14 @@ final class HomeTileTextTests: XCTestCase {
         XCTAssertEqual(HomeTileText.checkInSubtitle(total: 1), "Check every plant")
         XCTAssertEqual(HomeTileText.checkInSubtitle(total: 9), "Check every plant")
     }
+
+    func testStatusLineGreeting() {
+        // No plants → onboarding nudge.
+        XCTAssertEqual(HomeTileText.statusLine(dueCount: 0, total: 0), "Let's add your first plant 🌱")
+        // Plants, none due → reassurance.
+        XCTAssertEqual(HomeTileText.statusLine(dueCount: 0, total: 5), "Everything's watered — nice work 🌿")
+        // Due plants → singular / plural.
+        XCTAssertEqual(HomeTileText.statusLine(dueCount: 1, total: 5), "1 plant needs water today 💧")
+        XCTAssertEqual(HomeTileText.statusLine(dueCount: 3, total: 5), "3 plants need water today 💧")
+    }
 }
