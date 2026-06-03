@@ -23,6 +23,12 @@ struct PhotoCaptureView: View {
     /// True while a capture's feedback sequence is running — disables the controls so
     /// a double-tap can't fire a second capture mid-animation.
     @State private var isBusy = false
+    /// Whole-screen opacity, faded to 0 on the final plant so the flow fades out cleanly
+    /// instead of sliding the banner away to an empty "N of N".
+    @State private var screenOpacity: Double = 1
+    /// The last non-nil plant shown — kept so the banner can stay on the final plant
+    /// (rather than blank) once the coordinator finishes and `current` becomes nil.
+    @State private var lastTarget: PhotoCaptureCoordinator.Target?
 
     init(coordinator: PhotoCaptureCoordinator, onFinish: @escaping () -> Void = {}) {
         dlog("PhotoCaptureView.init")
@@ -39,16 +45,24 @@ struct PhotoCaptureView: View {
                 controls
             }
             .padding()
-            // Animate the banner's identity swap (and the success border) whenever we
-            // advance to the next plant, so the move is visible rather than instant.
-            .animation(.easeInOut(duration: 0.4), value: coordinator.index)
+            // Animate the banner's identity swap whenever we advance to the next plant,
+            // so the move is visible rather than instant.
+            .animation(.easeInOut(duration: 0.4), value: displayedTarget?.id)
         }
+        .opacity(screenOpacity)
         .task {
             dlog("PhotoCaptureView.task — starting preview (provider=\(previewProvider != nil))")
             await previewProvider?.start()
             dlog("PhotoCaptureView.task — start() returned")
         }
-        .onAppear { dlog("PhotoCaptureView.onAppear (finished=\(coordinator.isFinished))"); if coordinator.isFinished { onFinish() } }
+        .onAppear {
+            dlog("PhotoCaptureView.onAppear (finished=\(coordinator.isFinished))")
+            lastTarget = coordinator.current
+            if coordinator.isFinished { onFinish() }
+        }
+        .onChange(of: coordinator.current?.id) { _, _ in
+            if let current = coordinator.current { lastTarget = current }
+        }
         .onDisappear { dlog("PhotoCaptureView.onDisappear — stopping session"); previewProvider?.stop() }
     }
 
@@ -56,13 +70,20 @@ struct PhotoCaptureView: View {
         coordinator.camera as? CameraPreviewProviding
     }
 
+    /// The plant the banner should show: the current one, or — once finished — the last
+    /// one seen, so the final plant's banner stays put (and the screen fades) instead of
+    /// sliding away to a blank "N of N".
+    private var displayedTarget: PhotoCaptureCoordinator.Target? {
+        coordinator.current ?? lastTarget
+    }
+
     // MARK: - Sections
 
     private var banner: some View {
         VStack(spacing: 4) {
-            Text(coordinator.current?.nickname ?? "")
+            Text(displayedTarget?.nickname ?? "")
                 .font(.title2.bold())
-            Text(coordinator.current?.species ?? "")
+            Text(displayedTarget?.species ?? "")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text(coordinator.progressText)
@@ -75,7 +96,9 @@ struct PhotoCaptureView: View {
         .accessibilityLabel(coordinator.bannerText)
         // New identity per plant → the asymmetric transition slides the old banner out
         // to the left and the next plant's banner in from the right ("on to the next").
-        .id(coordinator.index)
+        // On finish the id is unchanged (held on the last plant), so it stays put while
+        // the whole screen fades instead.
+        .id(displayedTarget?.id)
         .transition(.asymmetric(
             insertion: .move(edge: .trailing).combined(with: .opacity),
             removal: .move(edge: .leading).combined(with: .opacity)
@@ -96,10 +119,15 @@ struct PhotoCaptureView: View {
                 .opacity(flashOpacity)
                 .allowsHitTesting(false)
 
-            // Green confirmation pulse — appears once the photo is saved.
+            // Green confirmation pulse — appears once the photo is saved. Pops in with a
+            // slight scale, fades out gently (pure opacity — a scale-down on removal reads
+            // as an abrupt snap).
             if showSuccess {
                 successOverlay
-                    .transition(.opacity.combined(with: .scale(scale: 0.85)))
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.9)),
+                        removal: .opacity
+                    ))
             }
         }
         .aspectRatio(1, contentMode: .fit)
@@ -195,25 +223,37 @@ struct PhotoCaptureView: View {
         let advanced = coordinator.index != before || coordinator.isFinished
         guard advanced else { return } // capture failed → no confirmation, retry
 
-        // 3. Green confirmation pulse (the banner has already slid to the next plant).
+        // 3. Green confirmation pulse (for a non-final plant the banner has already slid
+        //    to the next one; on the last plant the banner stays put — see displayedTarget).
         haptic(.success)
         withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { showSuccess = true }
         try? await Task.sleep(nanoseconds: 650_000_000)
-        withAnimation(.easeOut(duration: 0.25)) { showSuccess = false }
 
         if coordinator.isFinished {
-            try? await Task.sleep(nanoseconds: 150_000_000)
+            // Last plant: keep the "All done!" pulse and banner in place and fade the whole
+            // screen out, rather than sliding to a blank next plant.
+            withAnimation(.easeInOut(duration: 0.45)) { screenOpacity = 0 }
+            try? await Task.sleep(nanoseconds: 480_000_000)
             onFinish()
+        } else {
+            // Fade the confirmation out gently before the next shot.
+            withAnimation(.easeInOut(duration: 0.4)) { showSuccess = false }
         }
     }
 
     /// Skip the current plant: animate the banner to the next one (no capture feedback),
-    /// and finish if that was the last plant.
+    /// and on the last plant fade the whole screen out before finishing.
     private func skipCurrent() {
         guard !isBusy else { return }
         haptic(.shutter)
         coordinator.skip()
-        if coordinator.isFinished { onFinish() }
+        guard coordinator.isFinished else { return }
+        isBusy = true
+        Task {
+            withAnimation(.easeInOut(duration: 0.4)) { screenOpacity = 0 }
+            try? await Task.sleep(nanoseconds: 420_000_000)
+            onFinish()
+        }
     }
 
     // MARK: - Haptics
