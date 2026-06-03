@@ -55,7 +55,7 @@ struct RoomsView: View {
         .sheet(item: $editor) { mode in
             switch mode {
             case .add:
-                RoomEditorView(title: "Add Room", room: Room(name: "", directSun: .low, indirectSun: .medium)) { name, direct, indirect, hum in
+                AddRoomView { name, direct, indirect, hum in
                     viewModel.add(name: name, directSun: direct, indirectSun: indirect, humidity: hum)
                     editor = nil
                 } onCancel: { editor = nil }
@@ -83,9 +83,15 @@ struct RoomsView: View {
     /// in release builds (`requestedScreen` is always `"list"`).
     private func deepLinkEditorIfRequested() {
         #if DEBUG
-        guard editor == nil, DemoSeed.requestedScreen == "roomeditor",
-              let first = viewModel.items.first else { return }
-        editor = .edit(first.room)
+        guard editor == nil else { return }
+        switch DemoSeed.requestedScreen {
+        case "roomeditor":
+            if let first = viewModel.items.first { editor = .edit(first.room) }
+        case "addroom":
+            editor = .add
+        default:
+            break
+        }
         #endif
     }
 }
@@ -155,7 +161,7 @@ struct RoomEditorView: View {
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    InfoHeader(
+                    RoomInfoHeader(
                         title: "Direct Sun",
                         help: "How much direct sunlight lands on the plants — e.g. an unobstructed south-facing windowsill. Direct sun dries the soil fastest."
                     )
@@ -166,7 +172,7 @@ struct RoomEditorView: View {
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    InfoHeader(
+                    RoomInfoHeader(
                         title: "Indirect Sun",
                         help: "The ambient daylight in the room with no direct beam on the leaves — bright rooms away from a window still get plenty."
                     )
@@ -204,33 +210,3 @@ struct RoomEditorView: View {
     }
 }
 
-/// A section header with a title and a small info (ⓘ) button that presents a popover
-/// explaining the field (T220 light-input tooltips).
-private struct InfoHeader: View {
-    let title: String
-    let help: String
-    @State private var showing = false
-
-    var body: some View {
-        HStack(spacing: 6) {
-            Text(title)
-            Button { showing = true } label: {
-                Image(systemName: "info.circle")
-            }
-            .buttonStyle(.borderless)
-            .accessibilityLabel("\(title) — what's this?")
-            .popover(isPresented: $showing) {
-                Text(help)
-                    .font(.callout)
-                    .multilineTextAlignment(.leading)
-                    // Let the text wrap to as many lines as it needs; without this the
-                    // popover sizes to one line and truncates the help (T220 bug).
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding()
-                    .frame(width: 280)
-                    .presentationCompactAdaptation(.popover)
-            }
-            Spacer()
-        }
-    }
-}

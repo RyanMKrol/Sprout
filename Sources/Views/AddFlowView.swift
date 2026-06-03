@@ -41,10 +41,7 @@ struct AddFlowView: View {
             .toolbar { toolbar }
             .onAppear { viewModel.loadRooms() }
             .sheet(isPresented: $addingRoom) {
-                RoomEditorView(
-                    title: "Add Room",
-                    room: Room(name: "", directSun: .low, indirectSun: .medium)
-                ) { name, direct, indirect, hum in
+                AddRoomView { name, direct, indirect, hum in
                     viewModel.createRoom(name: name, directSun: direct, indirectSun: indirect, humidity: hum)
                     addingRoom = false
                 } onCancel: { addingRoom = false }

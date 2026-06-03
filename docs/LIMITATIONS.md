@@ -687,6 +687,15 @@ keep them here so the design's compromises live in one place alongside your proj
   banners even with the app open, and Settings ▸ Developer has a 5-second test reminder. *Revisit:* if a
   reminder is ever observed stale, add an explicit `refreshDailyReminders` call to the mutating flows.
 
+- **Add-room presets are a hand-tuned table of common UK rooms, not per-home data.** *Why:* adding a
+  room now offers a wheel (`RoomPreset.common`) that auto-fills typical light + humidity so the user
+  doesn't configure everything by hand; "Other…" falls back to a custom name + manual controls. *Impact:*
+  the defaults are the same typical-indoor assumption as the environment factor table (e.g. Bathroom →
+  moist, Conservatory → bright/dry) and are only a *starting point* — the room can be edited afterwards via
+  the fuller `RoomEditorView`. The add and edit paths now use different views (`AddRoomView` vs
+  `RoomEditorView`), sharing the `RoomInfoHeader` tooltip. *Revisit:* if the preset list grows or needs
+  localising beyond UK English, move it to a data file.
+
 - **Notification permission is surfaced via a gatekeeper polled on scene-activation, not observed.**
   *Why:* iOS has no change notification for authorization status, so `NotificationGatekeeper` reads it on
   launch and on every app re-activation (`scenePhase == .active`) to drive the home bell + "reminders off"
