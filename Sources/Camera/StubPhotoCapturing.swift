@@ -19,27 +19,38 @@ final class StubPhotoCapturing: PhotoCapturing {
     }
 
     func capture() async -> UIImage? {
-        returnsImage ? Self.placeholderImage() : nil
+        cameraLog.info("StubPhotoCapturing.capture() — returning \(self.returnsImage ? "demo image" : "nil")")
+        return returnsImage ? Self.placeholderImage() : nil
     }
 
-    /// A simple square placeholder: a soft green field with a centred leaf glyph.
+    /// A square **demo** photo, intentionally distinct from the empty-state leaf
+    /// placeholder (a teal→indigo gradient + camera glyph + "Demo photo") so that on
+    /// the simulator a captured stub photo is visibly different from "no photo yet".
     static func placeholderImage(size: CGFloat = 600) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: size, height: size)
         let format = UIGraphicsImageRendererFormat.default()
         format.scale = 1
         format.opaque = true
         return UIGraphicsImageRenderer(bounds: rect, format: format).image { ctx in
-            UIColor.systemGreen.withAlphaComponent(0.2).setFill()
-            ctx.fill(rect)
-            let config = UIImage.SymbolConfiguration(pointSize: size * 0.35)
-            if let leaf = UIImage(systemName: "leaf.fill", withConfiguration: config)?
-                .withTintColor(.systemGreen, renderingMode: .alwaysOriginal) {
-                let origin = CGPoint(
-                    x: (size - leaf.size.width) / 2,
-                    y: (size - leaf.size.height) / 2
-                )
-                leaf.draw(at: origin)
+            let cg = ctx.cgContext
+            let colors = [UIColor.systemTeal.cgColor, UIColor.systemIndigo.cgColor] as CFArray
+            if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) {
+                cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: size, y: size), options: [])
+            } else {
+                UIColor.systemTeal.setFill(); cg.fill(rect)
             }
+            let config = UIImage.SymbolConfiguration(pointSize: size * 0.3)
+            if let cam = UIImage(systemName: "camera.fill", withConfiguration: config)?
+                .withTintColor(.white, renderingMode: .alwaysOriginal) {
+                cam.draw(at: CGPoint(x: (size - cam.size.width) / 2, y: size * 0.3))
+            }
+            let text = "Demo photo"
+            let attrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: size * 0.08),
+                .foregroundColor: UIColor.white,
+            ]
+            let textSize = (text as NSString).size(withAttributes: attrs)
+            (text as NSString).draw(at: CGPoint(x: (size - textSize.width) / 2, y: size * 0.58), withAttributes: attrs)
         }
     }
 }

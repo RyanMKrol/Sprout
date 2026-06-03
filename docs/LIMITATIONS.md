@@ -243,6 +243,20 @@ keep them here so the design's compromises live in one place alongside your proj
   camera unavailable, so the simulator always shows the placeholder, never a live preview.
   *Revisit:* add a device test target / manual smoke-test checklist, or a CI device lab, if the camera
   path changes often.
+  *Update (fix/camera-capture):* `AVFoundationCamera.capture()` now authorises + configures + **starts the
+  session and waits until it's running with an active video connection** before `capturePhoto`, returning
+  `nil` (never crashing) otherwise — this was the device crash (`capturePhoto` on a stopped session throws
+  an uncatchable Obj-C "no active video connection" exception). Lifecycle is logged via `os.Logger`
+  (subsystem `com.ryankrol.sprout`, category `camera`).
+
+- **The Edit-plant "Add/Change photo" captures without a live preview (a blind snap).**
+  *Why:* T219 reused the single-shot `PhotoCapturing.capture()` seam rather than presenting the full
+  camera screen, so editing a plant snaps a frame (after a short sensor settle) without showing a preview to
+  frame the shot. The guided add-flow *does* show a live preview (`PhotoCaptureView`).
+  *Impact:* on device, "Add photo" in Edit grabs whatever the camera sees with no framing/preview/retake; on
+  the simulator it stages the distinct "Demo photo" stub image. Functional, but not a great capture UX.
+  *Revisit:* present the live-preview capture screen for Edit too (single-plant), returning the image to the
+  edit form to stage.
 
 - **The photo flow's presentation (T207) required wiring outside the literal Camera/View scope.**
   *Why:* the capture screen is unreachable without a presenter, so `PlantListView` gained a
