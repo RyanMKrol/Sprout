@@ -674,6 +674,19 @@ keep them here so the design's compromises live in one place alongside your proj
   the home (acceptable — they're mutually exclusive). *Revisit:* if a third concurrent full-screen flow
   is ever needed from the home, it must join the same enum rather than adding another cover modifier.
 
+- **Watering notifications are a once-a-day digest, rebuilt on scene changes (not per-mutation).**
+  *Why:* the user wanted **one** reminder per day ("N plants need watering today") at the configured
+  hour, not one alert per plant. The scheduler (`WateringNotificationScheduler`) now groups due plants by
+  calendar day (overdue folded into today) and schedules one reminder per day; `refreshDailyReminders`
+  recomputes the whole set from scratch. *Impact:* rather than injecting the scheduler into every mutating
+  view model, `ContentView` rebuilds the digest at launch and on every `scenePhase` change (notably
+  `.background`, just before reminders matter). So a schedule change is reflected the next time the app
+  changes scene phase — virtually always before the reminder fires, since it's a daily-use app, but **not**
+  the instant a check-in happens. Permission is requested at launch (skipped under the demo seed so
+  screenshots don't prompt). A foreground delegate (`NotificationForegroundPresenter`) shows reminders as
+  banners even with the app open, and Settings ▸ Developer has a 5-second test reminder. *Revisit:* if a
+  reminder is ever observed stale, add an explicit `refreshDailyReminders` call to the mutating flows.
+
 - **Manual schedule override sets `nextDue` directly and is then re-adapted by the next check-in.**
   *Why:* the detail screen now lets the user hand-pick "water in N days" via a wheel (0–365).
   *Impact:* `setDueInDays` writes `nextDue` (anchored to the start of day) without touching `adj` or

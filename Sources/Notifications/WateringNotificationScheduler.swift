@@ -17,28 +17,23 @@ protocol UserNotificationCenter {
 
 extension UNUserNotificationCenter: UserNotificationCenter {}
 
-/// Schedules per-plant watering reminders via `UNUserNotificationCenter` (T013).
+/// Schedules **daily** watering reminders via `UNUserNotificationCenter` (T013).
 ///
-/// Each plant owns **at most one** pending reminder, keyed by a stable identifier
-/// derived from its `id`, fired at the plant's `nextDue` date at a fixed
-/// time-of-day. Rescheduling (after a check-in moves `nextDue`) removes the old
-/// request and adds the new one, so reminders never stack. Authorization is
-/// requested lazily on the first `scheduleReminder` and the scheduler degrades
-/// gracefully to a no-op if the user denies it.
+/// Rather than one reminder per plant, the user gets **at most one reminder per day**,
+/// fired at a fixed hour, telling them how many plants need watering that day. Each
+/// `refreshDailyReminders` clears the reminders this scheduler owns and rebuilds the set
+/// from the current plants, so the schedule always reflects the latest data and never
+/// stacks duplicates. Overdue plants fold into today's reminder. Authorization is
+/// requested lazily and the scheduler degrades gracefully to a no-op if denied.
 struct WateringNotificationScheduler: NotificationScheduling {
-    /// Default reminder hour-of-day (24h). The watering reminder fires at this
-    /// hour on the due date. **Tunable** and made user-configurable by T014
-    /// (preferred reminder-time window); kept a named constant until then.
+    /// Default reminder hour-of-day (24h); user-configurable via Settings (T014).
     static let defaultReminderHour = 9
 
-    /// Identifier prefix for the watering-reminder requests this scheduler owns.
+    /// Identifier prefix for the daily-digest requests this scheduler owns (so a refresh
+    /// can find and clear them). Distinct from the test reminder's identifier.
     private static let identifierPrefix = "sprout.watering."
-
-    /// The stable notification identifier for a plant — used to add, find, and
-    /// remove that plant's single pending reminder.
-    static func identifier(for plantID: UUID) -> String {
-        identifierPrefix + plantID.uuidString
-    }
+    /// The identifier for the one-off Developer test reminder.
+    private static let testIdentifier = "sprout.test.reminder"
 
     private let center: UserNotificationCenter
     private let calendar: Calendar
@@ -54,46 +49,91 @@ struct WateringNotificationScheduler: NotificationScheduling {
         self.reminderHour = reminderHour
     }
 
+    // MARK: - Digest (pure)
+
+    /// The per-day watering digest: for each calendar day (start-of-day) on which at
+    /// least one plant is due, how many plants are due that day. **Overdue plants fold
+    /// into today** so they aren't silently dropped. One entry per day → one reminder.
+    /// Pure and `now`-injectable so it's deterministic in tests.
+    static func dailyDigest(plants: [Plant], now: Date, calendar: Calendar) -> [(day: Date, count: Int)] {
+        let today = calendar.startOfDay(for: now)
+        var counts: [Date: Int] = [:]
+        for plant in plants {
+            guard let due = plant.nextDue else { continue }
+            let day = max(calendar.startOfDay(for: due), today)
+            counts[day, default: 0] += 1
+        }
+        return counts
+            .map { (day: $0.key, count: $0.value) }
+            .sorted { $0.day < $1.day }
+    }
+
+    // MARK: - NotificationScheduling
+
     @discardableResult
     func requestAuthorization() async -> Bool {
-        // A denied/failed request must never throw out to callers — scheduling
-        // simply becomes a no-op (graceful degradation, see LIMITATIONS).
+        // A denied/failed request must never throw out to callers — scheduling simply
+        // becomes a no-op (graceful degradation, see LIMITATIONS).
         (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
     }
 
-    func scheduleReminder(for plant: Plant) async {
-        let id = Self.identifier(for: plant.id)
-        // Reschedule semantics: clear any existing reminder for this plant first,
-        // so a moved `nextDue` replaces rather than duplicates the reminder.
-        center.removePendingNotificationRequests(withIdentifiers: [id])
+    func refreshDailyReminders(for plants: [Plant]) async {
+        await refreshDailyReminders(for: plants, now: Date())
+    }
 
-        guard let due = plant.nextDue else { return }
+    /// `now`-injectable variant used by tests for determinism.
+    func refreshDailyReminders(for plants: [Plant], now: Date) async {
+        // Always clear what we own first, so a refresh replaces rather than stacks (and
+        // a now-empty schedule clears stale reminders).
+        await clearOwnedReminders()
         guard await requestAuthorization() else { return }
 
-        let content = UNMutableNotificationContent()
-        content.title = "Time to water \(plant.nickname)"
-        content.body = "\(plant.nickname) (\(plant.species)) is due for watering."
-        content.sound = .default
+        for entry in Self.dailyDigest(plants: plants, now: now, calendar: calendar) {
+            let content = UNMutableNotificationContent()
+            content.title = "Time to water your plants 🌱"
+            content.body = entry.count == 1
+                ? "1 plant needs watering today."
+                : "\(entry.count) plants need watering today."
+            content.sound = .default
 
-        let trigger = UNCalendarNotificationTrigger(
-            dateMatching: triggerComponents(for: due),
-            repeats: false
-        )
-        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+            var comps = calendar.dateComponents([.year, .month, .day], from: entry.day)
+            comps.hour = reminderHour
+            comps.minute = 0
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+            let request = UNNotificationRequest(
+                identifier: Self.dailyIdentifier(for: comps),
+                content: content,
+                trigger: trigger
+            )
+            try? await center.add(request)
+        }
+    }
+
+    func sendTestReminder(after seconds: TimeInterval) async {
+        guard await requestAuthorization() else { return }
+        let content = UNMutableNotificationContent()
+        content.title = "Test reminder 🌱"
+        content.body = "If you can see this, watering reminders are working."
+        content.sound = .default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, seconds), repeats: false)
+        let request = UNNotificationRequest(identifier: Self.testIdentifier, content: content, trigger: trigger)
         try? await center.add(request)
     }
 
-    func cancelReminder(for plantID: UUID) async {
-        center.removePendingNotificationRequests(withIdentifiers: [Self.identifier(for: plantID)])
+    // MARK: - Helpers
+
+    /// Remove every pending reminder this scheduler owns (matched by identifier prefix),
+    /// leaving anything else (e.g. a pending test reminder) untouched.
+    private func clearOwnedReminders() async {
+        let ids = await center.pendingNotificationRequests()
+            .map(\.identifier)
+            .filter { $0.hasPrefix(Self.identifierPrefix) }
+        guard !ids.isEmpty else { return }
+        center.removePendingNotificationRequests(withIdentifiers: ids)
     }
 
-    /// Date components that fire on the due **day** at the configured reminder
-    /// hour (minute zero) — calendar-based so it lands at the local wall-clock
-    /// time regardless of DST shifts between scheduling and firing.
-    private func triggerComponents(for due: Date) -> DateComponents {
-        var comps = calendar.dateComponents([.year, .month, .day], from: due)
-        comps.hour = reminderHour
-        comps.minute = 0
-        return comps
+    /// Stable per-day identifier, e.g. `sprout.watering.2026-06-15`.
+    static func dailyIdentifier(for comps: DateComponents) -> String {
+        identifierPrefix + String(format: "%04d-%02d-%02d", comps.year ?? 0, comps.month ?? 0, comps.day ?? 0)
     }
 }
