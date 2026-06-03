@@ -28,8 +28,10 @@ struct PlantListView: View {
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
     @State private var didDeepLink = false
-    /// Targets for the sequential photo flow + whether it's presented (T207/T208).
-    @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
+    /// The photo-capture coordinator, built **once** when the camera launches and held
+    /// here so the `.fullScreenCover` doesn't rebuild it (and a fresh `AVCaptureSession`)
+    /// on every re-render — multiple sessions crash on device.
+    @State private var photoCoordinator: PhotoCaptureCoordinator?
     @State private var photoPresented = false
     /// The just-created plants the "take photos?" prompt offers to photograph (T208),
     /// and whether that prompt sheet is showing (T223 — now a connected sheet).
@@ -122,7 +124,8 @@ struct PlantListView: View {
             PhotoPromptView(
                 plants: promptTargets,
                 onTakePhotos: {
-                    photoTargets = promptTargets
+                    // Build the coordinator (and its single camera session) once, now.
+                    photoCoordinator = makePhotoCapture?(promptTargets)
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
                 },
@@ -133,9 +136,10 @@ struct PlantListView: View {
             )
         }
         .fullScreenCover(isPresented: $photoPresented) {
-            if let makePhotoCapture {
-                PhotoCaptureView(coordinator: makePhotoCapture(photoTargets)) {
+            if let photoCoordinator {
+                PhotoCaptureView(coordinator: photoCoordinator) {
                     photoPresented = false
+                    self.photoCoordinator = nil
                     viewModel.load()
                 }
             }
@@ -194,9 +198,10 @@ struct PlantListView: View {
         case "edit" where makeEditor != nil:
             if let first = viewModel.items.first { editorMode = .edit(plantID: first.id) }
         case "camera" where makePhotoCapture != nil:
-            photoTargets = viewModel.items.map {
+            let targets = viewModel.items.map {
                 PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)
             }
+            photoCoordinator = makePhotoCapture?(targets)
             photoPresented = true
         case "photoprompt" where makePhotoCapture != nil:
             // Seed the prompt with the seeded plants so the screenshot shows the

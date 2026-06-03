@@ -28,7 +28,10 @@ struct HomeView: View {
     /// that prompt sheet is showing (T223 — now a connected sheet, not a floating dialog).
     @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPromptPresented = false
-    @State private var photoTargets: [PhotoCaptureCoordinator.Target] = []
+    /// The photo-capture coordinator, built **once** when the camera is launched and
+    /// held here so the `.fullScreenCover` doesn't rebuild it (and a fresh
+    /// `AVCaptureSession`) on every re-render — multiple sessions crash on device.
+    @State private var photoCoordinator: PhotoCaptureCoordinator?
     @State private var photoPresented = false
     /// Set when the photo prompt's "Take Photos" is tapped, so the camera launches from
     /// the prompt sheet's `onDismiss` (avoids a present-while-dismissing race).
@@ -134,7 +137,8 @@ struct HomeView: View {
             PhotoPromptView(
                 plants: promptTargets,
                 onTakePhotos: {
-                    photoTargets = promptTargets
+                    // Build the coordinator (and its single camera session) once, now.
+                    photoCoordinator = makePhotoCapture?(promptTargets)
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
                 },
@@ -145,9 +149,10 @@ struct HomeView: View {
             )
         }
         .fullScreenCover(isPresented: $photoPresented) {
-            if let makePhotoCapture {
-                PhotoCaptureView(coordinator: makePhotoCapture(photoTargets)) {
+            if let photoCoordinator {
+                PhotoCaptureView(coordinator: photoCoordinator) {
                     photoPresented = false
+                    self.photoCoordinator = nil
                     listViewModel.load()
                 }
             }
