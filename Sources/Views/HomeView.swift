@@ -8,6 +8,8 @@ import SwiftUI
 /// are pushed as destinations (they no longer carry their own stacks).
 struct HomeView: View {
     @StateObject private var listViewModel: PlantListViewModel
+    /// Notification-permission state for the bell indicator + "reminders off" banner.
+    @ObservedObject private var gatekeeper: NotificationGatekeeper
     private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
     private let makeBasket: (() -> BasketAddViewModel)?
     private let makePhotoCapture: (([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator)?
@@ -54,6 +56,7 @@ struct HomeView: View {
 
     init(
         listViewModel: PlantListViewModel,
+        gatekeeper: NotificationGatekeeper,
         makeEditor: @escaping (PlantEditViewModel.Mode) -> PlantEditViewModel,
         makeBasket: @escaping () -> BasketAddViewModel,
         makePhotoCapture: @escaping ([PhotoCaptureCoordinator.Target]) -> PhotoCaptureCoordinator,
@@ -64,6 +67,7 @@ struct HomeView: View {
         makeGuidedWatering: @escaping (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
     ) {
         _listViewModel = StateObject(wrappedValue: listViewModel)
+        _gatekeeper = ObservedObject(wrappedValue: gatekeeper)
         self.makeEditor = makeEditor
         self.makeBasket = makeBasket
         self.makePhotoCapture = makePhotoCapture
@@ -85,6 +89,11 @@ struct HomeView: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 2)
+
+                    // Visible warning when reminders are off — tapping it prompts / opens Settings.
+                    if gatekeeper.needsAttention {
+                        NotificationsOffBanner { Task { await gatekeeper.enable() } }
+                    }
 
                     // Top row: the two "places" — your plants and your rooms.
                     HStack(spacing: 16) {
@@ -125,7 +134,9 @@ struct HomeView: View {
                             subtitle: HomeTileText.waterSubtitle(dueCount: listViewModel.dueCount),
                             systemImage: "drop.fill",
                             style: .water,
-                            badge: listViewModel.dueCount > 0 ? "\(listViewModel.dueCount)" : nil
+                            badge: listViewModel.dueCount > 0 ? "\(listViewModel.dueCount)" : nil,
+                            // Draw the eye to watering when something's actually due.
+                            pulsing: listViewModel.dueCount > 0
                         ) { startGuided(.due) }
 
                         HomeActionTile(
@@ -133,7 +144,8 @@ struct HomeView: View {
                             subtitle: HomeTileText.checkInSubtitle(total: listViewModel.items.count),
                             systemImage: "checklist",
                             style: .checkIn,
-                            badge: nil
+                            badge: nil,
+                            pulsing: false
                         ) { startGuided(.all) }
                     }
                 }
@@ -142,6 +154,17 @@ struct HomeView: View {
             .background(Color(.systemGroupedBackground), ignoresSafeAreaEdges: .all)
             .navigationTitle("Sprout")
             .toolbar {
+                // A bell with a slash next to the title when reminders are off — tap to
+                // enable (prompt, or open Settings if previously denied).
+                if gatekeeper.needsAttention {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button { Task { await gatekeeper.enable() } } label: {
+                            Image(systemName: "bell.slash.fill")
+                                .foregroundStyle(.orange)
+                        }
+                        .accessibilityLabel("Notifications are off — tap to enable")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { settingsPresented = true } label: {
                         Label("Settings", systemImage: "gearshape")
@@ -404,13 +427,17 @@ private struct HomeWideTile: View {
 }
 
 /// A watering-action tile (Water / Full check-in): icon + optional count badge, title, subtitle.
+/// When `pulsing`, it gently breathes (scale + glow) to draw the eye to plants needing water.
 private struct HomeActionTile: View {
     let title: String
     let subtitle: String
     let systemImage: String
     let style: HomeTileStyle
     let badge: String?
+    var pulsing: Bool = false
     let action: () -> Void
+
+    @State private var pulse = false
 
     var body: some View {
         Button(action: action) {
@@ -439,9 +466,53 @@ private struct HomeActionTile: View {
             .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
             .padding(18)
             .modifier(TileBackground(style: style))
+            // Breathing glow + scale while plants are due, so the Water tile stands out.
+            .scaleEffect(pulsing && pulse ? 1.03 : 1)
+            .shadow(color: pulsing ? style.shadow.opacity(pulse ? 0.7 : 0.25) : .clear,
+                    radius: pulsing ? (pulse ? 18 : 8) : 0, y: 4)
         }
         .buttonStyle(.plain)
+        .onAppear {
+            guard pulsing else { return }
+            withAnimation(.easeInOut(duration: 1.1).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(badge.map { "\(title), \($0), \(subtitle)" } ?? "\(title), \(subtitle)")
+    }
+}
+
+/// A tappable "reminders are off" warning shown on the home when notifications aren't
+/// authorised, so the user understands why they're not getting watering reminders.
+private struct NotificationsOffBanner: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                Image(systemName: "bell.slash.fill")
+                    .font(.headline)
+                    .foregroundStyle(.orange)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Reminders are off")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text("Turn on notifications so Sprout can remind you to water.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.bold())
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(.orange.opacity(0.4), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Enable notifications")
     }
 }

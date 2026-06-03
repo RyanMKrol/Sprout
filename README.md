@@ -111,7 +111,10 @@ longer duplicates its title and sits tighter to the top. **Notifications are now
 the watering reminder is a **once-a-day digest** ("N plants need watering today") at the chosen hour
 rather than one alert per plant, permission is requested at launch, the schedule is rebuilt from the
 plant data on every scene change, and Settings ▸ Developer has a **"Send a test reminder (5s)"** button
-(with a foreground banner) to verify delivery on device.
+(with a foreground banner) to verify delivery on device. A **first-run intro** explains reminders before
+the system prompt, and when notifications are off the home shows a **bell-with-slash** next to the title
+and a tappable **"Reminders are off"** banner (both re-prompt, or deep-link to Settings if denied). The
+home **Water tile gently pulses** when plants are actually due.
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once

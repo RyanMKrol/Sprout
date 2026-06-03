@@ -687,6 +687,16 @@ keep them here so the design's compromises live in one place alongside your proj
   banners even with the app open, and Settings ▸ Developer has a 5-second test reminder. *Revisit:* if a
   reminder is ever observed stale, add an explicit `refreshDailyReminders` call to the mutating flows.
 
+- **Notification permission is surfaced via a gatekeeper polled on scene-activation, not observed.**
+  *Why:* iOS has no change notification for authorization status, so `NotificationGatekeeper` reads it on
+  launch and on every app re-activation (`scenePhase == .active`) to drive the home bell + "reminders off"
+  banner + first-run intro. *Impact:* if the user toggles the permission in system Settings while Sprout is
+  *foregrounded* (rare), the indicator updates on the next activation, not instantly. The intro shows at
+  most once (a `UserDefaults` flag); the gatekeeper is **not** initialised under the demo seed, so seeded
+  screenshots never prompt or show the bell (a DEBUG `SPROUT_SCREEN=notifyoff` hook forces the off-state UI
+  for screenshot verification). *Revisit:* if instant foreground updates are wanted, observe
+  `UIApplication.didBecomeActiveNotification` directly.
+
 - **Manual schedule override sets `nextDue` directly and is then re-adapted by the next check-in.**
   *Why:* the detail screen now lets the user hand-pick "water in N days" via a wheel (0–365).
   *Impact:* `setDueInDays` writes `nextDue` (anchored to the start of day) without touching `adj` or

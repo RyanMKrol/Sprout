@@ -13,7 +13,14 @@ struct ContentView: View {
     /// The bundled care database (T004), the source of the editor's species picker.
     @State private var careDatabase: CareDatabase
     @StateObject private var listViewModel: PlantListViewModel
+    /// Observable notification-permission state driving the home bell + warning banner +
+    /// first-run intro.
+    @StateObject private var gatekeeper: NotificationGatekeeper
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showNotificationIntro = false
+
+    /// UserDefaults flag so the first-run notification intro shows at most once.
+    private static let introSeenKey = "sprout.notificationIntroSeen"
 
     init() {
         let repository = Self.makeRepository()
@@ -27,11 +34,19 @@ struct ContentView: View {
                 environmentFactor: { Self.environmentFactor(for: $0, repository: repository) }
             )
         )
+        _gatekeeper = StateObject(wrappedValue: NotificationGatekeeper(
+            onAuthorized: { [repository] in
+                let hour = UserDefaultsSettingsStore().load().reminderHour
+                await WateringNotificationScheduler(reminderHour: hour)
+                    .refreshDailyReminders(for: (try? repository.allPlants()) ?? [])
+            }
+        ))
     }
 
     var body: some View {
         HomeView(
             listViewModel: listViewModel,
+            gatekeeper: gatekeeper,
             makeEditor: makeEditor,
             makeBasket: makeBasket,
             makePhotoCapture: makePhotoCapture,
@@ -41,28 +56,59 @@ struct ContentView: View {
             makeSettings: makeSettings,
             makeGuidedWatering: makeGuidedWatering
         )
-        // Notifications: ask once at launch, then keep the daily digest in sync with the
-        // plant data. We rebuild on launch and on every scene-phase change — crucially
-        // when the app backgrounds (just before reminders matter) and re-activates — so
-        // the digest always reflects the latest schedules without threading the scheduler
-        // through every view model.
+        // Notifications: explain + ask on first run, then keep the daily digest in sync
+        // with the plant data. We rebuild on launch and on every scene-phase change —
+        // crucially when the app backgrounds (just before reminders matter) and
+        // re-activates — so the digest always reflects the latest schedules without
+        // threading the scheduler through every view model.
         .task { await setUpNotifications() }
         .onChange(of: scenePhase) { _, phase in
+            guard !DemoSeed.isActive else { return }
             if phase == .active || phase == .background {
                 Task { await refreshReminders() }
             }
+            if phase == .active {
+                Task { await gatekeeper.refresh() }
+            }
+        }
+        .sheet(isPresented: $showNotificationIntro) {
+            NotificationIntroView(
+                onEnable: {
+                    Self.markIntroSeen()
+                    showNotificationIntro = false
+                    Task { await gatekeeper.enable() }
+                },
+                onSkip: {
+                    Self.markIntroSeen()
+                    showNotificationIntro = false
+                }
+            )
         }
     }
 
-    /// First-launch notification setup: install the foreground presenter, request
-    /// permission, and build the initial daily digest. Skipped under the demo seed so
-    /// screenshots never trigger a permission prompt.
+    /// First-launch notification setup: install the foreground presenter, read the
+    /// current permission status, build the initial daily digest, and — on a genuinely
+    /// first run — show the intro before the system prompt. Skipped under the demo seed
+    /// so screenshots never prompt or show the bell.
     private func setUpNotifications() async {
-        guard !DemoSeed.isActive else { return }
+        guard !DemoSeed.isActive else {
+            #if DEBUG
+            // Screenshot hook: `SPROUT_SCREEN=notifyoff` captures the home "reminders off"
+            // bell + banner without touching real notification permissions.
+            if DemoSeed.requestedScreen == "notifyoff" { gatekeeper.applyDemoStatus(.notDetermined) }
+            #endif
+            return
+        }
         NotificationForegroundPresenter.activate()
-        await currentScheduler().requestAuthorization()
+        await gatekeeper.refresh()
         await refreshReminders()
+        if gatekeeper.status == .notDetermined, !Self.hasSeenIntro {
+            showNotificationIntro = true
+        }
     }
+
+    private static var hasSeenIntro: Bool { UserDefaults.standard.bool(forKey: introSeenKey) }
+    private static func markIntroSeen() { UserDefaults.standard.set(true, forKey: introSeenKey) }
 
     /// Recompute the daily watering digest from the current plants.
     private func refreshReminders() async {

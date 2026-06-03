@@ -28,6 +28,8 @@ final class SettingsViewModelTests: XCTestCase {
         }
 
         func pendingNotificationRequests() async -> [UNNotificationRequest] { pending }
+
+        func authorizationStatus() async -> UNAuthorizationStatus { .authorized }
     }
 
     // A UTC calendar so asserted trigger components are deterministic.
