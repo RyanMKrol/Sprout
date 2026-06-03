@@ -8,8 +8,8 @@ import UIKit
 let cameraLog = Logger(subsystem: "com.ryankrol.sprout", category: "camera")
 
 /// A camera that can supply a live SwiftUI preview. Kept free of AVFoundation types
-/// in its signature (returns `AnyView`) so `PhotoCaptureView` can use it without
-/// importing AVFoundation — only this file does.
+/// in its signature (returns `AnyView`) so `PhotoCaptureView` / `CapturePhotoView` can
+/// use it without importing AVFoundation — only this file does.
 @MainActor
 protocol CameraPreviewProviding {
     /// A live preview view for the capture session.
@@ -21,16 +21,23 @@ protocol CameraPreviewProviding {
 }
 
 /// The real camera capture (T207) — the **only** file that imports AVFoundation.
-/// Implements the `PhotoCapturing` seam with an `AVCaptureSession` + photo output.
-/// Not unit-tested (it needs hardware and can't run on the simulator); its testable
-/// substitute is `StubPhotoCapturing`. The real capture path is verified by hand on a
-/// device (🔒).
+///
+/// **All `AVCaptureSession` configuration + start/stop runs on a dedicated background
+/// queue, never the main thread** (the Apple-recommended pattern). Doing session setup
+/// on the main thread blocks it long enough that the device watchdog can kill the app —
+/// which is what crashed the guided photo flow on device. Only the captured `UIImage`
+/// hand-off touches the main actor.
+///
+/// Not unit-tested (needs hardware / can't run on the simulator); its testable
+/// substitute is `StubPhotoCapturing`. Returns `nil` on any failure rather than crashing.
 @MainActor
 final class AVFoundationCamera: NSObject, PhotoCapturing {
-    let session = AVCaptureSession()
-    private let output = AVCapturePhotoOutput()
-    private let sessionQueue = DispatchQueue(label: "com.ryankrol.sprout.camera")
-    private var isConfigured = false
+    nonisolated let session = AVCaptureSession()
+    private nonisolated let output = AVCapturePhotoOutput()
+    private nonisolated let sessionQueue = DispatchQueue(label: "com.ryankrol.sprout.camera")
+    /// Only read/written on `sessionQueue`.
+    private nonisolated(unsafe) var isConfigured = false
+    /// Main-actor only; resumed when the photo (or a failure) comes back.
     private var continuation: CheckedContinuation<UIImage?, Never>?
 
     var isAvailable: Bool {
@@ -42,37 +49,37 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
         }
     }
 
-    /// One square frame, or `nil` on failure. Ensures the camera is authorised,
-    /// configured, and **actually running with an active video connection** before
-    /// snapping — calling `capturePhoto` on a stopped session throws an uncatchable
-    /// Obj-C exception ("no active and enabled video connection"), which was the
-    /// device crash. Returns `nil` (never crashes) on any failure.
+    /// Capture one square frame, or `nil` on failure. Authorises, configures + starts the
+    /// session **on the background queue**, confirms an active connection, then snaps.
     func capture() async -> UIImage? {
         cameraLog.info("capture() requested")
         guard await prepare() else {
             cameraLog.error("capture() aborted — camera not ready")
             return nil
         }
-        // Let the sensor expose a frame before snapping (avoids a black first frame
-        // when capturing without a warmed-up live preview, e.g. the edit flow).
+        // Let the sensor expose a frame before snapping (no warmed-up preview in the edit flow).
         try? await Task.sleep(nanoseconds: 350_000_000)
-        guard let connection = output.connection(with: .video), connection.isActive, connection.isEnabled else {
-            cameraLog.error("capture() aborted — no active video connection")
-            return nil
-        }
         guard continuation == nil else {
             cameraLog.error("capture() ignored — a capture is already in flight")
             return nil
         }
-        cameraLog.info("capturing photo")
-        return await withCheckedContinuation { cont in
+        return await withCheckedContinuation { (cont: CheckedContinuation<UIImage?, Never>) in
             continuation = cont
-            output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            sessionQueue.async { [output] in
+                guard let connection = output.connection(with: .video),
+                      connection.isActive, connection.isEnabled else {
+                    cameraLog.error("capture() aborted — no active video connection")
+                    Task { @MainActor in self.finish(nil) }
+                    return
+                }
+                cameraLog.info("capturing photo")
+                output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            }
         }
     }
 
-    /// Authorise → configure → start, resolving once the session is genuinely running.
-    /// Idempotent and crash-free; returns `false` if the camera can't be used.
+    /// Authorise (main, fast) → configure + start the session on the background queue.
+    /// Resolves once the session is genuinely running. Never blocks the main thread.
     private func prepare() async -> Bool {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -87,17 +94,19 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
             cameraLog.error("camera unavailable — authorization denied/restricted")
             return false
         }
-        configureIfNeeded()
-        guard isConfigured, !output.connections.isEmpty else {
-            cameraLog.error("camera could not be configured (no back-camera input/output)")
-            return false
+        return await withCheckedContinuation { (cont: CheckedContinuation<Bool, Never>) in
+            sessionQueue.async { [self] in
+                configureIfNeededOnQueue()
+                if isConfigured, !session.isRunning { session.startRunning() }
+                let running = isConfigured && session.isRunning
+                if !running { cameraLog.error("capture session failed to start") }
+                cont.resume(returning: running)
+            }
         }
-        let running = await startRunning()
-        if !running { cameraLog.error("capture session failed to start") }
-        return running
     }
 
-    private func configureIfNeeded() {
+    /// Builds the session graph. **Must only be called on `sessionQueue`.**
+    private nonisolated func configureIfNeededOnQueue() {
         guard !isConfigured else { return }
         session.beginConfiguration()
         session.sessionPreset = .photo
@@ -112,18 +121,13 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
             session.addOutput(output)
         }
         session.commitConfiguration()
-        // Only "configured" if we actually have an input + output to capture from.
         isConfigured = !session.inputs.isEmpty && !session.outputs.isEmpty
     }
 
-    /// Start the session on its dedicated queue and resolve once it's running.
-    private func startRunning() async -> Bool {
-        await withCheckedContinuation { cont in
-            sessionQueue.async { [session] in
-                if !session.isRunning { session.startRunning() }
-                cont.resume(returning: session.isRunning)
-            }
-        }
+    /// Resume the pending capture on the main actor (image or nil).
+    private func finish(_ image: UIImage?) {
+        continuation?.resume(returning: image)
+        continuation = nil
     }
 }
 
@@ -137,8 +141,7 @@ extension AVFoundationCamera: CameraPreviewProviding {
     }
 
     func stop() {
-        let session = session
-        sessionQueue.async {
+        sessionQueue.async { [session] in
             if session.isRunning { session.stopRunning() }
         }
     }
@@ -155,10 +158,7 @@ extension AVFoundationCamera: AVCapturePhotoCaptureDelegate {
         }
         let image = photo.fileDataRepresentation().flatMap(UIImage.init(data:))
         cameraLog.info("photo processed — image: \(image != nil)")
-        Task { @MainActor in
-            self.continuation?.resume(returning: image)
-            self.continuation = nil
-        }
+        Task { @MainActor in self.finish(image) }
     }
 }
 

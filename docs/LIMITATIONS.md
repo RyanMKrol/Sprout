@@ -245,9 +245,15 @@ keep them here so the design's compromises live in one place alongside your proj
   path changes often.
   *Update (fix/camera-capture):* `AVFoundationCamera.capture()` now authorises + configures + **starts the
   session and waits until it's running with an active video connection** before `capturePhoto`, returning
-  `nil` (never crashing) otherwise — this was the device crash (`capturePhoto` on a stopped session throws
-  an uncatchable Obj-C "no active video connection" exception). Lifecycle is logged via `os.Logger`
+  `nil` (never crashing) otherwise — this was an early device crash (`capturePhoto` on a stopped session
+  throws an uncatchable Obj-C "no active video connection" exception). Lifecycle is logged via `os.Logger`
   (subsystem `com.ryankrol.sprout`, category `camera`).
+  *Update (fix/camera-mainthread):* **all `AVCaptureSession` configuration + start/stop now runs on a
+  dedicated background queue, never the main thread** (the Apple-recommended pattern). The previous
+  `@MainActor` config did heavy device-enumeration on the main thread (visible as a flood of
+  `AVCaptureFigVideoDevice _defaultDeviceWithDeviceType…` on the main queue in device logs), which blocked
+  the main thread long enough that the watchdog killed the app — the guided-flow "crash". Only the captured
+  `UIImage` hand-off touches the main actor now.
 
 - **~~The Edit-plant "Add/Change photo" captures without a live preview (a blind snap).~~ Fixed (fix/camera-preview).**
   Edit now presents `CapturePhotoView` — a single-shot screen with a **live preview + a shutter the user taps**
