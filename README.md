@@ -104,7 +104,10 @@ black screen (both were two-`fullScreenCover` conflicts — now single `item:`-d
 satisfying sequential-capture feedback (flash + green pulse + slide); the Plant Detail screen now has a
 larger photo/header, an **Edit** button, and a tappable **manual schedule override** (water-in-N-days
 wheel); species and room names display in proper case; and the leaf-glyph placeholder uses a vibrant
-per-plant colour instead of a uniform blue.
+per-plant colour instead of a uniform blue. The **home screen was redesigned** into a status-aware
+greeting over a bento layout of gradient tiles (two square "place" tiles, a full-width Add-plants CTA,
+and a "Today" row of Water + Full-check-in actions with a due-count badge); the Plant Detail header no
+longer duplicates its title and sits tighter to the top.
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once

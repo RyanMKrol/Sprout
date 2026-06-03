@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// The **home** landing screen (T222): a playful 2-column grid of **square tiles** —
-/// My Plants, Rooms, Add plants (launches the T221 room-first flow), and two distinct
-/// watering tiles, **Water your plants** (plants due now) and **Full check-in** (every
-/// plant) — plus a Settings gear. It owns the app's `NavigationStack`; `PlantListView`
-/// and `RoomsView` are pushed as destinations (they no longer carry their own stacks).
+/// The **home** landing screen: a status-aware greeting over a **bento layout** of
+/// vibrant gradient tiles — two square "place" tiles (My Plants, Rooms), a full-width
+/// **Add plants** call-to-action, and a "Today" row of two watering actions (**Water**
+/// — plants due now, with a count badge — and **Full check-in** — every plant) — plus a
+/// Settings gear. It owns the app's `NavigationStack`; `PlantListView` and `RoomsView`
+/// are pushed as destinations (they no longer carry their own stacks).
 struct HomeView: View {
     @StateObject private var listViewModel: PlantListViewModel
     private let makeEditor: ((PlantEditViewModel.Mode) -> PlantEditViewModel)?
@@ -51,9 +52,6 @@ struct HomeView: View {
     /// Push destinations for the tiles.
     private enum Route: Hashable { case plants, rooms }
 
-    /// Two square tiles per row.
-    private let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
-
     init(
         listViewModel: PlantListViewModel,
         makeEditor: @escaping (PlantEditViewModel.Mode) -> PlantEditViewModel,
@@ -79,29 +77,64 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    HomeTile(title: "My Plants", systemImage: "leaf.fill",
-                             subtitle: HomeTileText.plantsSubtitle(count: listViewModel.items.count),
-                             tint: .green) {
-                        path.append(Route.plants)
+                VStack(spacing: 16) {
+                    // A friendly, status-aware greeting so the screen feels alive.
+                    Text(HomeTileText.statusLine(dueCount: listViewModel.dueCount,
+                                                 total: listViewModel.items.count))
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, 2)
+
+                    // Top row: the two "places" — your plants and your rooms.
+                    HStack(spacing: 16) {
+                        HomeSquareTile(
+                            title: "My Plants",
+                            caption: HomeTileText.plantsSubtitle(count: listViewModel.items.count),
+                            systemImage: "leaf.fill",
+                            style: .plants
+                        ) { path.append(Route.plants) }
+
+                        HomeSquareTile(
+                            title: "Rooms",
+                            caption: "Light & humidity",
+                            systemImage: "house.fill",
+                            style: .rooms
+                        ) { path.append(Route.rooms) }
                     }
-                    HomeTile(title: "Rooms", systemImage: "house.fill",
-                             subtitle: "Light & humidity", tint: .brown) {
-                        path.append(Route.rooms)
-                    }
-                    HomeTile(title: "Add plants", systemImage: "plus.circle.fill",
-                             subtitle: "Pick a room, add its plants", tint: .teal) {
-                        addFlowPresented = true
-                    }
-                    HomeTile(title: "Water your plants", systemImage: "drop.fill",
-                             subtitle: HomeTileText.waterSubtitle(dueCount: listViewModel.dueCount),
-                             tint: .blue) {
-                        startGuided(.due)
-                    }
-                    HomeTile(title: "Full check-in", systemImage: "checklist",
-                             subtitle: HomeTileText.checkInSubtitle(total: listViewModel.items.count),
-                             tint: .indigo) {
-                        startGuided(.all)
+
+                    // Full-width primary call-to-action.
+                    HomeWideTile(
+                        title: "Add plants",
+                        subtitle: "Pick a room, then add its plants",
+                        systemImage: "plus.circle.fill",
+                        style: .add
+                    ) { addFlowPresented = true }
+
+                    // Section heading for the two watering actions.
+                    Text("Today")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 4)
+
+                    // Bottom row: the two distinct watering actions.
+                    HStack(spacing: 16) {
+                        HomeActionTile(
+                            title: "Water",
+                            subtitle: HomeTileText.waterSubtitle(dueCount: listViewModel.dueCount),
+                            systemImage: "drop.fill",
+                            style: .water,
+                            badge: listViewModel.dueCount > 0 ? "\(listViewModel.dueCount)" : nil
+                        ) { startGuided(.due) }
+
+                        HomeActionTile(
+                            title: "Full check-in",
+                            subtitle: HomeTileText.checkInSubtitle(total: listViewModel.items.count),
+                            systemImage: "checklist",
+                            style: .checkIn,
+                            badge: nil
+                        ) { startGuided(.all) }
                     }
                 }
                 .padding()
@@ -250,49 +283,165 @@ enum HomeTileText {
     static func checkInSubtitle(total: Int) -> String {
         total == 0 ? "No plants yet" : "Check every plant"
     }
+
+    /// The friendly, status-aware greeting line shown above the tiles.
+    static func statusLine(dueCount: Int, total: Int) -> String {
+        if total == 0 { return "Let's add your first plant 🌱" }
+        if dueCount == 0 { return "Everything's watered — nice work 🌿" }
+        return "\(dueCount) \(dueCount == 1 ? "plant needs" : "plants need") water today 💧"
+    }
 }
 
-/// A playful **square** home tile: a tinted icon badge over a bold title and an optional
-/// subtitle, filling a grid cell with a 1:1 aspect ratio (T222).
-private struct HomeTile: View {
-    let title: String
+/// The colour treatment for a home tile — a two-tone diagonal gradient and a matching
+/// soft shadow, so the grid reads as a vibrant, intentional set rather than flat squares.
+struct HomeTileStyle {
+    let colors: [Color]
+
+    var gradient: LinearGradient {
+        LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
+    var shadow: Color { colors.first ?? .black }
+
+    static let plants = HomeTileStyle(colors: [Color(red: 0.36, green: 0.80, blue: 0.46),
+                                               Color(red: 0.13, green: 0.62, blue: 0.40)])
+    static let rooms = HomeTileStyle(colors: [Color(red: 0.97, green: 0.64, blue: 0.28),
+                                              Color(red: 0.88, green: 0.42, blue: 0.24)])
+    static let add = HomeTileStyle(colors: [Color(red: 0.22, green: 0.76, blue: 0.70),
+                                            Color(red: 0.15, green: 0.52, blue: 0.74)])
+    static let water = HomeTileStyle(colors: [Color(red: 0.27, green: 0.67, blue: 0.96),
+                                              Color(red: 0.16, green: 0.46, blue: 0.87)])
+    static let checkIn = HomeTileStyle(colors: [Color(red: 0.52, green: 0.43, blue: 0.93),
+                                                Color(red: 0.37, green: 0.31, blue: 0.82)])
+}
+
+/// A frosted icon badge used across the home tiles.
+private struct TileIcon: View {
     let systemImage: String
-    let subtitle: String?
-    let tint: Color
+    var size: CGFloat = 44
+
+    var body: some View {
+        Image(systemName: systemImage)
+            .font(.system(size: size * 0.5, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(width: size, height: size)
+            .background(.white.opacity(0.22), in: Circle())
+    }
+}
+
+/// A common gradient-tile container: white content over a gradient with a soft tinted shadow.
+private struct TileBackground: ViewModifier {
+    let style: HomeTileStyle
+    func body(content: Content) -> some View {
+        content
+            .foregroundStyle(.white)
+            .background(style.gradient, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .shadow(color: style.shadow.opacity(0.35), radius: 10, y: 6)
+    }
+}
+
+/// A square "place" tile (My Plants / Rooms): icon top-left, then title + caption.
+private struct HomeSquareTile: View {
+    let title: String
+    let caption: String
+    let systemImage: String
+    let style: HomeTileStyle
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 12) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 30))
-                    .foregroundStyle(tint)
-                    .frame(width: 56, height: 56)
-                    .background(tint.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
-                Spacer(minLength: 0)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.title3.bold())
-                        .foregroundStyle(.primary)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if let subtitle {
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(2)
-                    }
-                }
+            VStack(alignment: .leading, spacing: 0) {
+                TileIcon(systemImage: systemImage)
+                Spacer(minLength: 12)
+                Text(title)
+                    .font(.title3.bold())
+                Text(caption)
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.9))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .aspectRatio(1, contentMode: .fit)
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20))
+            .padding(18)
+            .modifier(TileBackground(style: style))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(subtitle.map { "\(title), \($0)" } ?? title)
+        .accessibilityLabel("\(title), \(caption)")
+    }
+}
+
+/// A full-width primary call-to-action tile: icon, title + subtitle, trailing chevron.
+private struct HomeWideTile: View {
+    let title: String
+    let subtitle: String
+    let systemImage: String
+    let style: HomeTileStyle
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 16) {
+                TileIcon(systemImage: systemImage, size: 48)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title).font(.title3.bold())
+                    Text(subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.9))
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.headline)
+                    .foregroundStyle(.white.opacity(0.8))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
+            .modifier(TileBackground(style: style))
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(subtitle)")
+    }
+}
+
+/// A watering-action tile (Water / Full check-in): icon + optional count badge, title, subtitle.
+private struct HomeActionTile: View {
+    let title: String
+    let subtitle: String
+    let systemImage: String
+    let style: HomeTileStyle
+    let badge: String?
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .top) {
+                    TileIcon(systemImage: systemImage)
+                    Spacer()
+                    if let badge {
+                        Text(badge)
+                            .font(.footnote.bold())
+                            .foregroundStyle(style.shadow)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 4)
+                            .background(.white, in: Capsule())
+                    }
+                }
+                Spacer(minLength: 12)
+                Text(title)
+                    .font(.title3.bold())
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.9))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
+            .padding(18)
+            .modifier(TileBackground(style: style))
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(badge.map { "\(title), \($0), \(subtitle)" } ?? "\(title), \(subtitle)")
     }
 }
