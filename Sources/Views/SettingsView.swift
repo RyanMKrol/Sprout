@@ -12,6 +12,7 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var resetConfirmationPresented = false
+    @State private var testReminderSent = false
 
     init(viewModel: SettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -41,13 +42,21 @@ struct SettingsView: View {
                     } label: {
                         Label("Camera diagnostics", systemImage: "doc.text.magnifyingglass")
                     }
+                    Button {
+                        Task {
+                            await viewModel.sendTestReminder()
+                            testReminderSent = true
+                        }
+                    } label: {
+                        Label("Send a test reminder (5s)", systemImage: "bell.badge")
+                    }
                     Button("Delete all plants & rooms", role: .destructive) {
                         resetConfirmationPresented = true
                     }
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("Camera diagnostics captures an on-device log of the photo flow you can copy or share. Delete removes every plant and room — this can't be undone.")
+                    Text("Camera diagnostics captures an on-device log of the photo flow you can copy or share. The test reminder posts a notification in 5 seconds (grant permission first) so you can confirm reminders work — try backgrounding the app to see it on the lock screen. Delete removes every plant and room — this can't be undone.")
                 }
             }
             .navigationTitle("Settings")
@@ -69,6 +78,11 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This permanently removes every plant and room on this device. This can't be undone.")
+            }
+            .alert("Test reminder scheduled", isPresented: $testReminderSent) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("A test notification will arrive in about 5 seconds. If nothing appears, check Settings ▸ Notifications ▸ Sprout is allowed. Lock or background the app to see it on the lock screen.")
             }
         }
     }

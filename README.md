@@ -64,7 +64,7 @@ source of truth):
 | T010 | ✅ done | Adaptive update from a check-in (pure) |
 | T011 | ✅ done | Check-in flow UI (soil / leaves / watered → recommendation) |
 | T012 | ✅ done | "Why this schedule" explanation text |
-| T013 | ✅ done | Local watering notifications |
+| T013 | ✅ done | Local watering notifications (daily digest; wired to lifecycle) |
 | T014 | ✅ done | Settings — preferred reminder time, units, weather toggle |
 | T015 | ✅ done | Weather provider (Open-Meteo + CoreLocation) |
 | T016 | ✅ done | Feed weather into the schedule engine |
@@ -107,7 +107,11 @@ wheel); species and room names display in proper case; and the leaf-glyph placeh
 per-plant colour instead of a uniform blue. The **home screen was redesigned** into a status-aware
 greeting over a bento layout of gradient tiles (two square "place" tiles, a full-width Add-plants CTA,
 and a "Today" row of Water + Full-check-in actions with a due-count badge); the Plant Detail header no
-longer duplicates its title and sits tighter to the top.
+longer duplicates its title and sits tighter to the top. **Notifications are now actually wired up**:
+the watering reminder is a **once-a-day digest** ("N plants need watering today") at the chosen hour
+rather than one alert per plant, permission is requested at launch, the schedule is rebuilt from the
+plant data on every scene change, and Settings ▸ Developer has a **"Send a test reminder (5s)"** button
+(with a foreground banner) to verify delivery on device.
 
 The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
 packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once

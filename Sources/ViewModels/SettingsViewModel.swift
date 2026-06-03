@@ -8,9 +8,9 @@ import Foundation
 /// (UserDefaults) and unit tests assert the persisted decision, not UI state. Decoding
 /// ignores any legacy keys (e.g. an old `weatherEnabled`) from a previous install.
 struct AppSettings: Equatable, Codable, Sendable {
-    /// Hour-of-day (0–23) that watering reminders fire at on the due date. Drives
-    /// `WateringNotificationScheduler`'s `reminderHour` — changing it reschedules
-    /// every plant's pending reminder to the new time.
+    /// Hour-of-day (0–23) the daily watering reminder fires at. Drives
+    /// `WateringNotificationScheduler`'s `reminderHour` — changing it rebuilds the
+    /// daily digest at the new time.
     var reminderHour: Int
 
     /// Valid hour-of-day band for `reminderHour`.
@@ -131,16 +131,19 @@ final class SettingsViewModel: ObservableObject {
         await rescheduleReminders()
     }
 
-    /// Reschedule every plant's pending reminder at the current `reminderHour`, so
-    /// an existing reminder moves to the newly-chosen window. Repository errors
-    /// degrade to a no-op rather than crashing settings.
+    /// Rebuild the daily watering digest at the current `reminderHour`, so the
+    /// reminders move to the newly-chosen window. Repository errors degrade to a
+    /// no-op rather than crashing settings.
     func rescheduleReminders() async {
         guard let repository else { return }
         let plants = (try? repository.allPlants()) ?? []
-        let scheduler = makeScheduler(reminderHour)
-        for plant in plants {
-            await scheduler.scheduleReminder(for: plant)
-        }
+        await makeScheduler(reminderHour).refreshDailyReminders(for: plants)
+    }
+
+    /// Developer tooling: fire a one-off test reminder a few seconds out, so the user
+    /// can confirm notifications are authorised and delivering on their device.
+    func sendTestReminder() async {
+        await makeScheduler(reminderHour).sendTestReminder(after: 5)
     }
 
     /// Developer reset (T216): delete **every** plant and room from the store, then

@@ -13,6 +13,7 @@ struct ContentView: View {
     /// The bundled care database (T004), the source of the editor's species picker.
     @State private var careDatabase: CareDatabase
     @StateObject private var listViewModel: PlantListViewModel
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         let repository = Self.makeRepository()
@@ -40,6 +41,39 @@ struct ContentView: View {
             makeSettings: makeSettings,
             makeGuidedWatering: makeGuidedWatering
         )
+        // Notifications: ask once at launch, then keep the daily digest in sync with the
+        // plant data. We rebuild on launch and on every scene-phase change — crucially
+        // when the app backgrounds (just before reminders matter) and re-activates — so
+        // the digest always reflects the latest schedules without threading the scheduler
+        // through every view model.
+        .task { await setUpNotifications() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active || phase == .background {
+                Task { await refreshReminders() }
+            }
+        }
+    }
+
+    /// First-launch notification setup: install the foreground presenter, request
+    /// permission, and build the initial daily digest. Skipped under the demo seed so
+    /// screenshots never trigger a permission prompt.
+    private func setUpNotifications() async {
+        guard !DemoSeed.isActive else { return }
+        NotificationForegroundPresenter.activate()
+        await currentScheduler().requestAuthorization()
+        await refreshReminders()
+    }
+
+    /// Recompute the daily watering digest from the current plants.
+    private func refreshReminders() async {
+        guard !DemoSeed.isActive else { return }
+        let plants = (try? repository.allPlants()) ?? []
+        await currentScheduler().refreshDailyReminders(for: plants)
+    }
+
+    /// A scheduler bound to the user's currently-saved reminder hour.
+    private func currentScheduler() -> WateringNotificationScheduler {
+        WateringNotificationScheduler(reminderHour: UserDefaultsSettingsStore().load().reminderHour)
     }
 
     /// Build the Rooms view model (T213) against the shared repository.
