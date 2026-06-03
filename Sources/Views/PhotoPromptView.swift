@@ -41,10 +41,10 @@ struct PhotoPromptView: View {
                     Section(PhotoPromptText.listHeader(count: plants.count)) {
                         ForEach(plants) { plant in
                             HStack(spacing: 12) {
-                                PlantThumbnail(photoData: nil)
+                                PlantThumbnail(photoData: nil, tint: PlantPalette.color(for: plant.id))
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(plant.nickname).font(.headline)
-                                    Text(plant.species).font(.caption).foregroundStyle(.secondary)
+                                    Text(plant.species.capitalisedWords).font(.caption).foregroundStyle(.secondary)
                                 }
                             }
                         }

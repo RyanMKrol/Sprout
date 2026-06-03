@@ -94,7 +94,7 @@ final class BasketAddViewModel: ObservableObject {
     func createRoom(name: String, directSun: LightLevel, indirectSun: LightLevel, humidity: RoomHumidity) {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        let room = Room(name: trimmed, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
+        let room = Room(name: trimmed.capitalisedWords, directSun: directSun, indirectSun: indirectSun, humidity: humidity)
         try? repository.addRoom(room)
         loadRooms()
         chooseRoom(room)

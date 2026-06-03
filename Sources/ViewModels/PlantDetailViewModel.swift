@@ -109,6 +109,28 @@ final class PlantDetailViewModel: ObservableObject {
     /// empty state inviting the first check-in (the flow itself arrives in T011).
     var hasHistory: Bool { !history.isEmpty }
 
+    /// A sensible starting value for the manual "due in N days" wheel: the days left
+    /// until due (0 if due today / overdue), or the species' starting cadence (falling
+    /// back to a week) when the plant has never been scheduled.
+    var daysUntilDue: Int {
+        switch due {
+        case let .due(days): return days
+        case .dueToday, .overdue: return 0
+        case .unscheduled: return baseIntervalDays ?? 7
+        }
+    }
+
+    /// Manually override the schedule: set the next-watering date to `days` calendar
+    /// days from today (anchored to the start of the day, matching `DueStatus`), persist
+    /// it, and reload. Lets the user tweak the cadence by hand from the detail screen.
+    func setDueInDays(_ days: Int, now: Date = Date(), calendar: Calendar = .current) {
+        guard var plant = (try? repository.plant(id: plantID)) ?? nil else { return }
+        let start = calendar.startOfDay(for: now)
+        plant.nextDue = calendar.date(byAdding: .day, value: max(0, days), to: start) ?? now
+        try? repository.update(plant)
+        load(now: now)
+    }
+
     /// Plain-language schedule summary. **Placeholder until T009** wires the real
     /// adaptive engine: it reports the species' starting cadence and the relative
     /// next-due, with an explicit note that the adaptive schedule is still to come.

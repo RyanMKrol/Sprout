@@ -665,6 +665,31 @@ keep them here so the design's compromises live in one place alongside your proj
   `index` advancing, so a failed capture correctly flashes without a confirmation. *Revisit:* if users
   find the per-shot pause slow, shorten the hold or make it interruptible by the next tap.
 
+- **HomeView presents one consolidated `.fullScreenCover(item:)` for camera *and* guided watering.**
+  *Why:* two separate `.fullScreenCover` modifiers on the same view conflict on device — tapping the
+  "Water your plants" / "Full check-in" tiles presented an empty **black screen** that required a
+  force-quit (the second cover lost its content), even though each rendered fine in isolation on the
+  simulator. *Fix/impact:* a single cover driven by a `FullScreenFlow` enum (`.camera` / `.guided`),
+  with both coordinators made `Identifiable`. Only one full-screen flow can be presented at a time from
+  the home (acceptable — they're mutually exclusive). *Revisit:* if a third concurrent full-screen flow
+  is ever needed from the home, it must join the same enum rather than adding another cover modifier.
+
+- **Manual schedule override sets `nextDue` directly and is then re-adapted by the next check-in.**
+  *Why:* the detail screen now lets the user hand-pick "water in N days" via a wheel (0–365).
+  *Impact:* `setDueInDays` writes `nextDue` (anchored to the start of day) without touching `adj` or
+  `lastWatered`, so the override holds until the next guided/check-in update, which recomputes the
+  cadence from the engine as before — a manual nudge, not a permanent pin. *Revisit:* if users want a
+  sticky manual cadence, persist an override flag the engine respects.
+
+- **Species & room names are title-cased for *display* only; stored data is left as authored.** *Why:*
+  botanical epithets read better capitalised ("Monstera Deliciosa"), but the care-DB key and stored
+  `Plant.species` must stay stable for case-insensitive lookup. *Impact:* `String.capitalisedWords`
+  upper-cases each word's first letter at the view layer (preserving acronyms like "ZZ Plant" and
+  apostrophes like "Bird's Nest Fern" — unlike `Foundation.capitalized`); room names *are* normalised
+  on save (write-time), since they're free-text the user owns. The leaf-placeholder tint is derived
+  deterministically from a plant's uuid (10-colour `PlantPalette`), stable across launches. *Revisit:*
+  if a species' canonical name itself needs fixing, edit `care_database.json`.
+
 - **Care DB audit (T224): the "~320 species" target is already nearly met, so T226 will overshoot.**
   *Why:* the original dataset plan aimed for ~300 and the loop overshot to **305**; the T224 audit
   ([`research/care-db-audit.md`](./research/care-db-audit.md)) found the common UK core is already

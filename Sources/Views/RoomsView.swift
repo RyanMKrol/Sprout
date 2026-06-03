@@ -150,24 +150,24 @@ struct RoomEditorView: View {
                         .textInputAutocapitalization(.words)
                 }
                 Section {
-                    Picker("Direct sun", selection: $directSun) {
+                    Picker("Direct Sun", selection: $directSun) {
                         ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented)
                 } header: {
                     InfoHeader(
-                        title: "Direct sun",
+                        title: "Direct Sun",
                         help: "How much direct sunlight lands on the plants — e.g. an unobstructed south-facing windowsill. Direct sun dries the soil fastest."
                     )
                 }
                 Section {
-                    Picker("Indirect sun", selection: $indirectSun) {
+                    Picker("Indirect Sun", selection: $indirectSun) {
                         ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented)
                 } header: {
                     InfoHeader(
-                        title: "Indirect sun",
+                        title: "Indirect Sun",
                         help: "The ambient daylight in the room with no direct beam on the leaves — bright rooms away from a window still get plenty."
                     )
                 }
@@ -222,8 +222,12 @@ private struct InfoHeader: View {
             .popover(isPresented: $showing) {
                 Text(help)
                     .font(.callout)
+                    .multilineTextAlignment(.leading)
+                    // Let the text wrap to as many lines as it needs; without this the
+                    // popover sizes to one line and truncates the help (T220 bug).
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding()
-                    .frame(maxWidth: 280)
+                    .frame(width: 280)
                     .presentationCompactAdaptation(.popover)
             }
             Spacer()

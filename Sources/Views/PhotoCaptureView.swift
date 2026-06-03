@@ -83,7 +83,7 @@ struct PhotoCaptureView: View {
         VStack(spacing: 4) {
             Text(displayedTarget?.nickname ?? "")
                 .font(.title2.bold())
-            Text(displayedTarget?.species ?? "")
+            Text(displayedTarget?.species.capitalisedWords ?? "")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text(coordinator.progressText)
