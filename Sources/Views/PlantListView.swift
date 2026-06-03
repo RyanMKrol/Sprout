@@ -125,6 +125,7 @@ struct PlantListView: View {
                 plants: promptTargets,
                 onTakePhotos: {
                     // Build the coordinator (and its single camera session) once, now.
+                    dlog("list: 'Take Photos' tapped — building coordinator for \(promptTargets.count) plant(s)")
                     photoCoordinator = makePhotoCapture?(promptTargets)
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
@@ -136,6 +137,7 @@ struct PlantListView: View {
             )
         }
         .fullScreenCover(isPresented: $photoPresented) {
+            let _ = dlog("list: fullScreenCover content — coordinator present=\(photoCoordinator != nil)")
             if let photoCoordinator {
                 PhotoCaptureView(coordinator: photoCoordinator) {
                     photoPresented = false
@@ -165,6 +167,7 @@ struct PlantListView: View {
     private func launchPhotosIfRequested() {
         guard startPhotosOnDismiss else { return }
         startPhotosOnDismiss = false
+        dlog("list: prompt dismissed — presenting camera cover")
         photoPresented = true
     }
 

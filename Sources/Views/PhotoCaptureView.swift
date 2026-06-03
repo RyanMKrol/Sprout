@@ -11,6 +11,7 @@ struct PhotoCaptureView: View {
     private let onFinish: () -> Void
 
     init(coordinator: PhotoCaptureCoordinator, onFinish: @escaping () -> Void = {}) {
+        dlog("PhotoCaptureView.init")
         _coordinator = StateObject(wrappedValue: coordinator)
         self.onFinish = onFinish
     }
@@ -64,7 +65,7 @@ struct PhotoCaptureView: View {
     private var preview: some View {
         ZStack {
             if let previewProvider, coordinator.cameraAvailable {
-                previewProvider.makePreview()
+                LiveCameraPreview(provider: previewProvider)
             } else {
                 placeholder
             }
@@ -114,5 +115,17 @@ struct PhotoCaptureView: View {
             Color.clear.frame(width: 80, height: 1)
         }
         .padding(.horizontal)
+    }
+}
+
+/// Wraps the camera's live preview so we can log the moment the preview layer is built
+/// (the suspected crash window between the cover presenting and the session starting).
+private struct LiveCameraPreview: View {
+    let provider: CameraPreviewProviding
+
+    var body: some View {
+        dlog("PhotoCaptureView — building live preview (makePreview)")
+        return provider.makePreview()
+            .onAppear { dlog("PhotoCaptureView — live preview appeared") }
     }
 }
