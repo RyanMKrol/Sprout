@@ -162,9 +162,11 @@ struct CameraPreviewView: UIViewRepresentable {
     let session: AVCaptureSession
 
     func makeUIView(context: Context) -> PreviewUIView {
+        dlog("CameraPreviewView.makeUIView — attaching session to preview layer")
         let view = PreviewUIView()
         view.videoPreviewLayer.session = session
         view.videoPreviewLayer.videoGravity = .resizeAspectFill
+        dlog("CameraPreviewView.makeUIView — attached")
         return view
     }
 

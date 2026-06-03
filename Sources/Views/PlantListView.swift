@@ -28,11 +28,11 @@ struct PlantListView: View {
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
     @State private var didDeepLink = false
-    /// The photo-capture coordinator, built **once** when the camera launches and held
-    /// here so the `.fullScreenCover` doesn't rebuild it (and a fresh `AVCaptureSession`)
-    /// on every re-render — multiple sessions crash on device.
+    /// The photo-capture coordinator. **It is the single source of truth for the camera
+    /// cover** — the `.fullScreenCover(item:)` presents iff this is non-nil, so the cover
+    /// can never appear with a nil coordinator (the black-screen bug). Built once, when
+    /// the camera launches (so its single `AVCaptureSession` isn't rebuilt per re-render).
     @State private var photoCoordinator: PhotoCaptureCoordinator?
-    @State private var photoPresented = false
     /// The just-created plants the "take photos?" prompt offers to photograph (T208),
     /// and whether that prompt sheet is showing (T223 — now a connected sheet).
     @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
@@ -124,8 +124,9 @@ struct PlantListView: View {
             PhotoPromptView(
                 plants: promptTargets,
                 onTakePhotos: {
-                    // Build the coordinator (and its single camera session) once, now.
-                    photoCoordinator = makePhotoCapture?(promptTargets)
+                    // Defer building the coordinator until the prompt has fully dismissed
+                    // (launchPhotosIfRequested) — avoids a present-while-dismissing race.
+                    dlog("list: 'Take Photos' tapped — will launch camera for \(promptTargets.count) plant(s)")
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
                 },
@@ -135,13 +136,11 @@ struct PlantListView: View {
                 }
             )
         }
-        .fullScreenCover(isPresented: $photoPresented) {
-            if let photoCoordinator {
-                PhotoCaptureView(coordinator: photoCoordinator) {
-                    photoPresented = false
-                    self.photoCoordinator = nil
-                    viewModel.load()
-                }
+        .fullScreenCover(item: $photoCoordinator) { coordinator in
+            let _ = dlog("list: fullScreenCover content — presenting camera (targets=\(coordinator.targets.count))")
+            PhotoCaptureView(coordinator: coordinator) {
+                self.photoCoordinator = nil
+                viewModel.load()
             }
         }
         .onAppear {
@@ -165,7 +164,10 @@ struct PlantListView: View {
     private func launchPhotosIfRequested() {
         guard startPhotosOnDismiss else { return }
         startPhotosOnDismiss = false
-        photoPresented = true
+        dlog("list: prompt dismissed — building coordinator + presenting camera cover")
+        // Building the coordinator here sets the cover's `item`, which presents it —
+        // one source of truth, so the cover can't appear without a coordinator.
+        photoCoordinator = makePhotoCapture?(promptTargets)
     }
 
     /// A list row: a tappable `NavigationLink` into the plant's detail (T008) when a
@@ -202,7 +204,6 @@ struct PlantListView: View {
                 PhotoCaptureCoordinator.Target(id: $0.id, nickname: $0.nickname, species: $0.species)
             }
             photoCoordinator = makePhotoCapture?(targets)
-            photoPresented = true
         case "photoprompt" where makePhotoCapture != nil:
             // Seed the prompt with the seeded plants so the screenshot shows the
             // connected sheet with real content (T223).
