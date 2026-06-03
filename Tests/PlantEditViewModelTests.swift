@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import Sprout
 
 /// Unit tests for the Edit Plant view model (T007, narrowed by T218): the form edits
@@ -157,16 +158,15 @@ final class PlantEditViewModelTests: XCTestCase {
         XCTAssertFalse(vm.hasPhoto)
     }
 
-    func testChangePhotoCapturesAndPersistsOnSave() async throws {
+    func testStagePhotoStagesAndPersistsOnSave() throws {
         let plant = Plant(nickname: "Spike", species: "Snake Plant")
         try repo.add(plant)
-        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: true))
+        let vm = editModel(for: plant.id)
 
-        await vm.changePhoto()
+        vm.stage(StubPhotoCapturing.placeholderImage())
         // Staged in-memory immediately…
         XCTAssertNotNil(vm.photoData)
         XCTAssertTrue(vm.hasPhoto)
-        XCTAssertFalse(vm.isCapturingPhoto)
         // …but not persisted until save (transactional form).
         XCTAssertNil(try repo.plant(id: plant.id)?.photoData)
 
@@ -174,13 +174,13 @@ final class PlantEditViewModelTests: XCTestCase {
         XCTAssertEqual(try repo.plant(id: plant.id)?.photoData, vm.photoData)
     }
 
-    func testChangePhotoReplacesExistingPhotoOnSave() async throws {
+    func testStagePhotoReplacesExistingPhotoOnSave() throws {
         let old = Data([0xAA])
         let plant = Plant(nickname: "Spike", species: "Snake Plant", photoData: old)
         try repo.add(plant)
-        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: true))
+        let vm = editModel(for: plant.id)
 
-        await vm.changePhoto()
+        vm.stage(StubPhotoCapturing.placeholderImage())
         try vm.save()
 
         let reloaded = try repo.plant(id: plant.id)
@@ -188,13 +188,13 @@ final class PlantEditViewModelTests: XCTestCase {
         XCTAssertNotEqual(reloaded?.photoData, old)
     }
 
-    func testFailedCaptureKeepsExistingPhoto() async throws {
+    func testStageIgnoresUnencodableImage() throws {
         let existing = Data([0xBB, 0xCC])
         let plant = Plant(nickname: "Spike", species: "Snake Plant", photoData: existing)
         try repo.add(plant)
-        let vm = editModel(for: plant.id, camera: StubPhotoCapturing(returnsImage: false))
+        let vm = editModel(for: plant.id)
 
-        await vm.changePhoto()
-        XCTAssertEqual(vm.photoData, existing) // untouched on capture failure
+        vm.stage(UIImage()) // no CGImage → PlantPhoto.encode returns nil → ignored
+        XCTAssertEqual(vm.photoData, existing)
     }
 }

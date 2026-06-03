@@ -13,6 +13,7 @@ struct PlantEditView: View {
     /// Called after a successful save or a cancel, so the presenter can dismiss the
     /// sheet and refresh the list.
     private let onFinish: () -> Void
+    @State private var capturingPhoto = false
 
     init(viewModel: PlantEditViewModel, onFinish: @escaping () -> Void = {}) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -25,16 +26,9 @@ struct PlantEditView: View {
                 Section("Photo") {
                     HStack(spacing: 16) {
                         PlantThumbnail(photoData: viewModel.photoData, size: 64)
-                        Button {
-                            Task { await viewModel.changePhoto() }
-                        } label: {
-                            if viewModel.isCapturingPhoto {
-                                ProgressView()
-                            } else {
-                                Text(viewModel.hasPhoto ? "Change photo" : "Add photo")
-                            }
+                        Button(viewModel.hasPhoto ? "Change photo" : "Add photo") {
+                            capturingPhoto = true
                         }
-                        .disabled(viewModel.isCapturingPhoto)
                     }
                 }
 
@@ -66,6 +60,16 @@ struct PlantEditView: View {
                     }
                     .disabled(!viewModel.canSave)
                 }
+            }
+            .fullScreenCover(isPresented: $capturingPhoto) {
+                CapturePhotoView(
+                    camera: viewModel.camera,
+                    onCapture: { image in
+                        viewModel.stage(image)
+                        capturingPhoto = false
+                    },
+                    onCancel: { capturingPhoto = false }
+                )
             }
         }
     }
