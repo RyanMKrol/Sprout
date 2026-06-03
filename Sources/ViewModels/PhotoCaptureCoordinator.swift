@@ -45,6 +45,7 @@ final class PhotoCaptureCoordinator: ObservableObject {
         self.repository = repository
         self.camera = camera
         if targets.isEmpty { isFinished = true }
+        dlog("PhotoCaptureCoordinator init — targets=\(targets.count), camera=\(type(of: camera)), available=\(camera.isAvailable)")
     }
 
     // MARK: - Presentation
@@ -74,9 +75,12 @@ final class PhotoCaptureCoordinator: ObservableObject {
     /// on the current plant so the user can retry (distinct from `skip`).
     func captureCurrent() async {
         guard let target = current else { return }
+        dlog("coordinator.captureCurrent — plant \(index + 1)/\(targets.count) '\(target.nickname)'")
         guard let image = await camera.capture(), let data = PlantPhoto.encode(image) else {
+            dlog("coordinator.captureCurrent — no image (stayed on current)")
             return // capture failed — stay put for a retry
         }
+        dlog("coordinator.captureCurrent — got image, saving + advancing")
         if var plant = (try? repository.plant(id: target.id)) ?? nil {
             plant.photoData = data
             try? repository.update(plant)

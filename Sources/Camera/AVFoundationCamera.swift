@@ -1,11 +1,6 @@
 @preconcurrency import AVFoundation
-import OSLog
 import SwiftUI
 import UIKit
-
-/// Camera diagnostics. View on a device in Console.app (or `log stream`) filtering
-/// subsystem `com.ryankrol.sprout`, category `camera`.
-let cameraLog = Logger(subsystem: "com.ryankrol.sprout", category: "camera")
 
 /// A camera that can supply a live SwiftUI preview. Kept free of AVFoundation types
 /// in its signature (returns `AnyView`) so `PhotoCaptureView` / `CapturePhotoView` can
@@ -52,15 +47,15 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
     /// Capture one square frame, or `nil` on failure. Authorises, configures + starts the
     /// session **on the background queue**, confirms an active connection, then snaps.
     func capture() async -> UIImage? {
-        cameraLog.info("capture() requested")
+        dlog("capture() requested")
         guard await prepare() else {
-            cameraLog.error("capture() aborted — camera not ready")
+            dlog("capture() aborted — camera not ready")
             return nil
         }
         // Let the sensor expose a frame before snapping (no warmed-up preview in the edit flow).
         try? await Task.sleep(nanoseconds: 350_000_000)
         guard continuation == nil else {
-            cameraLog.error("capture() ignored — a capture is already in flight")
+            dlog("capture() ignored — a capture is already in flight")
             return nil
         }
         return await withCheckedContinuation { (cont: CheckedContinuation<UIImage?, Never>) in
@@ -68,11 +63,11 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
             sessionQueue.async { [output] in
                 guard let connection = output.connection(with: .video),
                       connection.isActive, connection.isEnabled else {
-                    cameraLog.error("capture() aborted — no active video connection")
+                    dlog("capture() aborted — no active video connection")
                     Task { @MainActor in self.finish(nil) }
                     return
                 }
-                cameraLog.info("capturing photo")
+                dlog("capturing photo")
                 output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
             }
         }
@@ -85,13 +80,13 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
         case .authorized:
             break
         case .notDetermined:
-            cameraLog.info("requesting camera authorization")
+            dlog("requesting camera authorization")
             guard await AVCaptureDevice.requestAccess(for: .video) else {
-                cameraLog.error("camera authorization denied by user")
+                dlog("camera authorization denied by user")
                 return false
             }
         default:
-            cameraLog.error("camera unavailable — authorization denied/restricted")
+            dlog("camera unavailable — authorization denied/restricted")
             return false
         }
         return await withCheckedContinuation { (cont: CheckedContinuation<Bool, Never>) in
@@ -99,7 +94,7 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
                 configureIfNeededOnQueue()
                 if isConfigured, !session.isRunning { session.startRunning() }
                 let running = isConfigured && session.isRunning
-                if !running { cameraLog.error("capture session failed to start") }
+                if !running { dlog("capture session failed to start") }
                 cont.resume(returning: running)
             }
         }
@@ -115,7 +110,7 @@ final class AVFoundationCamera: NSObject, PhotoCapturing {
            session.canAddInput(input) {
             session.addInput(input)
         } else {
-            cameraLog.error("no back-camera input available")
+            dlog("no back-camera input available")
         }
         if session.canAddOutput(output) {
             session.addOutput(output)
@@ -154,10 +149,10 @@ extension AVFoundationCamera: AVCapturePhotoCaptureDelegate {
         error: Error?
     ) {
         if let error {
-            cameraLog.error("photo capture failed: \(error.localizedDescription)")
+            dlog("photo capture failed: \(error.localizedDescription)")
         }
         let image = photo.fileDataRepresentation().flatMap(UIImage.init(data:))
-        cameraLog.info("photo processed — image: \(image != nil)")
+        dlog("photo processed — image: \(image != nil)")
         Task { @MainActor in self.finish(image) }
     }
 }
