@@ -28,11 +28,11 @@ struct HomeView: View {
     /// that prompt sheet is showing (T223 — now a connected sheet, not a floating dialog).
     @State private var promptTargets: [PhotoCaptureCoordinator.Target] = []
     @State private var photoPromptPresented = false
-    /// The photo-capture coordinator, built **once** when the camera is launched and
-    /// held here so the `.fullScreenCover` doesn't rebuild it (and a fresh
-    /// `AVCaptureSession`) on every re-render — multiple sessions crash on device.
+    /// The photo-capture coordinator. **It is the single source of truth for the camera
+    /// cover** — the `.fullScreenCover(item:)` presents iff this is non-nil, so the cover
+    /// can never appear with a nil coordinator (the black-screen bug). Built once, when
+    /// the camera launches (so its single `AVCaptureSession` isn't rebuilt per re-render).
     @State private var photoCoordinator: PhotoCaptureCoordinator?
-    @State private var photoPresented = false
     /// Set when the photo prompt's "Take Photos" is tapped, so the camera launches from
     /// the prompt sheet's `onDismiss` (avoids a present-while-dismissing race).
     @State private var startPhotosOnDismiss = false
@@ -137,9 +137,9 @@ struct HomeView: View {
             PhotoPromptView(
                 plants: promptTargets,
                 onTakePhotos: {
-                    // Build the coordinator (and its single camera session) once, now.
-                    dlog("home: 'Take Photos' tapped — building coordinator for \(promptTargets.count) plant(s)")
-                    photoCoordinator = makePhotoCapture?(promptTargets)
+                    // Defer building the coordinator until the prompt has fully dismissed
+                    // (launchPhotosIfRequested) — avoids a present-while-dismissing race.
+                    dlog("home: 'Take Photos' tapped — will launch camera for \(promptTargets.count) plant(s)")
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
                 },
@@ -149,13 +149,11 @@ struct HomeView: View {
                 }
             )
         }
-        .fullScreenCover(isPresented: $photoPresented) {
-            if let photoCoordinator {
-                PhotoCaptureView(coordinator: photoCoordinator) {
-                    photoPresented = false
-                    self.photoCoordinator = nil
-                    listViewModel.load()
-                }
+        .fullScreenCover(item: $photoCoordinator) { coordinator in
+            let _ = dlog("home: fullScreenCover content — presenting camera (targets=\(coordinator.targets.count))")
+            PhotoCaptureView(coordinator: coordinator) {
+                self.photoCoordinator = nil
+                listViewModel.load()
             }
         }
         .fullScreenCover(isPresented: $guidedPresented) {
@@ -187,7 +185,10 @@ struct HomeView: View {
     private func launchPhotosIfRequested() {
         guard startPhotosOnDismiss else { return }
         startPhotosOnDismiss = false
-        photoPresented = true
+        dlog("home: prompt dismissed — building coordinator + presenting camera cover")
+        // Building the coordinator here sets the cover's `item`, which presents it —
+        // one source of truth, so the cover can't appear without a coordinator.
+        photoCoordinator = makePhotoCapture?(promptTargets)
     }
 
     /// Build the guided coordinator for `mode` and present the walkthrough.

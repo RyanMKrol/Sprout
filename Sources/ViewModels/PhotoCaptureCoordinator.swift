@@ -9,7 +9,12 @@ import UIKit
 /// All logic lives here behind the `PhotoCapturing` seam, so it's fully unit-tested
 /// with `StubPhotoCapturing` + an in-memory repository — no camera hardware needed.
 @MainActor
-final class PhotoCaptureCoordinator: ObservableObject {
+final class PhotoCaptureCoordinator: ObservableObject, Identifiable {
+    /// Stable identity so the coordinator itself can drive `.fullScreenCover(item:)` —
+    /// the cover then presents iff the coordinator is non-nil, so it can never present
+    /// with a nil coordinator (the black-screen bug from the two-source-of-truth design).
+    nonisolated let id = UUID()
+
     /// One plant to photograph, with the labels the overlay banner shows.
     struct Target: Identifiable, Equatable {
         let id: UUID

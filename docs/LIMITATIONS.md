@@ -644,6 +644,18 @@ keep them here so the design's compromises live in one place alongside your proj
   entry point appears, extract the whole offer-photos flow into a single view modifier driving one
   implementation.
 
+- **Camera cover is driven by `item:` (the coordinator), not a separate `isPresented` bool.** *Why:*
+  the original wiring used **two** sources of truth — a `photoPresented: Bool` and an optional
+  `photoCoordinator` — built in the prompt's `onTakePhotos` and read in the cover's `if let`. On device
+  they raced: the cover presented (`photoPresented == true`) while `photoCoordinator` read back `nil`,
+  so the cover rendered its empty body — a **black screen** (confirmed via the on-disk diagnostics log:
+  `coordinator present=false`). *Fix/impact:* `.fullScreenCover(item: $photoCoordinator)` makes the
+  coordinator the single source of truth — the cover presents iff it's non-nil and SwiftUI passes the
+  unwrapped value into the content closure, so the cover can never appear without a coordinator. The
+  coordinator is now built in `launchPhotosIfRequested` (after the prompt fully dismisses) rather than
+  in `onTakePhotos`. `PhotoCaptureCoordinator` gained an `Identifiable` `id`. *Revisit:* if the
+  HomeView/PlantListView wiring is unified (see the row above), this becomes one implementation.
+
 - **Care DB audit (T224): the "~320 species" target is already nearly met, so T226 will overshoot.**
   *Why:* the original dataset plan aimed for ~300 and the loop overshot to **305**; the T224 audit
   ([`research/care-db-audit.md`](./research/care-db-audit.md)) found the common UK core is already
