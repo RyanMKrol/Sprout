@@ -10,9 +10,9 @@ import Foundation
 /// (`DemoSeed.isActive` is always `false`, `plants` is always empty), so neither
 /// the demo data nor the seeding path ships in a production binary.
 ///
-/// Usage:
-///   ./build_run.sh "iPhone 17 Pro" -seedDemoData YES
-///   ./build_run.sh "iPhone 17 Pro" -seedDemoData YES   # + SPROUT_SCREEN=detail later
+/// Usage (always the dedicated "Sprout-Claude" simulator — see tools/loop_sim.sh):
+///   ./build_run.sh Sprout-Claude -seedDemoData YES
+///   ./build_run.sh Sprout-Claude -seedDemoData YES   # + SPROUT_SCREEN=detail later
 ///
 /// T006 swapped the throwaway `DemoPlant` stand-in for the **real** domain model
 /// (`Plant`) seeded into an in-memory `PlantRepository`, while keeping this same
