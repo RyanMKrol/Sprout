@@ -14,7 +14,12 @@
 #   * Needs a simulator runtime matching the SDK; if missing, run
 #     `xcodebuild -downloadPlatform iOS`.
 #
-# Usage: ./build_run.sh [simulator-name]   (default: "iPhone 17 Pro")
+# Usage: ./build_run.sh [simulator-name]   (default: the dedicated "Sprout-Claude" device)
+#
+# The default is the project's DEDICATED simulator, never a generic model name: generic
+# names ("iPhone 17 Pro") resolve to a device shared with other projects' harness loops
+# on this Mac, and two loops installing their own apps onto it makes tests flake.
+# tools/loop_sim.sh ensures the dedicated device exists (idempotent, self-healing).
 
 set -euo pipefail
 
@@ -23,12 +28,17 @@ cd "$PROJECT_DIR"
 
 APP_NAME="Sprout"
 BUNDLE_ID="com.ryankrol.sprout"
-SIM_NAME="${1:-iPhone 17 Pro}"
+SIM_NAME="${1:-Sprout-Claude}"
+if [ "$SIM_NAME" = "Sprout-Claude" ]; then
+  "$PROJECT_DIR/tools/loop_sim.sh" >/dev/null   # ensure the dedicated device exists
+fi
 # Resolve the device name to a concrete UDID — prefer an already-booted one,
 # else the last (newest-runtime) match.
-SIM_ID="$(xcrun simctl list devices booted | grep -F "$SIM_NAME (" | grep -Eo '[0-9A-Fa-f-]{36}' | head -1)"
+# (|| true: a no-match grep must yield an empty string, not kill the script via set -e —
+# with nothing booted the first lookup legitimately finds no device.)
+SIM_ID="$(xcrun simctl list devices booted | grep -F "$SIM_NAME (" | grep -Eo '[0-9A-Fa-f-]{36}' | head -1 || true)"
 if [ -z "$SIM_ID" ]; then
-  SIM_ID="$(xcrun simctl list devices available | grep -F "$SIM_NAME (" | grep -Eo '[0-9A-Fa-f-]{36}' | tail -1)"
+  SIM_ID="$(xcrun simctl list devices available | grep -F "$SIM_NAME (" | grep -Eo '[0-9A-Fa-f-]{36}' | tail -1 || true)"
 fi
 SIM="${SIM_ID:-$SIM_NAME}"
 BUILD_DIR="$PROJECT_DIR/build"

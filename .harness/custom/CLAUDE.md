@@ -18,4 +18,14 @@ and if you need a script change, flag it to upstream into the plugin rather than
 
 Add your project's harness-authoring conventions, house rules, and reminders below.
 
-<!-- Add your project-specific instructions here. -->
+## Test destination in authored tasks — always `Sprout-Claude`
+
+When authoring a task's `verify` commands or spec prose that runs `xcodebuild test` /
+`build_run.sh`, always quote the **dedicated `Sprout-Claude` simulator** (ensured by
+`./tools/loop_sim.sh`), never a generic model name like `iPhone 17 Pro` — generic names resolve
+to a device shared with other projects' harness loops on this Mac and cause cross-loop flakes.
+A spec that has the builder CREATE a new simulator-targeting script must instruct it to default
+to `Sprout-Claude` via `tools/loop_sim.sh`, or it mints a new permanent leak. The build preamble
+(`custom/build-preamble.md`) carries the runtime override for command text quoted in older specs;
+this rule keeps new authoring from re-introducing the generic name in the first place. CI is
+deliberately NOT pinned (isolated runners resolve their own simulator).
