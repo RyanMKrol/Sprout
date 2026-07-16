@@ -82,11 +82,22 @@ final class SettingsViewModelTests: XCTestCase {
 
     // MARK: - reminder time → reschedule
 
+    /// A due date `days` from now at 12:00 UTC. The scheduler's digest folds any
+    /// *overdue* plant into today (relative to the real clock — the view-model path
+    /// doesn't inject `now`), so fixtures must stay in the future or these tests
+    /// become calendar time-bombs: fixed dates here passed until 2026-06-15, then
+    /// silently started failing once the calendar caught up.
+    private func futureDue(inDays days: Int) -> Date {
+        let day = utcCalendar.startOfDay(for: utcCalendar.date(byAdding: .day, value: days, to: Date())!)
+        return utcCalendar.date(byAdding: .hour, value: 12, to: day)!
+    }
+
     func testChangingReminderTimeReschedulesAtTheNewHour() async {
         let (store, _) = ephemeralStore(suite: "sprout.settings.tests.reschedule")
         let center = StubNotificationCenter()
         let repository = try! PlantStore.inMemory()
-        try! repository.add(plant(nextDue: date(year: 2026, month: 6, day: 15, hour: 12)))
+        let due = futureDue(inDays: 2)
+        try! repository.add(plant(nextDue: due))
 
         let vm = SettingsViewModel(
             store: store,
@@ -103,7 +114,7 @@ final class SettingsViewModelTests: XCTestCase {
         let requests = await center.pendingNotificationRequests()
         XCTAssertEqual(requests.count, 1)
         let comps = (requests[0].trigger as? UNCalendarNotificationTrigger)?.dateComponents
-        XCTAssertEqual(comps?.day, 15)
+        XCTAssertEqual(comps?.day, utcCalendar.component(.day, from: due))
         XCTAssertEqual(comps?.hour, 20, "the reminder should fire at the newly-chosen hour")
         XCTAssertEqual(comps?.minute, 0)
     }
@@ -121,8 +132,10 @@ final class SettingsViewModelTests: XCTestCase {
         let (store, _) = ephemeralStore(suite: "sprout.settings.tests.allplants")
         let center = StubNotificationCenter()
         let repository = try! PlantStore.inMemory()
-        try! repository.add(plant(nextDue: date(year: 2026, month: 6, day: 15, hour: 12)))
-        try! repository.add(Plant(nickname: "Fern", species: "Boston Fern", nextDue: date(year: 2026, month: 6, day: 18, hour: 12)))
+        // Two DIFFERENT future days → two digest entries (the digest is one
+        // notification per day, not per plant).
+        try! repository.add(plant(nextDue: futureDue(inDays: 2)))
+        try! repository.add(Plant(nickname: "Fern", species: "Boston Fern", nextDue: futureDue(inDays: 5)))
 
         let vm = SettingsViewModel(
             store: store,
