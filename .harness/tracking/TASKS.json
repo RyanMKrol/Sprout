@@ -15,6 +15,1086 @@
       "design": null,
       "verify": [],
       "spec": ".harness/tasks/T001.md"
+    },
+    {
+      "id": "T002",
+      "title": "Wire bundled fonts into the build + SproutFont helpers",
+      "status": "pending",
+      "dependsOn": [
+        "T001"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "foundation"
+      ],
+      "facets": {
+        "layer": "build",
+        "workType": "config",
+        "risk": []
+      },
+      "scope": [
+        "project.yml",
+        "Sources/Info.plist",
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-architecture.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T002.md"
+    },
+    {
+      "id": "T003",
+      "title": "SproutTheme design tokens (colors, radii, shadows)",
+      "status": "pending",
+      "dependsOn": [
+        "T001"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "foundation"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T003.md"
+    },
+    {
+      "id": "T004",
+      "title": "Icon enums: PlantIcon (Phosphor) + ChromeIcon (FontAwesome)",
+      "status": "pending",
+      "dependsOn": [
+        "T001"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "foundation"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-architecture.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T004.md"
+    },
+    {
+      "id": "T005",
+      "title": "PlantToken view + PlantTokenPalette (photo-wins)",
+      "status": "pending",
+      "dependsOn": [
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T005.md"
+    },
+    {
+      "id": "T006",
+      "title": "DueChip + DueStatus",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T006.md"
+    },
+    {
+      "id": "T007",
+      "title": "Button styles (primary/ghost/cream) + SectionEyebrow",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T007.md"
+    },
+    {
+      "id": "T008",
+      "title": "Card styles: white card, bento tile, hero card, info banner, toolbar buttons",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T008.md"
+    },
+    {
+      "id": "T009",
+      "title": "SproutSegmentedPicker",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T009.md"
+    },
+    {
+      "id": "T010",
+      "title": "SheetScaffold + SproutAlert (confirm dialog)",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T007"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T010.md"
+    },
+    {
+      "id": "T011",
+      "title": "RhythmBand watering-rhythm visualization",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T011.md"
+    },
+    {
+      "id": "T012",
+      "title": "Plant.icon on the model (schema + repository + demo seed)",
+      "status": "pending",
+      "dependsOn": [
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "model"
+      ],
+      "facets": {
+        "layer": "data",
+        "workType": "migration",
+        "risk": [
+          "touches-schema"
+        ]
+      },
+      "scope": [
+        "Sources/Model/**",
+        "Sources/Persistence/**",
+        "Sources/DemoSeed.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-architecture.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T012.md"
+    },
+    {
+      "id": "T013",
+      "title": "Unified check-in outcome voice (RecommendationPresentation)",
+      "status": "pending",
+      "dependsOn": [
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "logic"
+      ],
+      "facets": {
+        "layer": "services",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Support/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T013.md"
+    },
+    {
+      "id": "T014",
+      "title": "Launch splash screen (NEW)",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/SproutApp.swift",
+        "Sources/ContentView.swift",
+        "Sources/Info.plist",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T014.md"
+    },
+    {
+      "id": "T015",
+      "title": "Home hero content component (due / empty / all-watered)",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T007",
+        "T008"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T015.md"
+    },
+    {
+      "id": "T016",
+      "title": "Home screen assembly (Botanical Editorial)",
+      "status": "pending",
+      "dependsOn": [
+        "T015",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": [
+          "cross-cutting"
+        ]
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ContentView.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T016.md"
+    },
+    {
+      "id": "T017",
+      "title": "My Plants list restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T006",
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T017.md"
+    },
+    {
+      "id": "T018",
+      "title": "Plant detail restyle + rhythm band",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T006",
+        "T007",
+        "T011"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T018.md"
+    },
+    {
+      "id": "T019",
+      "title": "Adjust-schedule sheet restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T019.md"
+    },
+    {
+      "id": "T020",
+      "title": "Edit Plant form + delete confirmation",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T010",
+        "T012",
+        "T021"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T020.md"
+    },
+    {
+      "id": "T021",
+      "title": "Icon picker sheet (NEW)",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T010",
+        "T012"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T021.md"
+    },
+    {
+      "id": "T022",
+      "title": "Add flow: room step restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T008",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T022.md"
+    },
+    {
+      "id": "T023",
+      "title": "Add flow: basket step restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T010",
+        "T021"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T023.md"
+    },
+    {
+      "id": "T024",
+      "title": "Photo prompt restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T024.md"
+    },
+    {
+      "id": "T025",
+      "title": "Sequential photo capture restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T025.md"
+    },
+    {
+      "id": "T026",
+      "title": "Single-shot camera restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T026.md"
+    },
+    {
+      "id": "T027",
+      "title": "Rooms list restyle + room delete confirmation",
+      "status": "pending",
+      "dependsOn": [
+        "T008",
+        "T010",
+        "T028"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T027.md"
+    },
+    {
+      "id": "T028",
+      "title": "Room detail screen (NEW) + roomdetail hook + environment copy",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T006",
+        "T008"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Sources/Support/**",
+        "Sources/DemoSeed.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T028.md"
+    },
+    {
+      "id": "T029",
+      "title": "Add Room sheet restyle (preset wheel + Other path)",
+      "status": "pending",
+      "dependsOn": [
+        "T009",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T029.md"
+    },
+    {
+      "id": "T030",
+      "title": "Edit Room sheet restyle + delete row",
+      "status": "pending",
+      "dependsOn": [
+        "T009",
+        "T010",
+        "T027"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T030.md"
+    },
+    {
+      "id": "T031",
+      "title": "Check-in input sheet restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T009",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T031.md"
+    },
+    {
+      "id": "T032",
+      "title": "Check-in recommendation restyle (unified voice)",
+      "status": "pending",
+      "dependsOn": [
+        "T013",
+        "T031"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T032.md"
+    },
+    {
+      "id": "T033",
+      "title": "Guided watering: report + action screens restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T009",
+        "T013",
+        "T007"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T033.md"
+    },
+    {
+      "id": "T034",
+      "title": "Guided watering: completion screen restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T033"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T034.md"
+    },
+    {
+      "id": "T035",
+      "title": "Settings sheet restyle + delete-all confirmation",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T035.md"
+    },
+    {
+      "id": "T036",
+      "title": "Camera diagnostics restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T036.md"
+    },
+    {
+      "id": "T037",
+      "title": "Notification intro sheet restyle",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      },
+      "scope": [
+        "Sources/Views/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T037.md"
+    },
+    {
+      "id": "T038",
+      "title": "Redesign cleanup sweep: delete dead styling",
+      "status": "pending",
+      "dependsOn": [
+        "T014",
+        "T016",
+        "T017",
+        "T018",
+        "T019",
+        "T020",
+        "T022",
+        "T023",
+        "T024",
+        "T025",
+        "T026",
+        "T029",
+        "T030",
+        "T032",
+        "T034",
+        "T035",
+        "T036",
+        "T037"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "cleanup"
+      ],
+      "facets": {
+        "layer": "views",
+        "workType": "refactor",
+        "risk": [
+          "cross-cutting"
+        ]
+      },
+      "scope": [
+        "Sources/**",
+        "Tests/**",
+        ".harness/custom/docs/LIMITATIONS.md"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T038.md"
+    },
+    {
+      "id": "T039",
+      "title": "Visual fidelity review (human gate)",
+      "status": "pending",
+      "dependsOn": [
+        "T038"
+      ],
+      "gate": "needs-human",
+      "tags": [
+        "redesign",
+        "review"
+      ],
+      "scope": [],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T039.md"
     }
   ]
 }
