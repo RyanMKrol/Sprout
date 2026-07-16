@@ -1,124 +1,54 @@
 # Sprout 🌱
 
 An iOS app for tracking plant care. You add the plants you own; Sprout proposes a **per-plant
-watering schedule** seeded from a bundled database of common UK houseplants, then personalises
-it from quick **check-ins** — a soil knuckle-test (dry / moist / wet) and a glance at the
-leaves (drooping?) — and from local weather (hot/cold spells). It reminds you when a plant is
-due, at the time of day you prefer (e.g. an evening when you're likely home), and always
-explains *why* the schedule is what it is.
+watering schedule** seeded from a bundled database of ~335 common UK houseplants, then
+personalises it from quick **check-ins** — a soil knuckle-test (dry / moist / wet) and a glance
+at the leaves (drooping?) — and from each plant's **room environment** (sunlight × humidity).
+It reminds you when plants are due with a **once-a-day digest notification** at the time of day
+you prefer, and always explains *why* the schedule is what it is.
 
-> **How this project is built:** Sprout is developed by the autonomous **Ralph build harness**
-> — a single sequential loop that builds the [`TASKS.md`](./TASKS.md) backlog one
-> fully-verified task at a time. Verification is **local-only** (no GitHub CI): each task must
-> pass the local format/lint/test suite and, for UI work, an iOS-Simulator screenshot check
-> before the loop integrates it. See [`docs/HARNESS.md`](./docs/HARNESS.md) for the design and
-> [`CLAUDE.md`](./CLAUDE.md) for the working conventions.
+## Features
 
-## Planned features
-
-- Add and manage the plants you own.
-- A **bundled local database** of ~300 common UK houseplants seeding each plant's watering needs.
-- Quick **check-ins** (soil moisture knuckle-test + leaf droop) that adapt the schedule and give
-  an in-the-moment indication ("skip — soil's still wet, back in 3 days" / "water now").
-- A per-plant watering schedule that personalises over time and adjusts for **local weather**.
-- Watering-due **notifications**, delivered at a user-preferred time window.
-- A plain-language **"why this schedule"** explanation on every plant.
-- Settings for notification timing, units, and weather.
+- **My Plants** — add plants room-first (choose/add a room, then add its plants in a multi-add
+  "basket" flow), with photos captured in a guided sequential camera flow, random nicknames,
+  swipe-to-delete, and per-plant detail with check-in history.
+- **Rooms** — each room carries a light model (direct/indirect sliders) and humidity; the room's
+  environment drives its plants' schedules. Adding a room offers a wheel of common presets
+  (Living Room, Kitchen, Bathroom, …) with typical defaults.
+- **Care database** — 335 researched UK houseplant species (deduped, validated, with provenance)
+  seeding each plant's watering needs.
+- **Check-ins & adaptive schedule** — quick soil + leaf check-ins adapt each plant's interval;
+  a plain-language "why this schedule" explanation is always available, plus a manual
+  water-in-N-days override.
+- **Guided watering** — a walkthrough of today's due plants (water-only or full check-in).
+- **Notifications** — a daily "N plants need watering today" digest at your chosen hour, with
+  first-run onboarding, an off-state indicator, and a developer test button.
+- **Home** — a status-aware greeting over a bento layout of gradient tiles, with a due-count
+  badge and a pulsing Water tile when plants are due.
 
 ## Building & running
 
 The project is **generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen)** from
-`project.yml` — the `.xcodeproj` is not committed. (Mirrors the sibling `../basket` project.)
+`project.yml` — the `.xcodeproj` is not committed.
 
-- **Requirements:** macOS + Xcode (iOS Simulator) and `brew install xcodegen`. An iOS simulator
+- **Requirements:** macOS + Xcode 26.x and `brew install xcodegen swiftlint jq`. An iOS simulator
   runtime matching the SDK (else `xcodebuild test` fails — `xcodebuild -downloadPlatform iOS`).
 - **Build / run / screenshot:** `./build_run.sh` — regenerate → build → install → launch →
   save `screenshots/latest.png`. Open in Xcode with `xcodegen generate && open Sprout.xcodeproj`.
-- **Definition of Done (run locally — there is no remote CI):**
+- **Verify (mirrors CI):**
   ```sh
-  ./build_run.sh                                   # ** BUILD SUCCEEDED ** + screenshot
+  swiftlint lint
+  ./tools/loop_sim.sh                              # ensure the dedicated "Sprout-Claude" simulator
   xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout \
-    -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+    -destination 'platform=iOS Simulator,name=Sprout-Claude'
   ```
-  No swiftlint/swiftformat and no XCUITest — behaviour is verified by XCTest + the screenshot.
+  Behaviour is verified by XCTest + the `build_run.sh` screenshot; CI (GitHub Actions, macOS
+  runner) runs the same lint + test suite on every push.
 
-> Until **T001** lands, `Sources/` and the generated `.xcodeproj` don't exist yet — the commands
-> above are the target state that T001 establishes (following `project.yml` / `build_run.sh`).
+## Building this project
 
-## Implementation status
-
-See [`TASKS.md`](./TASKS.md) for the full specs. Status (the checkbox in `TASKS.md` is the
-source of truth):
-
-| Task | Status | Description |
-|---|---|---|
-| T001 | ✅ done | Project scaffold + local Definition of Done passes on an empty build |
-| T002 | ✅ done | Verification baseline — demo-seed hook + screenshot convention |
-| T003 | ✅ done | Domain model types (Plant, CareProfile, CheckIn) |
-| T004 | ✅ done | Care database loader, schema & validator |
-| T005 | ✅ done | SwiftData persistence + repository protocol |
-| T006 | ✅ done | My Plants list + empty state |
-| T007 | ✅ done | Add / Edit Plant (species picker) |
-| T008 | ✅ done | Plant Detail + check-in history |
-| T009 | ✅ done | Schedule engine — effective interval (pure) |
-| T010 | ✅ done | Adaptive update from a check-in (pure) |
-| T011 | ✅ done | Check-in flow UI (soil / leaves / watered → recommendation) |
-| T012 | ✅ done | "Why this schedule" explanation text |
-| T013 | ✅ done | Local watering notifications (daily digest; wired to lifecycle) |
-| T014 | ✅ done | Settings — preferred reminder time, units, weather toggle |
-| T015 | ✅ done | Weather provider (Open-Meteo + CoreLocation) |
-| T016 | ✅ done | Feed weather into the schedule engine |
-| T101–T130 | ✅ done (30/30) | Care DB build-out — 30 batches × 10 researched UK houseplants (305 species) |
-| T131 | ✅ done | Care database complete — 305 species, deduped & validated, provenance complete |
-| T200 | ✅ done | Final review — [`docs/REVIEW.md`](./docs/REVIEW.md) key-decision packet for sign-off |
-| T201 | ✅ done | Photo blob on the model (`Plant`/`StoredPlant.photoData` + `PlantPhoto` encode) |
-| T202 | ✅ done | Random nickname provider (curated English names) |
-| T203 | ✅ done | Basket add view model (multi-add + auto-naming) |
-| T204 | ✅ done | Basket add view + "+" rewiring (basket replaces single-add) |
-| T205 | ✅ done | Camera seam + stub + camera permission |
-| T206 | ✅ done | Photo-capture coordinator (sequential capture) |
-| T207 | ✅ done | Camera overlay view + AVFoundation capture |
-| T208 | ✅ done | Wire post-create photo flow ("take photos?" → camera) |
-| T209 | ✅ done | Balanced ~300-name pool (gender-split) |
-| T210 | ✅ done | Room domain model + environment factor (sunlight × humidity) |
-| T211 | ✅ done | Room persistence + plant→room link |
-| T212 | ✅ done | Drive schedule from rooms; retire phone weather |
-| T213 | ✅ done | Rooms UI + room assignment |
-| T214 | ✅ done | Tile home page (Plants/Rooms/Water) + show photos |
-| T215 | ✅ done | Guided watering walkthrough (two modes) |
-| T216 | ✅ done | Developer settings — delete all plants & rooms |
-| T217 | ✅ done | Rename "Name" field label to "Nickname" |
-| T218 | ✅ done | My Plants swipe-to-delete + edit rework (drop species) |
-| T219 | ✅ done | Edit flow: change a plant's photo |
-| T220 | ✅ done | Room light model — direct/indirect sliders → brightness + tooltips |
-| T221 | ✅ done | Room-first "Add plants" flow (choose/add room, then add its plants) |
-| T222 | ✅ done | Square-tile home redesign + split Water / Full check-in |
-| T223 | ✅ done | Fix multi-add photo prompt (decline + connected presentation) |
-| T224 | ✅ done | Care DB audit + source research → gap list |
-| T225 | ✅ done | Care DB gap-fill batch 1 — 15 species (incl. Monstera adansonii) → 320 |
-| T226 | ✅ done | Care DB gap-fill batch 2 — 15 species (Tier 2 cultivars) → 335 |
-| T227 | ✅ done | Care DB final audit — 335 unique, deduped, validated, 1:1 provenance |
-
-**Post-backlog polish** (off-loop, device-tested): fixed the camera black screen and the guided-watering
-black screen (both were two-`fullScreenCover` conflicts — now single `item:`-driven covers); added
-satisfying sequential-capture feedback (flash + green pulse + slide); the Plant Detail screen now has a
-larger photo/header, an **Edit** button, and a tappable **manual schedule override** (water-in-N-days
-wheel); species and room names display in proper case; and the leaf-glyph placeholder uses a vibrant
-per-plant colour instead of a uniform blue. The **home screen was redesigned** into a status-aware
-greeting over a bento layout of gradient tiles (two square "place" tiles, a full-width Add-plants CTA,
-and a "Today" row of Water + Full-check-in actions with a due-count badge); the Plant Detail header no
-longer duplicates its title and sits tighter to the top. **Notifications are now actually wired up**:
-the watering reminder is a **once-a-day digest** ("N plants need watering today") at the chosen hour
-rather than one alert per plant, permission is requested at launch, the schedule is rebuilt from the
-plant data on every scene change, and Settings ▸ Developer has a **"Send a test reminder (5s)"** button
-(with a foreground banner) to verify delivery on device. A **first-run intro** explains reminders before
-the system prompt, and when notifications are off the home shows a **bell-with-slash** next to the title
-and a tappable **"Reminders are off"** banner (both re-prompt, or deep-link to Settings if denied). The
-home **Water tile gently pulses** when plants are actually due. **Adding a room** now offers a **wheel of
-common rooms** (Living Room, Kitchen, Bathroom, …) that auto-fills typical light + humidity, with an
-**"Other…"** option for a custom name + manual settings.
-
-The loop runs **unattended — no mid-loop gates**; the final task **T200** compiles a review
-packet ([`docs/REVIEW.md`](./docs/REVIEW.md)) of the key decisions for you to check and tweak once
-everything is built. Full specs + the per-batch plant categories are in [`TASKS.md`](./TASKS.md) and
-[`docs/research/uk-houseplants.md`](./docs/research/uk-houseplants.md).
+This project is built by an autonomous implementation harness. To add work and run it, see
+[`.harness/README.md`](.harness/README.md). Project conventions are in [`CLAUDE.md`](./CLAUDE.md);
+the v1 design docs and research live in [`docs/designs/`](./docs/designs/) and
+[`docs/research/`](./docs/research/), with historical trade-offs in
+[`docs/LIMITATIONS.md`](./docs/LIMITATIONS.md).

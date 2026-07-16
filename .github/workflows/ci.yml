@@ -1,0 +1,65 @@
+name: CI
+# ▲ The harness loop gates on a workflow whose `name:` matches CI_WORKFLOW (default "CI").
+#   If you rename this, set CI_WORKFLOW to match in .harness/config/harness.env.
+
+# Run on every push so the loop's per-task branches get a run to watch; the run on
+# main after the merge is the final backstop. (This repo merges branches directly —
+# no pull requests — so the per-branch push run IS the pre-merge signal.)
+on:
+  push:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Definition of Done
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Errors fail the merge gate; warnings (e.g. long lines) are advisory only.
+      # See .swiftlint.yml (excludes .harness/, build output, the generated project).
+      - name: Lint
+        run: |
+          brew install swiftlint
+          swiftlint lint
+
+      - name: Select Xcode 26
+        uses: ./.github/actions/select-xcode
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve an available iPhone simulator
+        id: sim
+        uses: ./.github/actions/resolve-simulator
+
+      # One retry per test on failure (-test-iterations 2): a test only fails the
+      # gate if it fails BOTH attempts. Deliberate flake tolerance because the
+      # autonomous loop (.harness/) gates merges on this run with no human watching —
+      # a single simulator flake would otherwise cost a whole build iteration.
+      # Test timeouts turn a hung test into a failure instead of a wedged runner.
+      - name: XCTest suite
+        run: |
+          xcodebuild test \
+            -project Sprout.xcodeproj -scheme Sprout \
+            -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.name }}" \
+            -test-timeouts-enabled YES -default-test-execution-time-allowance 600 \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath TestResults.xcresult
+
+      # Failure screenshots and logs live inside the result bundle — exactly what's
+      # needed to diagnose a failure, and gone with the runner unless uploaded.
+      - name: Upload result bundle on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults.xcresult
+          retention-days: 14

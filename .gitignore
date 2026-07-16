@@ -1,8 +1,3 @@
-# Transient loop scratch (last-iteration verdict) + the generated status board.
-worklog/.result
-worklog/STATUS.md
-worklog/*.log
-
 # XcodeGen output — regenerated from project.yml, never committed.
 *.xcodeproj/
 
@@ -21,3 +16,28 @@ Config/Signing.local.xcconfig
 
 # macOS
 .DS_Store
+
+# >>> implementation-harness managed (auto-maintained — do not edit inside) >>>
+# Transient loop scratch (last-iteration verdict) + the generated status board.
+.harness/worklog/.result
+.harness/worklog/.claude-out*
+.harness/worklog/.claude-prompt*
+.harness/worklog/.failures.buf
+.harness/worklog/.current.json
+.harness/worklog/STATUS.md
+.harness/worklog/*.log
+.harness/worklog/*.audit.md
+# atomic-write temps (TASKS.json + the owner-overlay files never keep a crashed-mid-write file)
+.harness/tracking/*.tmp
+.harness/tracking/*.tmp.*
+# ideas->tasks pipeline — ephemeral per-sweep scratch (the .gitkeep keeps each dir in a fresh clone)
+.harness/.pending-tasks/*
+!.harness/.pending-tasks/.gitkeep
+.harness/.pending-questions/*
+!.harness/.pending-questions/.gitkeep
+# scope-gap dismissals — check-task-scope.sh's per-task "already reviewed" record (fix-scope-gaps)
+.harness/.scope-gap-ignores/*
+!.harness/.scope-gap-ignores/.gitkeep
+# harness-fetched tool binaries (e.g. actionlint — ensure-actionlint.sh) — machine-specific, never committed
+.harness/.bin/
+# <<< implementation-harness managed <<<

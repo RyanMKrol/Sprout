@@ -1,0 +1,22 @@
+excluded:
+  - Sprout.xcodeproj
+  - build
+  - .harness
+  - tools
+
+line_length:
+  warning: 130
+
+identifier_name:
+  min_length: 1
+
+disabled_rules:
+  - trailing_comma
+
+# Pre-existing codebase idioms (try! in test setup, one AVFoundation cast) —
+# downgraded from error to advisory warning rather than mass-editing; revisit
+# if new code starts leaning on them.
+force_try:
+  severity: warning
+force_cast:
+  severity: warning
