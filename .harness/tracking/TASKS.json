@@ -440,9 +440,9 @@
       "status": "pending",
       "dependsOn": [
         "T005",
-        "T006",
         "T007",
-        "T010"
+        "T010",
+        "T040"
       ],
       "gate": null,
       "tags": [
@@ -470,9 +470,9 @@
       "status": "pending",
       "dependsOn": [
         "T005",
-        "T006",
         "T007",
-        "T011"
+        "T011",
+        "T040"
       ],
       "gate": null,
       "tags": [
@@ -755,8 +755,8 @@
       "status": "pending",
       "dependsOn": [
         "T005",
-        "T006",
-        "T008"
+        "T008",
+        "T040"
       ],
       "gate": null,
       "tags": [
@@ -1037,12 +1037,10 @@
       "title": "Redesign cleanup sweep: delete dead styling",
       "status": "pending",
       "dependsOn": [
-        "T014",
         "T016",
         "T017",
         "T018",
         "T019",
-        "T020",
         "T022",
         "T023",
         "T024",
@@ -1051,10 +1049,12 @@
         "T029",
         "T030",
         "T032",
-        "T034",
-        "T035",
         "T036",
-        "T037"
+        "T037",
+        "T041",
+        "T042",
+        "T043",
+        "T044"
       ],
       "gate": null,
       "tags": [
@@ -1095,6 +1095,158 @@
       "verify": [],
       "expectsTest": false,
       "spec": ".harness/tasks/T039.md"
+    },
+    {
+      "id": "T040",
+      "title": "DueChip + DueStatus (resolve name collision with existing enum)",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "component"
+      ],
+      "scope": [
+        "Sources/DesignSystem/**",
+        "Sources/ViewModels/**",
+        "Sources/Views/**",
+        "Sources/ContentView.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T040.md",
+      "facets": {
+        "layer": "views",
+        "workType": "component",
+        "risk": [
+          "cross-cutting"
+        ]
+      }
+    },
+    {
+      "id": "T041",
+      "title": "Launch splash screen (NEW)",
+      "status": "pending",
+      "dependsOn": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/SproutApp.swift",
+        "Sources/ContentView.swift",
+        "Sources/Info.plist",
+        "Sources/Assets.xcassets/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T041.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T042",
+      "title": "Edit Plant form + delete confirmation (redesign chrome)",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T010",
+        "T012",
+        "T021"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Sources/ContentView.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T042.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T043",
+      "title": "Guided watering: completion screen restyle (mode-aware body)",
+      "status": "pending",
+      "dependsOn": [
+        "T033"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/GuidedWateringCoordinator.swift",
+        "Sources/ContentView.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T043.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T044",
+      "title": "Settings sheet restyle + delete-all confirmation (redesign)",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T044.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
     }
   ]
 }
