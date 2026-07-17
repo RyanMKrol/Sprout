@@ -839,7 +839,7 @@
     {
       "id": "T031",
       "title": "Check-in input sheet restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T009",
