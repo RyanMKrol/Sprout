@@ -27,6 +27,11 @@ final class StoredPlant {
     @Relationship(deleteRule: .cascade, inverse: \StoredCheckIn.plant)
     var checkIns: [StoredCheckIn]
 
+    /// The chosen `PlantIcon` rawValue, if set. Optional so existing rows open via
+    /// lightweight migration; `nil` (or an unrecognised value) falls back to
+    /// `PlantIcon.default(forSpecies:)` on the way back to the domain model.
+    var iconName: String?
+
     init(
         id: UUID,
         nickname: String,
@@ -36,7 +41,8 @@ final class StoredPlant {
         nextDue: Date?,
         checkIns: [StoredCheckIn] = [],
         photoData: Data? = nil,
-        roomID: UUID? = nil
+        roomID: UUID? = nil,
+        iconName: String? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -47,6 +53,7 @@ final class StoredPlant {
         self.checkIns = checkIns
         self.photoData = photoData
         self.roomID = roomID
+        self.iconName = iconName
     }
 }
 
@@ -143,14 +150,17 @@ extension StoredPlant {
             nextDue: plant.nextDue,
             checkIns: plant.checkIns.map(StoredCheckIn.init(domain:)),
             photoData: plant.photoData,
-            roomID: plant.roomID
+            roomID: plant.roomID,
+            iconName: plant.icon.rawValue
         )
     }
 
     /// Project back to the pure domain value type, with check-ins in
-    /// chronological order.
+    /// chronological order. `iconName` is decoded via `PlantIcon(rawValue:)`,
+    /// falling back to the species default when `nil` or unrecognised.
     func toDomain() -> Plant {
-        Plant(
+        let icon = iconName.flatMap(PlantIcon.init(rawValue:)) ?? PlantIcon.default(forSpecies: species)
+        return Plant(
             id: id,
             nickname: nickname,
             species: species,
@@ -161,7 +171,8 @@ extension StoredPlant {
                 .sorted { $0.date < $1.date }
                 .map { $0.toDomain() },
             photoData: photoData,
-            roomID: roomID
+            roomID: roomID,
+            icon: icon
         )
     }
 
@@ -175,6 +186,7 @@ extension StoredPlant {
         nextDue = plant.nextDue
         photoData = plant.photoData
         roomID = plant.roomID
+        iconName = plant.icon.rawValue
     }
 }
 

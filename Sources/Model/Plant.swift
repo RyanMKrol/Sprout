@@ -37,6 +37,9 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
     /// The room the plant lives in, if assigned. The room's environment drives the
     /// plant's watering cadence (see `RoomEnvironment`). `nil` → neutral schedule.
     var roomID: UUID?
+    /// The Phosphor glyph chosen to represent this plant. Defaults to
+    /// `PlantIcon.default(forSpecies:)` when not explicitly set.
+    var icon: PlantIcon
 
     init(
         id: UUID = UUID(),
@@ -47,7 +50,8 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         nextDue: Date? = nil,
         checkIns: [CheckIn] = [],
         photoData: Data? = nil,
-        roomID: UUID? = nil
+        roomID: UUID? = nil,
+        icon: PlantIcon? = nil
     ) {
         self.id = id
         self.nickname = nickname
@@ -58,5 +62,6 @@ struct Plant: Codable, Equatable, Identifiable, Sendable {
         self.checkIns = checkIns
         self.photoData = photoData
         self.roomID = roomID
+        self.icon = icon ?? PlantIcon.default(forSpecies: species)
     }
 }

@@ -335,4 +335,52 @@ final class PersistenceTests: XCTestCase {
             XCTAssertEqual(error as? PlantRepositoryError, .notFound(id))
         }
     }
+
+    // MARK: icon (T012)
+
+    func testPlantIconRoundTrips() throws {
+        var plant = makePlant()
+        plant.icon = .cactus
+        try repo.add(plant)
+
+        let fetched = try XCTUnwrap(repo.plant(id: plant.id))
+        XCTAssertEqual(fetched.icon, .cactus)
+        XCTAssertEqual(fetched, plant)
+    }
+
+    func testUpdatePersistsIcon() throws {
+        var plant = makePlant()
+        try repo.add(plant)
+
+        plant.icon = .flowerLotus
+        try repo.update(plant)
+
+        XCTAssertEqual(try XCTUnwrap(repo.plant(id: plant.id)).icon, .flowerLotus)
+    }
+
+    func testStoredPlantWithNilIconNameFallsBackToSpeciesDefault() {
+        let stored = StoredPlant(
+            id: UUID(),
+            nickname: "Monty",
+            species: "Snake Plant",
+            adj: 1.0,
+            lastWatered: nil,
+            nextDue: nil,
+            iconName: nil
+        )
+        XCTAssertEqual(stored.toDomain().icon, PlantIcon.default(forSpecies: "Snake Plant"))
+    }
+
+    func testStoredPlantWithGarbageIconNameFallsBackToSpeciesDefault() {
+        let stored = StoredPlant(
+            id: UUID(),
+            nickname: "Monty",
+            species: "Snake Plant",
+            adj: 1.0,
+            lastWatered: nil,
+            nextDue: nil,
+            iconName: "not-a-real-icon"
+        )
+        XCTAssertEqual(stored.toDomain().icon, PlantIcon.default(forSpecies: "Snake Plant"))
+    }
 }

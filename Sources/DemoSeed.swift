@@ -143,11 +143,11 @@ enum DemoSeed {
             // lands on her. With a neutral learned `adj` and a real check-in history,
             // the demo warm-spell `weatherFactor` (T016) becomes the dominant cause —
             // her detail screen shows "shortened … because of a warm spell".
-            Plant(nickname: "Lily", species: "Peace Lily", adj: Plant.defaultAdj, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory, roomID: livingRoomID),
-            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0), roomID: livingRoomID),
-            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2), roomID: bathroomID),
-            Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3)),
-            Plant(nickname: "Spike", species: "Snake Plant", nextDue: day(6)),
+            Plant(nickname: "Lily", species: "Peace Lily", adj: Plant.defaultAdj, lastWatered: day(-2), nextDue: day(-1), checkIns: lilyHistory, roomID: livingRoomID, icon: .flower),
+            Plant(nickname: "Monty", species: "Monstera deliciosa", nextDue: day(0), roomID: livingRoomID, icon: .plant),
+            Plant(nickname: "Fern Bundy", species: "Boston Fern", nextDue: day(2), roomID: bathroomID, icon: .leaf),
+            Plant(nickname: "Pothos Pete", species: "Pothos", nextDue: day(3), icon: .pottedPlant),
+            Plant(nickname: "Spike", species: "Snake Plant", nextDue: day(6), icon: .cactus),
         ]
     }
     #endif
