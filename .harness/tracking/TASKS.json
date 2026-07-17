@@ -19,7 +19,7 @@
     {
       "id": "T002",
       "title": "Wire bundled fonts into the build + SproutFont helpers",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T001"
       ],
