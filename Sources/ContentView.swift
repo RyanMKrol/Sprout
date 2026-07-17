@@ -132,7 +132,7 @@ struct ContentView: View {
     private func makeGuidedWatering(_ mode: GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator {
         let ordered = PlantListViewModel.ordered((try? repository.allPlants()) ?? [])
         let plants = mode == .due
-            ? ordered.filter { DueStatus(nextDue: $0.nextDue, now: Date()).needsWater }
+            ? ordered.filter { WateringDueStatus(nextDue: $0.nextDue, now: Date()).needsWater }
             : ordered
         return GuidedWateringCoordinator(
             plants: plants,

@@ -2,7 +2,7 @@ import XCTest
 @testable import Sprout
 
 /// Unit tests for the My Plants list view model (T006): the empty → empty-state
-/// transition, due-order sorting, and the pure `DueStatus` classification/labels.
+/// transition, due-order sorting, and the pure `WateringDueStatus` classification/labels.
 /// Backed by a fresh in-memory `PlantRepository` (via `PlantStore.inMemory()`) so
 /// the view model is exercised through its real persistence boundary.
 @MainActor
@@ -74,34 +74,34 @@ final class PlantListViewModelTests: XCTestCase {
         XCTAssertEqual(vm.items.map(\.nickname), ["Ana", "Bob"])
     }
 
-    // MARK: DueStatus classification
+    // MARK: WateringDueStatus classification
 
     func testDueStatusClassification() {
-        XCTAssertEqual(DueStatus(nextDue: nil, now: now), .unscheduled)
-        XCTAssertEqual(DueStatus(nextDue: day(0), now: now), .dueToday)
-        XCTAssertEqual(DueStatus(nextDue: day(3), now: now), .due(days: 3))
-        XCTAssertEqual(DueStatus(nextDue: day(-2), now: now), .overdue(days: 2))
+        XCTAssertEqual(WateringDueStatus(nextDue: nil, now: now), .unscheduled)
+        XCTAssertEqual(WateringDueStatus(nextDue: day(0), now: now), .dueToday)
+        XCTAssertEqual(WateringDueStatus(nextDue: day(3), now: now), .due(days: 3))
+        XCTAssertEqual(WateringDueStatus(nextDue: day(-2), now: now), .overdue(days: 2))
     }
 
     func testDueStatusIgnoresTimeOfDay() {
         // A nextDue later *today* is still "due today", not "due in 1 day".
         let laterToday = now.addingTimeInterval(20 * 3_600)
-        XCTAssertEqual(DueStatus(nextDue: laterToday, now: now), .dueToday)
+        XCTAssertEqual(WateringDueStatus(nextDue: laterToday, now: now), .dueToday)
     }
 
     func testDueStatusLabels() {
-        XCTAssertEqual(DueStatus.unscheduled.label, "No schedule")
-        XCTAssertEqual(DueStatus.dueToday.label, "Due today")
-        XCTAssertEqual(DueStatus.due(days: 1).label, "Due in 1 day")
-        XCTAssertEqual(DueStatus.due(days: 3).label, "Due in 3 days")
-        XCTAssertEqual(DueStatus.overdue(days: 1).label, "Overdue by 1 day")
-        XCTAssertEqual(DueStatus.overdue(days: 4).label, "Overdue by 4 days")
+        XCTAssertEqual(WateringDueStatus.unscheduled.label, "No schedule")
+        XCTAssertEqual(WateringDueStatus.dueToday.label, "Due today")
+        XCTAssertEqual(WateringDueStatus.due(days: 1).label, "Due in 1 day")
+        XCTAssertEqual(WateringDueStatus.due(days: 3).label, "Due in 3 days")
+        XCTAssertEqual(WateringDueStatus.overdue(days: 1).label, "Overdue by 1 day")
+        XCTAssertEqual(WateringDueStatus.overdue(days: 4).label, "Overdue by 4 days")
     }
 
     func testNeedsWaterFlag() {
-        XCTAssertTrue(DueStatus.dueToday.needsWater)
-        XCTAssertTrue(DueStatus.overdue(days: 1).needsWater)
-        XCTAssertFalse(DueStatus.due(days: 2).needsWater)
-        XCTAssertFalse(DueStatus.unscheduled.needsWater)
+        XCTAssertTrue(WateringDueStatus.dueToday.needsWater)
+        XCTAssertTrue(WateringDueStatus.overdue(days: 1).needsWater)
+        XCTAssertFalse(WateringDueStatus.due(days: 2).needsWater)
+        XCTAssertFalse(WateringDueStatus.unscheduled.needsWater)
     }
 }

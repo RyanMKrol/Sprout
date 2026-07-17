@@ -4,7 +4,7 @@ import Foundation
 /// "now". A small value type (an enum case + day count) so the list pill text
 /// *and* the unit tests assert the *decision*, not a brittle string — the same
 /// pattern the engine tasks (T009/T010) use for their recommendations.
-enum DueStatus: Equatable {
+enum WateringDueStatus: Equatable {
     /// No `nextDue` yet — the plant has never been scheduled (e.g. just added).
     case unscheduled
     /// Watering was due `days` calendar days ago (`days ≥ 1`).
@@ -78,7 +78,7 @@ final class PlantListViewModel: ObservableObject {
         let id: UUID
         let nickname: String
         let species: String
-        let due: DueStatus
+        let due: WateringDueStatus
         /// Compact "why this schedule" summary (T012), e.g. *"Every 5d · shortened"*.
         /// `nil` when no care database is wired in or the species has no record.
         let whySummary: String?
@@ -128,7 +128,7 @@ final class PlantListViewModel: ObservableObject {
                 id: plant.id,
                 nickname: plant.nickname,
                 species: plant.species,
-                due: DueStatus(nextDue: plant.nextDue, now: now),
+                due: WateringDueStatus(nextDue: plant.nextDue, now: now),
                 whySummary: whySummary(for: plant),
                 photoData: plant.photoData
             )

@@ -28,7 +28,7 @@ final class PlantDetailViewModel: ObservableObject {
     /// The plant's species (its care-database key), or `""` before load.
     @Published private(set) var species: String = ""
     /// Relative watering status, derived from `nextDue` versus the injected `now`.
-    @Published private(set) var due: DueStatus = .unscheduled
+    @Published private(set) var due: WateringDueStatus = .unscheduled
     /// The species' starting cadence in days (from the care DB), if the species
     /// resolves to a record — shown in the schedule placeholder. `nil` otherwise.
     @Published private(set) var baseIntervalDays: Int?
@@ -86,7 +86,7 @@ final class PlantDetailViewModel: ObservableObject {
         nickname = plant.nickname
         species = plant.species
         photoData = plant.photoData
-        due = DueStatus(nextDue: plant.nextDue, now: now)
+        due = WateringDueStatus(nextDue: plant.nextDue, now: now)
 
         let profile = careDatabase.profile(forSpecies: plant.species)
         baseIntervalDays = profile?.baseIntervalDays
@@ -121,7 +121,7 @@ final class PlantDetailViewModel: ObservableObject {
     }
 
     /// Manually override the schedule: set the next-watering date to `days` calendar
-    /// days from today (anchored to the start of the day, matching `DueStatus`), persist
+    /// days from today (anchored to the start of the day, matching `WateringDueStatus`), persist
     /// it, and reload. Lets the user tweak the cadence by hand from the detail screen.
     func setDueInDays(_ days: Int, now: Date = Date(), calendar: Calendar = .current) {
         guard var plant = (try? repository.plant(id: plantID)) ?? nil else { return }

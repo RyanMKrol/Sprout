@@ -94,7 +94,7 @@ final class PlantDetailViewModelTests: XCTestCase {
         XCTAssertEqual(vm.due, .due(days: 5))
         // Persisted to the repository, not just the view model.
         let saved = try XCTUnwrap(try repo.plant(id: plant.id))
-        XCTAssertEqual(DueStatus(nextDue: saved.nextDue, now: now), .due(days: 5))
+        XCTAssertEqual(WateringDueStatus(nextDue: saved.nextDue, now: now), .due(days: 5))
     }
 
     // MARK: check-in history
