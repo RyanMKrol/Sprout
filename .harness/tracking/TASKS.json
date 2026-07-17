@@ -379,7 +379,7 @@
     {
       "id": "T015",
       "title": "Home hero content component (due / empty / all-watered)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T007",
