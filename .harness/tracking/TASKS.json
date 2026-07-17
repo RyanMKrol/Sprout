@@ -1008,7 +1008,7 @@
     {
       "id": "T037",
       "title": "Notification intro sheet restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T007",
         "T010"
