@@ -18,5 +18,10 @@
     "failed": true,
     "reason": "review-failed: superseded by T043 — added the coordinator + ContentView to scope so the mode-aware completion body can be threaded through",
     "at": "2026-07-17T19:54:54Z"
+  },
+  "T035": {
+    "failed": true,
+    "reason": "review-failed: superseded by T044 — widened scope to DesignSystem with a reuse-existing-primitives directive and a style facet",
+    "at": "2026-07-17T19:54:55Z"
   }
 }
