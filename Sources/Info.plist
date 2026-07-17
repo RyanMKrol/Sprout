@@ -24,6 +24,18 @@
 	<string>Sprout uses the camera to take a photo of each plant you add.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Sprout uses your location to fetch the local forecast and adjust each plant's watering schedule for hot and cold spells.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>bricolage-grotesque-v9-latin-600.ttf</string>
+		<string>bricolage-grotesque-v9-latin-700.ttf</string>
+		<string>bricolage-grotesque-v9-latin-800.ttf</string>
+		<string>hanken-grotesk-v12-latin-500.ttf</string>
+		<string>hanken-grotesk-v12-latin-500italic.ttf</string>
+		<string>hanken-grotesk-v12-latin-600.ttf</string>
+		<string>hanken-grotesk-v12-latin-700.ttf</string>
+		<string>hanken-grotesk-v12-latin-italic.ttf</string>
+		<string>hanken-grotesk-v12-latin-regular.ttf</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

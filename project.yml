@@ -20,10 +20,22 @@ targets:
     platform: iOS
     sources:
       - Sources
+    resources:
+      - Sources/Fonts
     info:
       path: Sources/Info.plist
       properties:
         CFBundleDisplayName: Sprout
+        UIAppFonts:
+          - bricolage-grotesque-v9-latin-600.ttf
+          - bricolage-grotesque-v9-latin-700.ttf
+          - bricolage-grotesque-v9-latin-800.ttf
+          - hanken-grotesk-v12-latin-500.ttf
+          - hanken-grotesk-v12-latin-500italic.ttf
+          - hanken-grotesk-v12-latin-600.ttf
+          - hanken-grotesk-v12-latin-700.ttf
+          - hanken-grotesk-v12-latin-italic.ttf
+          - hanken-grotesk-v12-latin-regular.ttf
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
