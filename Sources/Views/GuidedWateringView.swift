@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The **guided watering** walkthrough screen (T215). For each plant it shows the
-/// photo + name, asks how it looks (leaves) and how the soil feels, then previews a
+/// The **guided watering** walkthrough screen (screens 20–22, redesign). For each plant it shows
+/// the photo + name, asks how it looks (leaves) and how the soil feels, then previews a
 /// water/skip recommendation; the user records whether they watered and moves on.
 /// Driven entirely by `GuidedWateringCoordinator`.
 struct GuidedWateringView: View {
@@ -14,119 +14,278 @@ struct GuidedWateringView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
+        ZStack {
+            SproutTheme.paper.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                headerBar
+                progressBar
+
                 if let plant = coordinator.current {
-                    plantForm(plant)
-                } else {
-                    completion
-                }
-            }
-            .navigationTitle("Water your plants")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { onFinish() }
-                }
-                if coordinator.current != nil {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button("Skip") { coordinator.skip() }
+                    if coordinator.hasRecommendation {
+                        actionStep(plant)
+                    } else {
+                        reportStep(plant)
                     }
+                } else {
+                    completionStep
                 }
             }
         }
     }
 
-    // MARK: - Per-plant step
+    // MARK: - Header
 
-    private func plantForm(_ plant: Plant) -> some View {
-        Form {
-            Section {
-                VStack(spacing: 8) {
-                    PlantThumbnail(photoData: plant.photoData, tint: PlantPalette.color(for: plant.id), size: 120)
-                    Text(plant.nickname).font(.title2.bold())
-                    Text(plant.species.capitalisedWords).font(.subheadline).foregroundStyle(.secondary)
-                    Text(coordinator.progressText).font(.caption).foregroundStyle(.tertiary)
-                }
-                .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-            }
+    private var headerBar: some View {
+        HStack {
+            Button("Close", action: onFinish)
+                .font(SproutFont.body(17, weight: .semibold))
+                .foregroundStyle(SproutTheme.brandGreen)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            if coordinator.hasRecommendation {
-                recommendationSection
+            Text("Water your plants")
+                .font(SproutFont.display(17, weight: .bold))
+                .foregroundStyle(SproutTheme.ink)
+
+            if coordinator.current != nil {
+                Button("Skip", action: { coordinator.skip() })
+                    .font(SproutFont.body(17, weight: .semibold))
+                    .foregroundStyle(SproutTheme.brandGreen)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             } else {
-                reportSection
+                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
     }
 
-    private var reportSection: some View {
-        Group {
-            Section("How does it look?") {
-                Picker("Leaves", selection: $coordinator.leaves) {
-                    Text("Fine").tag(LeafState.fine)
-                    Text("Droopy").tag(LeafState.droopy)
-                }
-                .pickerStyle(.segmented)
-            }
-            Section("How's the soil?") {
-                Picker("Soil", selection: $coordinator.soil) {
-                    Text("Dry").tag(SoilMoisture.dry)
-                    Text("Moist").tag(SoilMoisture.moist)
-                    Text("Wet").tag(SoilMoisture.wet)
-                }
-                .pickerStyle(.segmented)
-            }
-            Section {
-                Button {
-                    coordinator.preview()
-                } label: {
-                    Text("Check").frame(maxWidth: .infinity).fontWeight(.semibold)
+    // MARK: - Progress bar
+
+    private var progressBar: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(SproutTheme.progressTrack)
+
+                if !coordinator.plants.isEmpty {
+                    let fillWidth = geo.size.width * CGFloat(coordinator.index) / CGFloat(coordinator.plants.count)
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(SproutTheme.brandGreen)
+                        .frame(width: fillWidth)
                 }
             }
         }
+        .frame(height: 5)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
     }
 
-    private var recommendationSection: some View {
-        Group {
-            Section {
-                Text(coordinator.message)
-                    .font(.callout.weight(.medium))
+    // MARK: - Report step (screen 20)
+
+    private func reportStep(_ plant: Plant) -> some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 24) {
+                    heroSection(plant)
+
+                    VStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            SectionEyebrow(text: "How does it look?")
+                            leavesPicker
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            SectionEyebrow(text: "How's the soil?")
+                            soilPicker
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                }
+                .padding(.vertical, 20)
             }
-            Section {
+
+            Spacer(minLength: 16)
+
+            Button(action: { coordinator.preview() }) {
+                Text("Check")
+            }
+            .buttonStyle(SproutPrimaryButtonStyle())
+            .padding(.horizontal, 20)
+            .padding(.bottom, 16)
+        }
+    }
+
+    // MARK: - Action step (screen 21)
+
+    private func actionStep(_ plant: Plant) -> some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 0) {
+                    heroSection(plant)
+                    .padding(.bottom, 40)
+
+                    VStack(spacing: 12) {
+                        recommendationCard
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
+                }
+                .padding(.vertical, 20)
+            }
+
+            Spacer(minLength: 16)
+
+            VStack(spacing: 12) {
                 if coordinator.recommendsWater {
-                    Button {
-                        coordinator.confirm(watered: true)
-                    } label: {
-                        Label("I watered it", systemImage: "drop.fill")
-                            .frame(maxWidth: .infinity)
-                            .fontWeight(.semibold)
+                    Button(action: { coordinator.confirm(watered: true) }) {
+                        HStack(spacing: 6) {
+                            Text("💧")
+                            Text("I watered it")
+                        }
                     }
-                    Button("Didn't water — next") { coordinator.confirm(watered: false) }
-                        .frame(maxWidth: .infinity)
+                    .buttonStyle(SproutPrimaryButtonStyle())
+
+                    Button(action: { coordinator.confirm(watered: false) }) {
+                        Text("Didn't water — next")
+                    }
+                    .font(SproutFont.body(17, weight: .semibold))
+                    .foregroundStyle(SproutTheme.brandGreen)
                 } else {
-                    Button {
-                        coordinator.confirm(watered: false)
-                    } label: {
-                        Text("Next plant").frame(maxWidth: .infinity).fontWeight(.semibold)
+                    Button(action: { coordinator.confirm(watered: false) }) {
+                        Text("Next plant")
                     }
+                    .buttonStyle(SproutPrimaryButtonStyle())
                 }
             }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 16)
         }
     }
 
-    // MARK: - Done
+    // MARK: - Pickers
 
-    private var completion: some View {
-        ContentUnavailableView {
-            Label(coordinator.plants.isEmpty ? "Nothing to water" : "All done", systemImage: "checkmark.circle.fill")
-        } description: {
-            Text(coordinator.plants.isEmpty
-                 ? "No plants need water right now."
-                 : "You've been through every plant.")
-        } actions: {
-            Button("Done") { onFinish() }
-                .buttonStyle(.borderedProminent)
+    private var leavesPicker: some View {
+        SproutSegmentedPicker(
+            selection: $coordinator.leaves,
+            options: [
+                (value: LeafState.fine, label: "Fine"),
+                (value: LeafState.droopy, label: "Droopy")
+            ]
+        )
+    }
+
+    private var soilPicker: some View {
+        SproutSegmentedPicker(
+            selection: $coordinator.soil,
+            options: [
+                (value: SoilMoisture.dry, label: "Dry"),
+                (value: SoilMoisture.moist, label: "Moist"),
+                (value: SoilMoisture.wet, label: "Wet")
+            ]
+        )
+    }
+
+    // MARK: - Hero section (report + action)
+
+    private func heroSection(_ plant: Plant) -> some View {
+        VStack(spacing: 12) {
+            PlantThumbnail(photoData: plant.photoData, tint: PlantPalette.color(for: plant.id), size: 120)
+
+            Text(plant.nickname)
+                .font(SproutFont.display(22, weight: .bold))
+                .foregroundStyle(SproutTheme.ink)
+
+            Text("\(plant.species.capitalisedWords) · \(coordinator.progressText)")
+                .font(SproutFont.body(17).italic())
+                .foregroundStyle(SproutTheme.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Recommendation card
+
+    private var recommendationCard: some View {
+        VStack(spacing: 16) {
+            let presentation = RecommendationPresentation.present(
+                coordinator.recommendation ?? WateringRecommendation(
+                    action: .monitor,
+                    reason: .droopyMoist,
+                    days: 0
+                ),
+                nextDue: nil,
+                calendar: Calendar.current,
+                now: Date()
+            )
+
+            VStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(presentation.tint.opacity(0.12))
+                        .frame(width: 78, height: 78)
+
+                    presentation.icon.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 34, height: 34)
+                        .foregroundStyle(presentation.tint)
+                }
+
+                Text(presentation.headline)
+                    .font(SproutFont.display(20, weight: .bold))
+                    .foregroundStyle(SproutTheme.ink)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 22)
+        .padding(.horizontal, 26)
+        .sproutCard(radius: 22)
+    }
+
+    // MARK: - Completion step (screen 22)
+
+    private var completionStep: some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 24) {
+                    VStack(spacing: 16) {
+                        ZStack {
+                            Circle()
+                                .fill(SproutTheme.brandGreen)
+                                .frame(width: 104, height: 104)
+
+                            ChromeIcon.circleCheck.image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 46, height: 46)
+                                .foregroundStyle(Color.white)
+                        }
+
+                        Text("All done 🌿")
+                            .font(SproutFont.display(27, weight: .bold))
+                            .foregroundStyle(SproutTheme.ink)
+
+                        Text("You've been through every plant that needed water today.")
+                            .font(SproutFont.body(15))
+                            .foregroundStyle(SproutTheme.textMuted)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding(.vertical, 40)
+            }
+
+            Spacer(minLength: 16)
+
+            Button(action: onFinish) {
+                Text("Done")
+            }
+            .buttonStyle(SproutPrimaryButtonStyle())
+            .padding(.horizontal, 20)
+            .padding(.bottom, 16)
         }
     }
 }
