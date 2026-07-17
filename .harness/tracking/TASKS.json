@@ -263,7 +263,7 @@
     {
       "id": "T011",
       "title": "RhythmBand watering-rhythm visualization",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003",
