@@ -523,7 +523,7 @@
     {
       "id": "T020",
       "title": "Edit Plant form + delete confirmation",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T005",
         "T010",
