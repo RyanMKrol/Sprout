@@ -553,7 +553,7 @@
     {
       "id": "T021",
       "title": "Icon picker sheet (NEW)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T010",
