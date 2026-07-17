@@ -1,1 +1,7 @@
-{}
+{
+  "T006": {
+    "failed": true,
+    "reason": "review-failed: superseded by T040 — widened scope to rename the colliding legacy DueStatus enum and fix its call sites before adding the design-system DueChip",
+    "at": "2026-07-17T19:54:48Z"
+  }
+}
