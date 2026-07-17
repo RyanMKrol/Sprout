@@ -235,7 +235,7 @@
     {
       "id": "T010",
       "title": "SheetScaffold + SproutAlert (confirm dialog)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003",
