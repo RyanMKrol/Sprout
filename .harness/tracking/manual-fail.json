@@ -3,5 +3,10 @@
     "failed": true,
     "reason": "review-failed: superseded by T040 — widened scope to rename the colliding legacy DueStatus enum and fix its call sites before adding the design-system DueChip",
     "at": "2026-07-17T19:54:48Z"
+  },
+  "T014": {
+    "failed": true,
+    "reason": "review-failed: superseded by T041 — added Sources/Assets.xcassets/** to scope so the UILaunchScreen color asset is no longer out-of-scope",
+    "at": "2026-07-17T19:54:50Z"
   }
 }
