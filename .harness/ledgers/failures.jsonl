@@ -6,3 +6,4 @@
 {"id":"T020","ts":"2026-07-17T05:47:03Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":"Sources/ContentView.swift"}
 {"id":"T023","ts":"2026-07-17T06:13:08Z","kind":"audit-fail","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":""}
 {"id":"T023","ts":"2026-07-17T06:31:41Z","kind":"audit-fail","rung":0,"attempt":1,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":""}
+{"id":"T034","ts":"2026-07-17T08:23:47Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"style","risk":[]},"detail":"Sources/ContentView.swift Sources/ViewModels/GuidedWateringCoordinator.swift"}
