@@ -610,7 +610,7 @@
     {
       "id": "T023",
       "title": "Add flow: basket step restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T010",
