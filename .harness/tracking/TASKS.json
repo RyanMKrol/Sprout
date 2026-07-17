@@ -1194,7 +1194,7 @@
     {
       "id": "T043",
       "title": "Guided watering: completion screen restyle (mode-aware body)",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T033"
       ],

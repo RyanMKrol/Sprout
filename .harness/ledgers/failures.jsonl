@@ -12,3 +12,4 @@
 {"id":"T036","ts":"2026-07-17T09:21:44Z","kind":"audit-fail","rung":0,"attempt":1,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"style","risk":[]},"detail":""}
 {"id":"T028","ts":"2026-07-17T21:11:39Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":"Sources/ContentView.swift"}
 {"id":"T042","ts":"2026-07-17T22:03:23Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":"Sources/Info.plist"}
+{"id":"T043","ts":"2026-07-17T22:29:44Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"style","risk":[]},"detail":"Sources/Info.plist"}
