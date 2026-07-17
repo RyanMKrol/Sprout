@@ -752,7 +752,7 @@
     {
       "id": "T028",
       "title": "Room detail screen (NEW) + roomdetail hook + environment copy",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T005",
         "T008",
