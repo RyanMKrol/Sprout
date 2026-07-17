@@ -11,50 +11,70 @@ struct NotificationIntroView: View {
     let onSkip: () -> Void
 
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
+        VStack(spacing: 0) {
+            VStack(spacing: 28) {
+                Spacer()
 
-            ZStack {
-                Circle()
-                    .fill(LinearGradient(colors: [Color(red: 0.27, green: 0.67, blue: 0.96),
-                                                  Color(red: 0.16, green: 0.46, blue: 0.87)],
-                                         startPoint: .topLeading, endPoint: .bottomTrailing))
-                    .frame(width: 110, height: 110)
-                    .shadow(color: .blue.opacity(0.3), radius: 12, y: 6)
-                Image(systemName: "bell.badge.fill")
-                    .font(.system(size: 46, weight: .semibold))
-                    .foregroundStyle(.white)
+                ZStack {
+                    Circle()
+                        .fill(SproutTheme.logoGradient)
+                        .frame(width: 112, height: 112)
+                        .shadow(
+                            color: Color(
+                                red: 30.0 / 255, green: 70.0 / 255, blue: 50.0 / 255, opacity: 0.4
+                            ),
+                            radius: 34, y: 16
+                        )
+
+                    Image("fa-bell", bundle: nil)
+                        .font(.system(size: 46, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .accessibilityHidden(true)
+
+                VStack(spacing: 16) {
+                    Text("Never miss a watering")
+                        .font(SproutFont.display(29))
+                        .foregroundStyle(SproutTheme.ink)
+                        .multilineTextAlignment(.center)
+
+                    Text("Sprout sends one gentle reminder a day when your plants need water, at a time you choose. 🌱")
+                        .font(SproutFont.body(16))
+                        .foregroundStyle(SproutTheme.textMuted)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(1.5 * 16 - 16)
+                }
+
+                Spacer()
             }
-            .accessibilityHidden(true)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 44)
 
-            VStack(spacing: 10) {
-                Text("Never miss a watering")
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                Text("Sprout sends a once-a-day reminder when your plants need water, at a time you choose. Turn on notifications so it can reach you.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(.horizontal)
-
-            Spacer()
-
-            VStack(spacing: 12) {
+            VStack(spacing: 0) {
                 Button(action: onEnable) {
                     Text("Enable reminders")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(SproutPrimaryButtonStyle())
+                .padding(.horizontal, 28)
+                .padding(.bottom, 18)
 
-                Button("Maybe later", action: onSkip)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Button(action: onSkip) {
+                    Text("Maybe later")
+                }
+                .font(SproutFont.body(17, weight: .semibold))
+                .foregroundStyle(SproutTheme.brandGreen)
+                .padding(.horizontal, 28)
+                .padding(.bottom, 28)
             }
         }
-        .padding(24)
-        .presentationDetents([.medium, .large])
+        .sproutSheetBackground()
     }
+}
+
+#Preview {
+    NotificationIntroView(onEnable: {}, onSkip: {})
+        .sheet(isPresented: .constant(true)) {
+            NotificationIntroView(onEnable: {}, onSkip: {})
+                .sproutSheetBackground()
+        }
 }
