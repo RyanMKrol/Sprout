@@ -18,6 +18,7 @@ struct ContentView: View {
     @StateObject private var gatekeeper: NotificationGatekeeper
     @Environment(\.scenePhase) private var scenePhase
     @State private var showNotificationIntro = false
+    @State private var showLaunchSplash = true
 
     /// UserDefaults flag so the first-run notification intro shows at most once.
     private static let introSeenKey = "sprout.notificationIntroSeen"
@@ -44,45 +45,66 @@ struct ContentView: View {
     }
 
     var body: some View {
-        HomeView(
-            listViewModel: listViewModel,
-            gatekeeper: gatekeeper,
-            makeEditor: makeEditor,
-            makeBasket: makeBasket,
-            makePhotoCapture: makePhotoCapture,
-            makeDetail: makeDetail,
-            makeCheckIn: makeCheckIn,
-            makeRooms: makeRooms,
-            makeSettings: makeSettings,
-            makeGuidedWatering: makeGuidedWatering
-        )
-        // Notifications: explain + ask on first run, then keep the daily digest in sync
-        // with the plant data. We rebuild on launch and on every scene-phase change —
-        // crucially when the app backgrounds (just before reminders matter) and
-        // re-activates — so the digest always reflects the latest schedules without
-        // threading the scheduler through every view model.
-        .task { await setUpNotifications() }
-        .onChange(of: scenePhase) { _, phase in
-            guard !DemoSeed.isActive else { return }
-            if phase == .active || phase == .background {
-                Task { await refreshReminders() }
+        ZStack {
+            HomeView(
+                listViewModel: listViewModel,
+                gatekeeper: gatekeeper,
+                makeEditor: makeEditor,
+                makeBasket: makeBasket,
+                makePhotoCapture: makePhotoCapture,
+                makeDetail: makeDetail,
+                makeCheckIn: makeCheckIn,
+                makeRooms: makeRooms,
+                makeSettings: makeSettings,
+                makeGuidedWatering: makeGuidedWatering
+            )
+            // Notifications: explain + ask on first run, then keep the daily digest in sync
+            // with the plant data. We rebuild on launch and on every scene-phase change —
+            // crucially when the app backgrounds (just before reminders matter) and
+            // re-activates — so the digest always reflects the latest schedules without
+            // threading the scheduler through every view model.
+            .task { await setUpNotifications() }
+            .onChange(of: scenePhase) { _, phase in
+                guard !DemoSeed.isActive else { return }
+                if phase == .active || phase == .background {
+                    Task { await refreshReminders() }
+                }
+                if phase == .active {
+                    Task { await gatekeeper.refresh() }
+                }
             }
-            if phase == .active {
-                Task { await gatekeeper.refresh() }
+            .sheet(isPresented: $showNotificationIntro) {
+                NotificationIntroView(
+                    onEnable: {
+                        Self.markIntroSeen()
+                        showNotificationIntro = false
+                        Task { await gatekeeper.enable() }
+                    },
+                    onSkip: {
+                        Self.markIntroSeen()
+                        showNotificationIntro = false
+                    }
+                )
+            }
+
+            // Launch splash overlay
+            if showLaunchSplash {
+                LaunchSplashView()
+                    .transition(.opacity)
+                    .zIndex(1000)
             }
         }
-        .sheet(isPresented: $showNotificationIntro) {
-            NotificationIntroView(
-                onEnable: {
-                    Self.markIntroSeen()
-                    showNotificationIntro = false
-                    Task { await gatekeeper.enable() }
-                },
-                onSkip: {
-                    Self.markIntroSeen()
-                    showNotificationIntro = false
+        .task {
+            // Skip splash delay for demo seed so screenshots don't race it
+            if DemoSeed.isActive {
+                showLaunchSplash = false
+            } else {
+                // Fade out the splash 0.6s after appear, with ~0.35s fade duration
+                try? await Task.sleep(nanoseconds: 600_000_000)
+                withAnimation(.easeOut(duration: 0.35)) {
+                    showLaunchSplash = false
                 }
-            )
+            }
         }
     }
 
