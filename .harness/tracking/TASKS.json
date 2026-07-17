@@ -1222,7 +1222,7 @@
     {
       "id": "T044",
       "title": "Settings sheet restyle + delete-all confirmation (redesign)",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T007",
         "T010"
