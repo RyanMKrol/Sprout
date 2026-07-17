@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// The **My Plants** home list (T006). Renders the plants from
+/// The **My Plants** home list (T017). Renders the plants from
 /// `PlantListViewModel` as cards — nickname, species, a next-due pill and a
 /// water-drop indicator — and a first-run empty state when there are none.
 ///
@@ -28,6 +28,8 @@ struct PlantListView: View {
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
     @State private var didDeepLink = false
+    @State private var deleteConfirmationPresented = false
+    @State private var plantToDelete: PlantListViewModel.Item?
     /// The photo-capture coordinator. **It is the single source of truth for the camera
     /// cover** — the `.fullScreenCover(item:)` presents iff this is non-nil, so the cover
     /// can never appear with a nil coordinator (the black-screen bug). Built once, when
@@ -60,26 +62,63 @@ struct PlantListView: View {
     /// De-nested: the host (`HomeView`) provides the `NavigationStack`. This view
     /// supplies the list, its plant-detail destination, the add button, and its sheets.
     var body: some View {
-        Group {
-            if viewModel.isEmpty {
-                PlantListEmptyState()
-            } else {
-                List(viewModel.items) { item in
-                    row(for: item)
-                        .swipeActions(edge: .trailing) {
-                            Button("Delete", role: .destructive) {
-                                viewModel.delete(id: item.id)
-                            }
-                            if makeEditor != nil {
-                                Button("Edit") { editorMode = .edit(plantID: item.id) }
-                                    .tint(.blue)
-                            }
-                        }
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Button {
+                    /* dismiss or navigate back */
+                } label: {
+                    HStack(spacing: 4) {
+                        ChromeIcon.chevronLeft.image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 16, height: 16)
+                        Text("Home")
+                            .font(SproutFont.body(17, weight: .medium))
+                    }
+                    .foregroundStyle(SproutTheme.brandGreen)
                 }
-                .listStyle(.insetGrouped)
+
+                Text("My Plants")
+                    .font(SproutFont.display(32))
+                    .foregroundStyle(SproutTheme.ink)
+
+                Spacer()
+
+                if makeBasket != nil {
+                    SproutFAB {
+                        basketPresented = true
+                    }
+                }
             }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
+            .background(SproutTheme.paper)
+
+            Group {
+                if viewModel.isEmpty {
+                    PlantListEmptyState(onAddPlants: { basketPresented = true })
+                } else {
+                    List(viewModel.items) { item in
+                        row(for: item)
+                            .listRowBackground(SproutTheme.paper)
+                            .listRowSeparator(.hidden)
+                            .swipeActions(edge: .trailing) {
+                                Button("Delete", role: .destructive) {
+                                    plantToDelete = item
+                                    deleteConfirmationPresented = true
+                                }
+                                if makeEditor != nil {
+                                    Button("Edit") { editorMode = .edit(plantID: item.id) }
+                                        .tint(SproutTheme.swipeEdit)
+                                }
+                            }
+                    }
+                    .listStyle(.plain)
+                }
+            }
+            .background(SproutTheme.paper)
         }
-        .navigationTitle("My Plants")
+        .background(SproutTheme.paper)
         .navigationDestination(for: UUID.self) { plantID in
             if let makeDetail {
                 PlantDetailView(
@@ -87,17 +126,6 @@ struct PlantListView: View {
                     makeEditor: makeEditor,
                     makeCheckIn: makeCheckIn
                 )
-            }
-        }
-        .toolbar {
-            if makeBasket != nil {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        basketPresented = true
-                    } label: {
-                        Label("Add Plants", systemImage: "plus")
-                    }
-                }
             }
         }
         .sheet(item: $editorMode) { mode in
@@ -111,9 +139,6 @@ struct PlantListView: View {
         .sheet(isPresented: $basketPresented, onDismiss: offerPhotosIfJustCreated) {
             if let makeBasket {
                 AddFlowView(viewModel: makeBasket()) { result in
-                    // Stash created plants (as photo targets) so `onDismiss` can offer to
-                    // photograph them once the sheet has fully closed (avoids a present-
-                    // while-dismissing race).
                     if case let .created(plants) = result {
                         promptTargets = plants.map(PhotoCaptureCoordinator.Target.init(plant:))
                     }
@@ -125,8 +150,6 @@ struct PlantListView: View {
             PhotoPromptView(
                 plants: promptTargets,
                 onTakePhotos: {
-                    // Defer building the coordinator until the prompt has fully dismissed
-                    // (launchPhotosIfRequested) — avoids a present-while-dismissing race.
                     dlog("list: 'Take Photos' tapped — will launch camera for \(promptTargets.count) plant(s)")
                     startPhotosOnDismiss = true
                     photoPromptPresented = false
@@ -138,11 +161,14 @@ struct PlantListView: View {
             )
         }
         .fullScreenCover(item: $photoCoordinator) { coordinator in
-            let _ = dlog("list: fullScreenCover content — presenting camera (targets=\(coordinator.targets.count))")
-            PhotoCaptureView(coordinator: coordinator) {
+            _ = dlog("list: fullScreenCover content — presenting camera (targets=\(coordinator.targets.count))")
+            return PhotoCaptureView(coordinator: coordinator) {
                 self.photoCoordinator = nil
                 viewModel.load()
             }
+        }
+        .sproutAlert(isPresented: $deleteConfirmationPresented) {
+            deleteAlert()
         }
         .onAppear {
             viewModel.load()
@@ -169,6 +195,42 @@ struct PlantListView: View {
         // Building the coordinator here sets the cover's `item`, which presents it —
         // one source of truth, so the cover can't appear without a coordinator.
         photoCoordinator = makePhotoCapture?(promptTargets)
+    }
+
+    /// Renders the delete confirmation alert, or an empty alert if no plant is selected.
+    private func deleteAlert() -> SproutAlert {
+        guard let plant = plantToDelete else {
+            return SproutAlert(
+                icon: .trash,
+                tint: SproutTheme.destructive,
+                title: "Error",
+                message: "No plant selected",
+                confirmLabel: "OK",
+                onConfirm: {
+                    deleteConfirmationPresented = false
+                },
+                onCancel: {
+                    deleteConfirmationPresented = false
+                }
+            )
+        }
+        return SproutAlert(
+            icon: .trash,
+            tint: SproutTheme.destructive,
+            title: "Delete \(plant.nickname)?",
+            message: "This removes the plant and its check-in history. This can't be undone.",
+            confirmLabel: "Delete",
+            confirmRole: .destructive,
+            onConfirm: {
+                viewModel.delete(id: plant.id)
+                plantToDelete = nil
+                deleteConfirmationPresented = false
+            },
+            onCancel: {
+                plantToDelete = nil
+                deleteConfirmationPresented = false
+            }
+        )
     }
 
     /// A list row: a tappable `NavigationLink` into the plant's detail (T008) when a
@@ -218,6 +280,107 @@ struct PlantListView: View {
     }
 }
 
+/// First-run state shown when the user owns no plants yet (T017 redesign).
+struct PlantListEmptyState: View {
+    let onAddPlants: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            PlantToken(icon: .flower, duo: PlantTokenPalette.green, size: 84)
+
+            Text("No plants yet")
+                .font(SproutFont.display(22))
+                .foregroundStyle(SproutTheme.ink)
+
+            Text("Add the plants you own and Sprout will keep their watering on track.")
+                .font(SproutFont.body(14.5))
+                .foregroundStyle(SproutTheme.textMuted)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+
+            Button(action: onAddPlants) {
+                Text("Add your first plant")
+            }
+            .buttonStyle(SproutPrimaryButtonStyle())
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 20)
+
+            Spacer()
+        }
+        .padding(.vertical, 40)
+    }
+}
+
+/// One row in the My Plants list: plant token, name + species, meta + cadence, and a
+/// colour-coded next-due chip (T017 redesign).
+struct PlantCardView: View {
+    let item: PlantListViewModel.Item
+
+    var body: some View {
+        HStack(spacing: 14) {
+            PlantTokenView(item: item)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.nickname)
+                    .font(SproutFont.display(18))
+                    .foregroundStyle(SproutTheme.ink)
+
+                Text(item.species)
+                    .font(SproutFont.bodyItalic(12.5))
+                    .foregroundStyle(SproutTheme.textSecondary)
+
+                if let whySummary = item.whySummary {
+                    Text(metaLabel(whySummary))
+                        .font(SproutFont.body(11.5, weight: .semibold))
+                        .foregroundStyle(SproutTheme.taupe)
+                }
+            }
+
+            Spacer()
+
+            DueChip(status: dueStatus)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
+        .sproutCard()
+        .padding(.horizontal, 18)
+        .padding(.vertical, 5.5)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    /// Extracts cadence + adaptation suffix from the why summary.
+    /// E.g., "Every 4d · shortened" → "Every 4d · shortened".
+    private func metaLabel(_ summary: String) -> String {
+        summary
+    }
+
+    /// Converts WateringDueStatus to DueStatus for the chip.
+    private var dueStatus: DueStatus {
+        switch item.due {
+        case .overdue(let days):
+            return .overdue(days: days)
+        case .dueToday:
+            return .dueToday
+        case .due(let days):
+            return .due(inDays: days)
+        case .unscheduled:
+            return .unscheduled
+        }
+    }
+
+    /// Spoken label: name, species, due status, and the "why" summary when present.
+    private var accessibilityLabel: String {
+        var parts = ["\(item.nickname), \(item.species), \(item.due.label)"]
+        if let whySummary = item.whySummary {
+            parts.append(whySummary)
+        }
+        return parts.joined(separator: ", ")
+    }
+}
+
 /// A small rounded plant photo, or a tinted leaf placeholder when there's no photo
 /// (T214). Shared by the list card and other compact contexts.
 struct PlantThumbnail: View {
@@ -246,74 +409,16 @@ struct PlantThumbnail: View {
     }
 }
 
-/// First-run state shown when the user owns no plants yet.
-struct PlantListEmptyState: View {
-    var body: some View {
-        ContentUnavailableView {
-            Label("No plants yet", systemImage: "leaf.fill")
-        } description: {
-            Text("Add the plants you own and Sprout will keep their watering on track.")
-        }
-    }
-}
-
-/// One row in the My Plants list: water-drop indicator, name + species, and a
-/// colour-coded next-due pill.
-struct PlantCardView: View {
+/// The circular plant token (46pt) with photo clipping or gradient + icon.
+private struct PlantTokenView: View {
     let item: PlantListViewModel.Item
 
     var body: some View {
-        HStack(spacing: 12) {
-            PlantThumbnail(photoData: item.photoData, tint: PlantPalette.color(for: item.id))
+        let icon = PlantIcon.flower
+        let duo = PlantTokenPalette.duo(for: item.id)
+        let photo = item.photoData.flatMap { UIImage(data: $0) }
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.nickname)
-                    .font(.headline)
-                Text(item.species.capitalisedWords)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                if let whySummary = item.whySummary {
-                    Text(whySummary)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-
-            Spacer()
-
-            Text(item.due.label)
-                .font(.caption2.bold())
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-                .background(dueColor.opacity(0.15), in: Capsule())
-                .foregroundStyle(dueColor)
-        }
-        .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-    }
-
-    /// Spoken label: name, species, due status, and the "why" summary when present.
-    private var accessibilityLabel: String {
-        var parts = ["\(item.nickname), \(item.species), \(item.due.label)"]
-        if let whySummary = item.whySummary {
-            parts.append(whySummary)
-        }
-        return parts.joined(separator: ", ")
-    }
-
-    /// Maps the (pure) due status to a presentation colour — overdue/today read
-    /// as urgent, future as calm blue, unscheduled as muted.
-    private var dueColor: Color {
-        switch item.due {
-        case .overdue:
-            return .red
-        case .dueToday:
-            return .orange
-        case .due:
-            return .blue
-        case .unscheduled:
-            return .secondary
-        }
+        PlantToken(icon: icon, duo: duo, size: 46, photo: photo)
+            .frame(width: 46, height: 46)
     }
 }
