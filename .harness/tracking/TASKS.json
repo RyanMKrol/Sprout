@@ -868,7 +868,7 @@
     {
       "id": "T032",
       "title": "Check-in recommendation restyle (unified voice)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T013",
         "T031"
