@@ -1,18 +1,30 @@
 import XCTest
 @testable import Sprout
 
-/// Covers the post-add photo prompt's copy (T223). The prompt is now a connected sheet
-/// (not a floating dialog) with a clear take-vs-skip choice; these helpers drive its
-/// singular/plural wording, so it stays correct without instantiating the SwiftUI view.
+/// Covers the post-add photo prompt's copy. The prompt displays count-aware titles
+/// ("One plant added 🌱", "Three plants added 🌱", etc.) with spelled-out numbers
+/// one through nine, capitalized.
 final class PhotoPromptTextTests: XCTestCase {
     func testTitleSingularAndPlural() {
-        XCTAssertEqual(PhotoPromptText.title(count: 1), "Add a photo of your new plant?")
-        XCTAssertEqual(PhotoPromptText.title(count: 3), "Add photos of your new plants?")
+        XCTAssertEqual(PhotoPromptText.title(count: 1), "One plant added 🌱")
+        XCTAssertEqual(PhotoPromptText.title(count: 3), "Three plants added 🌱")
     }
 
-    func testSubtitleOffersSkipInBothForms() {
-        XCTAssertTrue(PhotoPromptText.subtitle(count: 1).lowercased().contains("skip"))
-        XCTAssertTrue(PhotoPromptText.subtitle(count: 5).lowercased().contains("skip"))
+    func testTitleSpellsNumbersOneToNine() {
+        XCTAssertEqual(PhotoPromptText.title(count: 2), "Two plants added 🌱")
+        XCTAssertEqual(PhotoPromptText.title(count: 5), "Five plants added 🌱")
+        XCTAssertEqual(PhotoPromptText.title(count: 9), "Nine plants added 🌱")
+    }
+
+    func testTitleUsesNumberStringForTenPlus() {
+        XCTAssertTrue(PhotoPromptText.title(count: 10).contains("10"))
+        XCTAssertTrue(PhotoPromptText.title(count: 15).contains("15"))
+    }
+
+    func testSubtitleIsFixed() {
+        let subtitle = PhotoPromptText.subtitle(count: 1)
+        XCTAssertEqual(subtitle, "Add a photo of each so they're easy to spot. You can always do this later.")
+        XCTAssertEqual(PhotoPromptText.subtitle(count: 5), subtitle)
     }
 
     func testListHeaderCountsPlants() {

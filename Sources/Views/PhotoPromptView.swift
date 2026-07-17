@@ -1,95 +1,83 @@
 import SwiftUI
 
-/// The **post-add photo prompt** (T223) — shown right after a multi-add commit to offer
-/// photographing the just-created plants. Replaces the old bare `confirmationDialog` that
-/// floated, disconnected, over a long list: this is a proper sheet anchored to the add
-/// flow, showing the new plants by name with a clear **Take Photos** primary action and an
-/// equally obvious **Skip photos** decline.
+/// The **post-add photo prompt** — shown right after a multi-add commit to offer
+/// photographing the just-created plants. This is a bottom sheet anchored to the add
+/// flow with a gradient camera circle, title, body copy, and clear Take Photos / Skip
+/// actions per the redesign spec (screen 12).
 ///
 /// Pure presentation: the host owns the targets and the two outcome closures; the copy
 /// lives in `PhotoPromptText` so it's unit-testable without the view.
 struct PhotoPromptView: View {
-    /// The plants just created, in basket order — shown so the prompt reads as part of the
-    /// add flow rather than a detached dialog.
+    /// The plants just created, in basket order.
     let plants: [PhotoCaptureCoordinator.Target]
     let onTakePhotos: () -> Void
     let onSkip: () -> Void
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                List {
-                    Section {
-                        VStack(spacing: 8) {
-                            Image(systemName: "camera.fill")
-                                .font(.system(size: 34))
-                                .foregroundStyle(Color.accentColor)
-                                .frame(width: 64, height: 64)
-                                .background(Color.accentColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 18))
-                            Text(PhotoPromptText.title(count: plants.count))
-                                .font(.title3.bold())
-                                .multilineTextAlignment(.center)
-                            Text(PhotoPromptText.subtitle(count: plants.count))
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .listRowBackground(Color.clear)
-                    }
-                    Section(PhotoPromptText.listHeader(count: plants.count)) {
-                        ForEach(plants) { plant in
-                            HStack(spacing: 12) {
-                                PlantThumbnail(photoData: nil, tint: PlantPalette.color(for: plant.id))
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(plant.nickname).font(.headline)
-                                    Text(plant.species.capitalisedWords).font(.caption).foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                    }
-                }
-                .listStyle(.insetGrouped)
+        VStack(spacing: 0) {
+            // Sheet header area
+            VStack(spacing: 22) {
+                // 104Ø gradient circle with cream camera
+                ZStack {
+                    Circle()
+                        .fill(SproutTheme.logoGradient)
+                        .frame(width: 104, height: 104)
 
-                VStack(spacing: 12) {
-                    Button(action: onTakePhotos) {
-                        Label("Take Photos", systemImage: "camera.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.borderedProminent)
+                    Image(systemName: "camera.fill")
+                        .font(.system(size: 40))
+                        .foregroundStyle(SproutTheme.cream)
+                }
 
-                    Button("Skip photos", action: onSkip)
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding()
-                .background(.bar)
+                // Title: display(27) "Three plants added 🌱" etc.
+                Text(PhotoPromptText.title(count: plants.count))
+                    .font(SproutFont.display(27))
+                    .foregroundStyle(SproutTheme.ink)
+                    .multilineTextAlignment(.center)
+
+                // Body: "Add a photo of each..."
+                Text(PhotoPromptText.subtitle(count: plants.count))
+                    .font(SproutFont.body(16))
+                    .foregroundStyle(SproutTheme.textMuted)
+                    .multilineTextAlignment(.center)
             }
-            .navigationTitle("New plants added")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Skip", action: onSkip)
+            .padding(.horizontal, 20)
+            .padding(.top, 32)
+            .padding(.bottom, 24)
+
+            Spacer()
+
+            // Buttons area
+            VStack(spacing: 12) {
+                Button(action: onTakePhotos) {
+                    Text("Take Photos")
                 }
+                .buttonStyle(SproutPrimaryButtonStyle())
+
+                Button("Skip photos", action: onSkip)
+                    .font(SproutFont.body(17, weight: .semibold))
+                    .foregroundStyle(SproutTheme.brandGreen)
+                    .frame(maxWidth: .infinity)
             }
+            .padding(20)
+            .background(SproutTheme.paper)
         }
+        .background(SproutTheme.paper)
     }
 }
 
-/// Pure copy for the post-add photo prompt (T223), factored out so the wording is
+/// Pure copy for the post-add photo prompt, factored out so the wording is
 /// unit-testable without instantiating the SwiftUI view.
 enum PhotoPromptText {
+    private static let numberWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+
     static func title(count: Int) -> String {
-        count <= 1 ? "Add a photo of your new plant?" : "Add photos of your new plants?"
+        let countWord = count >= 0 && count <= 9 ? numberWords[count] : String(count)
+        let plantWord = count == 1 ? "plant" : "plants"
+        return "\(countWord) \(plantWord) added 🌱"
     }
 
     static func subtitle(count: Int) -> String {
-        count <= 1
-            ? "Take a photo now, or skip and add one later from the plant's page."
-            : "Walk through them one at a time, or skip and add photos later."
+        "Add a photo of each so they're easy to spot. You can always do this later."
     }
 
     static func listHeader(count: Int) -> String {
