@@ -204,37 +204,61 @@ private struct ScheduleEditorSheet: View {
     let onCancel: () -> Void
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Text("Water this plant in")
-                    .font(.headline)
-                    .padding(.top)
-                Picker("Days until due", selection: $days) {
-                    ForEach(0...365, id: \.self) { day in
-                        Text(day == 0 ? "Today" : "\(day) \(day == 1 ? "day" : "days")").tag(day)
+        VStack(spacing: 0) {
+            SproutSheetHeader(
+                title: "Adjust schedule",
+                confirmLabel: "Save",
+                onCancel: onCancel,
+                onConfirm: onSave
+            )
+
+            ScrollView {
+                VStack(spacing: 16) {
+                    Text("Water this plant in")
+                        .font(SproutFont.body(15, weight: .semibold))
+                        .foregroundStyle(SproutTheme.textMuted)
+                        .frame(maxWidth: .infinity)
+
+                    Picker("Days until due", selection: $days) {
+                        ForEach(0...365, id: \.self) { day in
+                            Text(day == 0 ? "Today" : "\(day) \(day == 1 ? "day" : "days")").tag(day)
+                        }
                     }
+                    .pickerStyle(.wheel)
+                    .frame(height: 200)
+
+                    Text("Sets the next-watering date. Future check-ins keep adapting it.")
+                        .font(SproutFont.body(13))
+                        .foregroundStyle(SproutTheme.textHint)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                 }
-                .pickerStyle(.wheel)
-                .frame(maxHeight: 200)
-                Text("Sets the next-watering date. Future check-ins keep adapting it.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                Spacer()
+                .padding(20)
             }
-            .navigationTitle("Adjust schedule")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { onSave() }
-                }
-            }
-            .presentationDetents([.medium])
+
+            Spacer()
         }
+        .background(SproutTheme.paper)
+        .sproutSheetBackground()
+        .presentationDetents([.medium])
+    }
+}
+
+#Preview {
+    VStack {
+        Text("Sheet Preview")
+            .font(.title)
+            .foregroundStyle(SproutTheme.ink)
+            .padding()
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(SproutTheme.paper)
+    .sheet(isPresented: .constant(true)) {
+        ScheduleEditorSheet(
+            days: .constant(7),
+            onSave: {},
+            onCancel: {}
+        )
     }
 }
 
