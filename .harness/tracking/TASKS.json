@@ -99,7 +99,7 @@
     {
       "id": "T005",
       "title": "PlantToken view + PlantTokenPalette (photo-wins)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T003",
         "T004"
