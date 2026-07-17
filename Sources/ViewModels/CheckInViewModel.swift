@@ -1,6 +1,7 @@
 import Foundation
+import UIKit
 
-/// Drives the **Check-in flow** (T011): from a plant, the user records the three
+/// Drives the **Check-in flow** (T031): from a plant, the user records the three
 /// measurable observations — soil (`Dry`/`Moist`/`Wet`), leaves (`Fine`/`Droopy`),
 /// and whether they watered — then `submit(now:)` runs the pure `AdaptiveEngine`
 /// (T010), **persists** the `CheckIn`, writes the nudged `adj` / `lastWatered` /
@@ -24,10 +25,14 @@ final class CheckInViewModel: ObservableObject {
 
     // MARK: Loaded plant context
 
+    /// The full plant object loaded from the repository, for display.
+    @Published private(set) var plant: Plant?
     /// The plant's nickname, or `""` before a successful `load()`.
     @Published private(set) var nickname: String = ""
     /// The plant's species (its care-database key), or `""` before load.
     @Published private(set) var species: String = ""
+    /// The plant's photo as UIImage, if available.
+    @Published private(set) var plantPhoto: UIImage?
     /// `true` once the plant **and** its care-database profile resolve — the check-in
     /// needs a profile to run the engine. `false` blocks submission (and the view
     /// shows an unavailable state) rather than guessing a schedule.
@@ -108,15 +113,20 @@ final class CheckInViewModel: ObservableObject {
     /// name and know whether a check-in can run. A missing plant or an unknown
     /// species (no care record) sets the appropriate flag rather than crashing.
     func load() {
-        guard let plant = (try? repository.plant(id: plantID)) ?? nil else {
+        guard let loadedPlant = (try? repository.plant(id: plantID)) ?? nil else {
             loadFailed = true
             canCheckIn = false
             return
         }
         loadFailed = false
-        nickname = plant.nickname
-        species = plant.species
-        canCheckIn = careDatabase.profile(forSpecies: plant.species) != nil
+        plant = loadedPlant
+        nickname = loadedPlant.nickname
+        species = loadedPlant.species
+        canCheckIn = careDatabase.profile(forSpecies: loadedPlant.species) != nil
+
+        if let photoData = loadedPlant.photoData {
+            plantPhoto = UIImage(data: photoData)
+        }
     }
 
     /// Run the check-in: build the `CheckIn` from the form inputs at `now`, apply the
@@ -126,8 +136,8 @@ final class CheckInViewModel: ObservableObject {
     /// to a result it didn't actually save.
     func submit(now: Date = Date()) {
         guard
-            let plant = (try? repository.plant(id: plantID)) ?? nil,
-            let profile = careDatabase.profile(forSpecies: plant.species)
+            let loadedPlant = (try? repository.plant(id: plantID)) ?? nil,
+            let profile = careDatabase.profile(forSpecies: loadedPlant.species)
         else {
             loadFailed = true
             canCheckIn = false
@@ -135,15 +145,15 @@ final class CheckInViewModel: ObservableObject {
         }
 
         let checkIn = CheckIn(date: now, soil: soil, leaves: leaves, watered: watered)
-        let update = engine.update(profile: profile, plant: plant, checkIn: checkIn, weatherFactor: environmentFactor)
+        let update = engine.update(profile: profile, plant: loadedPlant, checkIn: checkIn, weatherFactor: environmentFactor)
 
-        var updated = plant
+        var updated = loadedPlant
         updated.adj = update.newAdj
         updated.lastWatered = update.lastWatered
         updated.nextDue = update.nextDue
 
         do {
-            try repository.addCheckIn(checkIn, toPlant: plant.id)
+            try repository.addCheckIn(checkIn, toPlant: loadedPlant.id)
             try repository.update(updated)
         } catch {
             loadFailed = true

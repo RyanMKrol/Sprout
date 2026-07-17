@@ -1,6 +1,7 @@
 import SwiftUI
+import UIKit
 
-/// The **Check-in flow** screen (T011). Presented from a plant's detail screen: the
+/// The **Check-in flow** screen (T031). Presented from a plant's detail screen: the
 /// user records the soil reading, the leaf state, and whether they watered, taps
 /// **Save check-in**, and the screen shows the resulting recommendation and updated
 /// next-due. Reached for screenshots via the `SPROUT_SCREEN=checkin` deep-link.
@@ -9,8 +10,6 @@ import SwiftUI
 /// this view only binds the form inputs and renders the published result.
 struct CheckInView: View {
     @StateObject private var viewModel: CheckInViewModel
-    /// Called when the user dismisses after a saved check-in, so the presenter (the
-    /// detail screen) can reload its updated schedule.
     private let onFinish: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -20,121 +19,202 @@ struct CheckInView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.loadFailed {
-                    ContentUnavailableView(
-                        "Check-in unavailable",
-                        systemImage: "exclamationmark.triangle",
-                        description: Text("This plant could not be loaded.")
-                    )
-                } else if let result = viewModel.result {
-                    resultForm(result)
-                } else {
-                    inputForm
+        Group {
+            if viewModel.loadFailed {
+                VStack {
+                    Text("Check-in unavailable")
+                        .font(SproutFont.display(18))
+                        .foregroundStyle(SproutTheme.ink)
+                    Text("This plant could not be loaded.")
+                        .font(SproutFont.body(14.5))
+                        .foregroundStyle(SproutTheme.textMuted)
                 }
+                .padding()
+            } else if let result = viewModel.result {
+                resultForm(result)
+            } else {
+                inputForm
             }
-            .navigationTitle(viewModel.hasResult ? "Recommendation" : "Check in")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(viewModel.hasResult ? "Done" : "Cancel") {
-                        onFinish()
-                        dismiss()
-                    }
-                }
-            }
-            .onAppear { viewModel.load() }
         }
+        .onAppear { viewModel.load() }
     }
 
     // MARK: - Input form
 
     private var inputForm: some View {
-        Form {
-            Section("Soil") {
-                Picker("Soil", selection: $viewModel.soil) {
-                    Text("Dry").tag(SoilMoisture.dry)
-                    Text("Moist").tag(SoilMoisture.moist)
-                    Text("Wet").tag(SoilMoisture.wet)
+        VStack(spacing: 0) {
+            SproutSheetHeader(
+                title: "Check in",
+                confirmLabel: nil,
+                onCancel: {
+                    onFinish()
+                    dismiss()
+                },
+                onConfirm: {}
+            )
+
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Header: plant token + name + species
+                    VStack(spacing: 12) {
+                        if let plant = viewModel.plant {
+                            PlantToken(
+                                icon: plant.icon,
+                                duo: PlantTokenPalette.duo(for: plant.id),
+                                size: 60,
+                                photo: viewModel.plantPhoto
+                            )
+                        }
+
+                        VStack(spacing: 4) {
+                            Text(viewModel.nickname)
+                                .font(SproutFont.display(21))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Text(viewModel.species)
+                                .font(SproutFont.body(15, weight: .semibold))
+                                .italic()
+                                .foregroundStyle(SproutTheme.textSecondary)
+                        }
+                    }
+                    .padding(.top, 20)
+                    .padding(.bottom, 12)
+
+                    // SOIL section
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionEyebrow(text: "Soil")
+                            .padding(.horizontal, 20)
+
+                        SproutSegmentedPicker(
+                            selection: $viewModel.soil,
+                            options: [
+                                (value: SoilMoisture.dry, label: "Dry"),
+                                (value: SoilMoisture.moist, label: "Moist"),
+                                (value: SoilMoisture.wet, label: "Wet")
+                            ]
+                        )
+                        .padding(.horizontal, 20)
+                    }
+
+                    // LEAVES section
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionEyebrow(text: "Leaves")
+                            .padding(.horizontal, 20)
+
+                        SproutSegmentedPicker(
+                            selection: $viewModel.leaves,
+                            options: [
+                                (value: LeafState.fine, label: "Fine"),
+                                (value: LeafState.droopy, label: "Droopy")
+                            ]
+                        )
+                        .padding(.horizontal, 20)
+                    }
+
+                    // Toggle row: "I watered it"
+                    VStack(spacing: 0) {
+                        HStack(spacing: 12) {
+                            Text("I watered it")
+                                .font(SproutFont.body(17))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Spacer()
+
+                            Toggle("", isOn: $viewModel.watered)
+                                .tint(SproutTheme.brandGreen)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 13)
+                    }
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(SproutTheme.Radius.row)
+                    .cardShadow()
+                    .padding(.horizontal, 20)
+
+                    // Helper text
+                    Text("Sprout learns each plant's true rhythm from these quick reads and adjusts its schedule.")
+                        .font(SproutFont.body(12.5))
+                        .foregroundStyle(SproutTheme.textHint)
+                        .lineLimit(3)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
+
+                    Spacer()
                 }
-                .pickerStyle(.segmented)
             }
 
-            Section("Leaves") {
-                Picker("Leaves", selection: $viewModel.leaves) {
-                    Text("Fine").tag(LeafState.fine)
-                    Text("Droopy").tag(LeafState.droopy)
-                }
-                .pickerStyle(.segmented)
-            }
+            // Pinned primary button
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.bottom, 12)
 
-            Section {
-                Toggle("I watered it", isOn: $viewModel.watered)
-            } footer: {
-                Text("Sprout learns each plant's true rhythm from these quick reads and adjusts its schedule.")
-            }
-
-            Section {
-                Button {
-                    viewModel.submit()
-                } label: {
-                    Text("Save check-in")
-                        .frame(maxWidth: .infinity)
-                        .fontWeight(.semibold)
-                }
+                Button("Save check-in", action: { viewModel.submit() })
+                    .buttonStyle(SproutPrimaryButtonStyle())
                 .disabled(!viewModel.canCheckIn)
-            } footer: {
-                if !viewModel.canCheckIn {
-                    Text("This plant's species isn't in the care database, so its schedule can't be adapted yet.")
-                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
             }
         }
+        .background(SproutTheme.paper)
+        .sproutSheetBackground()
     }
 
     // MARK: - Result
 
     private func resultForm(_ result: CheckInViewModel.Result) -> some View {
-        Form {
-            Section {
-                HStack(spacing: 12) {
-                    Image(systemName: actionIcon(result.recommendation.action))
-                        .font(.title2)
-                        .foregroundStyle(actionColor(result.recommendation.action))
-                        .accessibilityHidden(true)
-                    Text(result.message)
-                        .font(.callout.weight(.medium))
+        VStack(spacing: 0) {
+            SproutSheetHeader(
+                title: "Recommendation",
+                confirmLabel: "Done",
+                onCancel: {
+                    onFinish()
+                    dismiss()
+                },
+                onConfirm: {
+                    onFinish()
+                    dismiss()
                 }
-                .padding(.vertical, 2)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(result.message)
-            } header: {
-                Text(viewModel.nickname.isEmpty ? "Recommendation" : viewModel.nickname)
+            )
+
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Centered result card
+                    VStack(spacing: 12) {
+                        Text(result.message)
+                            .font(SproutFont.body(14.5))
+                            .foregroundStyle(SproutTheme.ink)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.top, 20)
+
+                    // Next watering row
+                    VStack(spacing: 0) {
+                        HStack(spacing: 12) {
+                            Text(result.didWater ? "Next watering" : "Check back")
+                                .font(SproutFont.body(17))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Spacer()
+
+                            Text(result.nextDue.formatted(.dateTime.day().month().year()))
+                                .font(SproutFont.display(17, weight: .semibold))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 13)
+                    }
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(SproutTheme.Radius.row)
+                    .cardShadow()
+                    .padding(.horizontal, 20)
+
+                    Spacer()
+                }
             }
 
-            Section("Next") {
-                LabeledContent(
-                    result.didWater ? "Next watering" : "Check back",
-                    value: result.nextDue.formatted(.dateTime.day().month().year())
-                )
-            }
+            Spacer()
         }
-    }
-
-    private func actionIcon(_ action: WateringRecommendation.Action) -> String {
-        switch action {
-        case .waterNow, .waterLightly: return "drop.fill"
-        case .skip: return "hand.raised.fill"
-        case .monitor: return "eye.fill"
-        }
-    }
-
-    private func actionColor(_ action: WateringRecommendation.Action) -> Color {
-        switch action {
-        case .waterNow: return .blue
-        case .waterLightly: return .teal
-        case .skip: return .orange
-        case .monitor: return .secondary
-        }
+        .background(SproutTheme.paper)
+        .sproutSheetBackground()
     }
 }
