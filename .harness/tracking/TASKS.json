@@ -666,7 +666,7 @@
     {
       "id": "T025",
       "title": "Sequential photo capture restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003",
