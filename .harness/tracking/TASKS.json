@@ -407,7 +407,7 @@
     {
       "id": "T016",
       "title": "Home screen assembly (Botanical Editorial)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T015",
         "T010"
