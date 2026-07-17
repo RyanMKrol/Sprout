@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// The **sequential photo capture** screen (T207). Shows a square camera preview (or
 /// a placeholder when the camera is unavailable — e.g. the simulator), an overlay
@@ -38,13 +37,18 @@ struct PhotoCaptureView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
-            VStack(spacing: 24) {
+            Color(hex: 0x10160E).ignoresSafeArea()
+            VStack(spacing: 0) {
                 banner
+                    .padding(.top, 32)
+                    .padding(.bottom, 32)
+                Spacer()
                 preview
+                    .padding(.horizontal, 22)
+                Spacer()
                 controls
+                    .padding(.bottom, 32)
             }
-            .padding()
             // Animate the banner's identity swap whenever we advance to the next plant,
             // so the move is visible rather than instant.
             .animation(.easeInOut(duration: 0.4), value: displayedTarget?.id)
@@ -82,15 +86,18 @@ struct PhotoCaptureView: View {
     private var banner: some View {
         VStack(spacing: 4) {
             Text(displayedTarget?.nickname ?? "")
-                .font(.title2.bold())
-            Text(displayedTarget?.species.capitalisedWords ?? "")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Text(coordinator.progressText)
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(SproutFont.display(22))
+                .foregroundStyle(.white)
+            HStack(spacing: 4) {
+                Text(displayedTarget?.species.capitalisedWords ?? "")
+                    .font(SproutFont.bodyItalic(14))
+                Text("·")
+                    .font(SproutFont.body(14))
+                Text(coordinator.progressText)
+                    .font(SproutFont.body(14))
+            }
+            .foregroundStyle(.white.opacity(0.6))
         }
-        .foregroundStyle(.white)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(coordinator.bannerText)
@@ -125,30 +132,36 @@ struct PhotoCaptureView: View {
             if showSuccess {
                 successOverlay
                     .transition(.asymmetric(
-                        insertion: .opacity.combined(with: .scale(scale: 0.9)),
+                        insertion: .opacity.combined(with: .scale(scale: 0.5)),
                         removal: .opacity
                     ))
             }
         }
         .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 26))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(showSuccess ? Color.green : Color.white.opacity(0.3),
-                        lineWidth: showSuccess ? 4 : 1)
+            RoundedRectangle(cornerRadius: 26)
+                .stroke(showSuccess ? Color(hex: 0x4FC07E) : Color.clear,
+                        lineWidth: showSuccess ? 3 : 0)
         )
     }
 
     /// The green "saved" confirmation shown briefly over the preview after a capture.
     private var successOverlay: some View {
         ZStack {
-            Color.green.opacity(0.45)
+            Color(red: 63.0 / 255, green: 126.0 / 255, blue: 88.0 / 255, opacity: 0.5)
             VStack(spacing: 10) {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 72))
                     .foregroundStyle(.white)
-                Text(coordinator.isFinished ? "All done!" : "Saved — next plant")
-                    .font(.headline)
+                    .scaleEffect(1.1)
+                    .animation(
+                        Animation.easeInOut(duration: 0.5)
+                            .delay(0),
+                        value: showSuccess
+                    )
+                Text("Saved — next plant")
+                    .font(SproutFont.display(18))
                     .foregroundStyle(.white)
             }
         }
@@ -158,7 +171,7 @@ struct PhotoCaptureView: View {
     /// Shown when no live camera is available (simulator / denied permission).
     private var placeholder: some View {
         ZStack {
-            Color.white.opacity(0.06)
+            Color(red: 0.1, green: 0.1, blue: 0.1)
             VStack(spacing: 12) {
                 Image(systemName: "camera.fill")
                     .font(.system(size: 56))
@@ -171,10 +184,11 @@ struct PhotoCaptureView: View {
     }
 
     private var controls: some View {
-        HStack {
+        HStack(spacing: 0) {
             Button("Skip") { skipCurrent() }
+                .font(SproutFont.body(17))
                 .foregroundStyle(.white)
-                .frame(width: 80, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 
@@ -182,7 +196,7 @@ struct PhotoCaptureView: View {
                 Task { await capture() }
             } label: {
                 ZStack {
-                    Circle().fill(.white).frame(width: 72, height: 72)
+                    Circle().fill(.white).frame(width: 70, height: 70)
                     Circle().stroke(.white, lineWidth: 4).frame(width: 84, height: 84)
                 }
             }
@@ -192,12 +206,12 @@ struct PhotoCaptureView: View {
 
             Spacer()
 
-            // Balances the Skip button so the shutter stays centred.
-            Color.clear.frame(width: 80, height: 1)
+            Color.clear.frame(width: 1, height: 1)
+                .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .disabled(isBusy)
         .opacity(isBusy ? 0.6 : 1)
-        .padding(.horizontal)
+        .padding(.horizontal, 22)
     }
 
     // MARK: - Capture flow
@@ -226,7 +240,7 @@ struct PhotoCaptureView: View {
         // 3. Green confirmation pulse (for a non-final plant the banner has already slid
         //    to the next one; on the last plant the banner stays put — see displayedTarget).
         haptic(.success)
-        withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { showSuccess = true }
+        withAnimation(.easeInOut(duration: 0.5)) { showSuccess = true }
         try? await Task.sleep(nanoseconds: 650_000_000)
 
         if coordinator.isFinished {
@@ -279,5 +293,14 @@ private struct LiveCameraPreview: View {
         dlog("PhotoCaptureView — building live preview (makePreview)")
         return provider.makePreview()
             .onAppear { dlog("PhotoCaptureView — live preview appeared") }
+    }
+}
+
+private extension Color {
+    init(hex: UInt32) {
+        let red = Double((hex >> 16) & 0xFF) / 255.0
+        let green = Double((hex >> 8) & 0xFF) / 255.0
+        let blue = Double(hex & 0xFF) / 255.0
+        self.init(red: red, green: green, blue: blue)
     }
 }
