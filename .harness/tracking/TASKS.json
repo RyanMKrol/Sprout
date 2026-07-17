@@ -582,7 +582,7 @@
     {
       "id": "T022",
       "title": "Add flow: room step restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T007",
         "T008",
