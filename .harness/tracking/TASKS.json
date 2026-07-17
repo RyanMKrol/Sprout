@@ -639,7 +639,7 @@
     {
       "id": "T024",
       "title": "Photo prompt restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T007",
         "T010"
