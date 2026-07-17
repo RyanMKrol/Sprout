@@ -180,7 +180,7 @@
     {
       "id": "T008",
       "title": "Card styles: white card, bento tile, hero card, info banner, toolbar buttons",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003",
