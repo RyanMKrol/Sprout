@@ -29,23 +29,18 @@ struct AddFlowView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                switch viewModel.step {
-                case .room: roomStep
-                case .plants: plantsStep
-                }
+        Group {
+            switch viewModel.step {
+            case .room: roomStep
+            case .plants: plantsStep
             }
-            .navigationTitle(viewModel.step == .room ? "Where do they live?" : "Add Plants")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { toolbar }
-            .onAppear { viewModel.loadRooms() }
-            .sheet(isPresented: $addingRoom) {
-                AddRoomView { name, direct, indirect, hum in
-                    viewModel.createRoom(name: name, directSun: direct, indirectSun: indirect, humidity: hum)
-                    addingRoom = false
-                } onCancel: { addingRoom = false }
-            }
+        }
+        .onAppear { viewModel.loadRooms() }
+        .sheet(isPresented: $addingRoom) {
+            AddRoomView { name, direct, indirect, hum in
+                viewModel.createRoom(name: name, directSun: direct, indirectSun: indirect, humidity: hum)
+                addingRoom = false
+            } onCancel: { addingRoom = false }
         }
     }
 
@@ -78,42 +73,115 @@ struct AddFlowView: View {
     /// Choose the room the batch lives in, or add a new one. Picking either advances to
     /// the plant-adding step with that room pre-selected for every plant.
     private var roomStep: some View {
-        List {
-            Section {
-                Text("First pick the room these plants live in — its light and humidity set how often they're watered.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+        VStack(spacing: 0) {
+            // Handle
+            VStack {
+                Capsule()
+                    .fill(Color(red: 60.0 / 255, green: 66.0 / 255, blue: 58.0 / 255, opacity: 0.2))
+                    .frame(width: 40, height: 5)
+                    .padding(.top, 12)
             }
-            if !viewModel.availableRooms.isEmpty {
-                Section("Your rooms") {
-                    ForEach(viewModel.availableRooms) { room in
-                        Button {
-                            viewModel.chooseRoom(room)
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(room.name).font(.headline).foregroundStyle(.primary)
-                                    Text(room.environmentSummary).font(.caption).foregroundStyle(.secondary)
+
+            // Header with Cancel on right
+            HStack(spacing: 16) {
+                Spacer()
+                Text("Where do they\nlive?")
+                    .font(SproutFont.display(28))
+                    .foregroundStyle(SproutTheme.ink)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                Spacer()
+                Button("Cancel") { onFinish(.cancelled) }
+                    .font(SproutFont.body(17))
+                    .foregroundStyle(SproutTheme.brandGreen)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Body copy
+                    Text("First pick the room these plants live in — its light and humidity set how often they're watered.")
+                        .font(SproutFont.body(14))
+                        .foregroundStyle(SproutTheme.textMuted)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+
+                    if !viewModel.availableRooms.isEmpty {
+                        VStack(spacing: 9) {
+                            SectionEyebrow(text: "Your Rooms")
+                                .padding(.horizontal, 20)
+                                .padding(.top, 8)
+                                .padding(.bottom, 9)
+
+                            VStack(spacing: 9) {
+                                ForEach(viewModel.availableRooms) { room in
+                                    Button {
+                                        viewModel.chooseRoom(room)
+                                    } label: {
+                                        HStack(spacing: 12) {
+                                            // Oat bubble with house icon
+                                            Image(systemName: "house.fill")
+                                                .font(.system(size: 16))
+                                                .foregroundStyle(SproutTheme.oatIcon)
+                                                .frame(width: 40, height: 40)
+                                                .background(
+                                                    Color(red: 180.0 / 255, green: 131.0 / 255, blue: 47.0 / 255, opacity: 0.14)
+                                                )
+                                                .cornerRadius(12)
+
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(room.name)
+                                                    .font(SproutFont.display(17))
+                                                    .foregroundStyle(SproutTheme.ink)
+                                                Text(room.environmentSummary)
+                                                    .font(SproutFont.body(12.5))
+                                                    .foregroundStyle(SproutTheme.textMuted)
+                                            }
+
+                                            Spacer()
+
+                                            Image(systemName: "chevron.right")
+                                                .font(.system(size: 14, weight: .semibold))
+                                                .foregroundStyle(SproutTheme.taupe)
+                                        }
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 13)
+                                        .background(SproutTheme.cardSurface)
+                                        .cornerRadius(18)
+                                        .cardShadow()
+                                    }
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 16)
+                        }
+                    }
+
+                    VStack(spacing: 9) {
+                        Button {
+                            addingRoom = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus")
+                                Text("Add a new room")
                             }
                         }
+                        .buttonStyle(SproutGhostButtonStyle())
+                        .padding(.horizontal, 20)
+
+                        Button("Skip — no room for now") {
+                            viewModel.chooseRoom(nil)
+                        }
+                        .font(SproutFont.body(15, weight: .medium))
+                        .foregroundStyle(SproutTheme.textHint)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
                     }
                 }
             }
-            Section {
-                Button {
-                    addingRoom = true
-                } label: {
-                    Label("Add a new room", systemImage: "plus.circle.fill")
-                }
-                Button("Skip — no room for now") {
-                    viewModel.chooseRoom(nil)
-                }
-                .foregroundStyle(.secondary)
-            }
         }
+        .background(SproutTheme.paper)
     }
 
     // MARK: - Step 2: plants (basket + species)
