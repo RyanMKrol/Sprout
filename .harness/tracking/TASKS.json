@@ -348,7 +348,7 @@
     {
       "id": "T014",
       "title": "Launch splash screen (NEW)",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T002",
         "T003",
