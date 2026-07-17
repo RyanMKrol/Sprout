@@ -48,45 +48,86 @@ struct AddRoomView: View {
     private var canSave: Bool { !resolvedName.isEmpty }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Picker("Room type", selection: $selection) {
-                        ForEach(RoomPreset.common) { preset in
-                            Text(preset.name).tag(preset.name)
-                        }
-                        Text("Other…").tag(Self.otherTag)
-                    }
-                    .pickerStyle(.wheel)
-                } header: {
-                    Text("Room type")
-                } footer: {
-                    Text(isCustom
-                         ? "Name your room and choose its light and humidity."
-                         : "Pick a common room and Sprout fills in typical light and humidity — you can fine-tune it later by editing the room.")
+        VStack(spacing: 0) {
+            SproutSheetHeader(
+                title: "Add Room",
+                confirmLabel: "Add",
+                confirmEnabled: canSave,
+                onCancel: onCancel,
+                onConfirm: {
+                    onSave(resolvedName, directSun, indirectSun, humidity)
                 }
+            )
 
-                if isCustom {
-                    customControls
-                } else if let preset = selectedPreset {
-                    presetSummary(preset)
-                }
-            }
-            .navigationTitle("Add Room")
-            .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: selection) { _, _ in applyPresetDefaults() }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        onSave(resolvedName, directSun, indirectSun, humidity)
+            ScrollView {
+                VStack(spacing: 20) {
+                    // ROOM TYPE section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("ROOM TYPE")
+                            .font(SproutFont.body(11, weight: .semibold))
+                            .tracking(0.56)
+                            .foregroundStyle(SproutTheme.taupe)
+                            .textCase(.uppercase)
+                            .padding(.horizontal, 20).padding(.top, 0)
+
+                        VStack(spacing: 0) {
+                            Picker("Room type", selection: $selection) {
+                                ForEach(RoomPreset.common) { preset in
+                                    Text(preset.name).tag(preset.name)
+                                }
+                                Text("Other…").tag(Self.otherTag)
+                            }
+                            .pickerStyle(.wheel)
+                            .frame(height: 200)
+
+                            if let preset = selectedPreset {
+                                Text(preset.name)
+                                    .font(SproutFont.display(20))
+                                    .foregroundStyle(SproutTheme.ink)
+                                    .padding(.vertical, 16)
+                            } else {
+                                Text("Other…")
+                                    .font(SproutFont.display(20))
+                                    .foregroundStyle(SproutTheme.ink)
+                                    .padding(.vertical, 16)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .background(SproutTheme.cardSurface)
+                        .cornerRadius(SproutTheme.Radius.row)
+                        .cardShadow()
                     }
-                    .disabled(!canSave)
+
+                    // TYPICAL SETTINGS or CUSTOM CONTROLS
+                    if isCustom {
+                        customControlsSection
+                    } else if let preset = selectedPreset {
+                        presetSummarySection(preset)
+                    }
                 }
+                .padding(.vertical, 20)
+                .padding(.horizontal, 20)
+            }
+
+            // Footer hint
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.bottom, 16)
+
+                Text(
+                    "Pick a common room and Sprout fills in typical light and "
+                        + "humidity — fine-tune it later by editing the room."
+                )
+                    .font(SproutFont.body(12.5))
+                    .foregroundStyle(SproutTheme.textHint)
+                    .lineLimit(3)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 16)
             }
         }
+        .background(SproutTheme.paper)
+        .sproutSheetBackground()
+        .onChange(of: selection) { _, _ in applyPresetDefaults() }
     }
 
     /// When a preset is chosen, adopt its defaults (so Save uses them even though the
@@ -98,45 +139,158 @@ struct AddRoomView: View {
         humidity = preset.humidity
     }
 
-    /// Read-only summary of the typical environment a preset will use.
-    private func presetSummary(_ preset: RoomPreset) -> some View {
-        Section("Typical settings") {
-            LabeledContent("Brightness", value: preset.brightness.label)
-            LabeledContent("Humidity", value: preset.humidity.label)
+    /// White card showing the typical brightness and humidity for the selected preset.
+    @ViewBuilder
+    private func presetSummarySection(_ preset: RoomPreset) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("TYPICAL SETTINGS")
+                .font(SproutFont.body(11, weight: .semibold))
+                .tracking(0.56)
+                .foregroundStyle(SproutTheme.taupe)
+                .textCase(.uppercase)
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+
+            VStack(spacing: 0) {
+                // Brightness row
+                HStack(spacing: 12) {
+                    Text("Brightness")
+                        .font(SproutFont.body(15))
+                        .foregroundStyle(SproutTheme.ink)
+
+                    Spacer()
+
+                    BrightnessChip(text: preset.brightness.label)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
+
+                Divider()
+                    .padding(.horizontal, 16)
+
+                // Humidity row
+                HStack(spacing: 12) {
+                    Text("Humidity")
+                        .font(SproutFont.body(15))
+                        .foregroundStyle(SproutTheme.ink)
+
+                    Spacer()
+
+                    HumidityChip(text: preset.humidity.label)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
+            }
+            .background(SproutTheme.cardSurface)
+            .cornerRadius(SproutTheme.Radius.row)
+            .cardShadow()
+            .padding(.horizontal, 0)
         }
     }
 
-    /// Manual name + light + humidity controls, shown for a custom ("Other") room —
-    /// mirrors the editor's controls (with the same info tooltips).
+    /// Manual name + light + humidity controls, shown for a custom ("Other") room.
     @ViewBuilder
-    private var customControls: some View {
-        Section("Name") {
-            TextField("Room name", text: $customName)
-                .textInputAutocapitalization(.words)
-        }
-        Section {
-            Picker("Direct Sun", selection: $directSun) {
-                ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+    private var customControlsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("CUSTOM ROOM")
+                .font(SproutFont.body(11, weight: .semibold))
+                .tracking(0.56)
+                .foregroundStyle(SproutTheme.taupe)
+                .textCase(.uppercase)
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+
+            VStack(spacing: 16) {
+                // Name field
+                VStack(alignment: .leading, spacing: 8) {
+                    TextField("Room name", text: $customName)
+                        .font(SproutFont.body(15))
+                        .foregroundStyle(SproutTheme.ink)
+                        .textInputAutocapitalization(.words)
+                        .padding(16)
+                        .background(SproutTheme.cardSurface)
+                        .cornerRadius(SproutTheme.Radius.field)
+                }
+
+                // Direct Sun
+                VStack(alignment: .leading, spacing: 8) {
+                    RoomInfoHeader(
+                        title: "Direct Sun",
+                        help: "How much direct sunlight lands on the plants — e.g. an "
+                            + "unobstructed south-facing windowsill. Direct sun dries the "
+                            + "soil fastest."
+                    )
+
+                    Picker("Direct Sun", selection: $directSun) {
+                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                // Indirect Sun
+                VStack(alignment: .leading, spacing: 8) {
+                    RoomInfoHeader(
+                        title: "Indirect Sun",
+                        help: "The ambient daylight in the room with no direct beam on "
+                            + "the leaves — bright rooms away from a window still get "
+                            + "plenty."
+                    )
+
+                    Picker("Indirect Sun", selection: $indirectSun) {
+                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                // Humidity
+                VStack(alignment: .leading, spacing: 8) {
+                    RoomInfoHeader(
+                        title: "Humidity",
+                        help: "How much moisture is in the air. Moist rooms (bathrooms, "
+                            + "kitchens) mean slower soil drying; dry rooms (living rooms "
+                            + "with heat) mean faster drying."
+                    )
+
+                    Picker("Humidity", selection: $humidity) {
+                        ForEach(RoomHumidity.allCases, id: \.self) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                }
             }
-            .pickerStyle(.segmented)
-        } header: {
-            RoomInfoHeader(title: "Direct Sun",
-                           help: "How much direct sunlight lands on the plants — e.g. an unobstructed south-facing windowsill. Direct sun dries the soil fastest.")
+            .padding(16)
+            .background(SproutTheme.cardSurface)
+            .cornerRadius(SproutTheme.Radius.row)
+            .cardShadow()
         }
-        Section {
-            Picker("Indirect Sun", selection: $indirectSun) {
-                ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
-            }
-            .pickerStyle(.segmented)
-        } header: {
-            RoomInfoHeader(title: "Indirect Sun",
-                           help: "The ambient daylight in the room with no direct beam on the leaves — bright rooms away from a window still get plenty.")
-        }
-        Section("Humidity") {
-            Picker("Humidity", selection: $humidity) {
-                ForEach(RoomHumidity.allCases, id: \.self) { Text($0.label).tag($0) }
-            }
-            .pickerStyle(.segmented)
-        }
+    }
+}
+
+// MARK: - Chip components
+
+private struct BrightnessChip: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(SproutFont.body(11, weight: .semibold))
+            .foregroundStyle(SproutTheme.brightnessChip)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color(red: 217.0 / 255, green: 139.0 / 255, blue: 10.0 / 255, opacity: 0.14))
+            .cornerRadius(SproutTheme.Radius.chip)
+    }
+}
+
+private struct HumidityChip: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(SproutFont.body(11, weight: .semibold))
+            .foregroundStyle(SproutTheme.brandGreen)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(SproutTheme.softGreenFill)
+            .cornerRadius(SproutTheme.Radius.chip)
     }
 }
