@@ -162,7 +162,14 @@ struct CheckInView: View {
     // MARK: - Result
 
     private func resultForm(_ result: CheckInViewModel.Result) -> some View {
-        VStack(spacing: 0) {
+        let presentation = RecommendationPresentation.present(
+            result.recommendation,
+            nextDue: result.nextDue,
+            calendar: Calendar.current,
+            now: Date()
+        )
+
+        return VStack(spacing: 0) {
             SproutSheetHeader(
                 title: "Recommendation",
                 confirmLabel: "Done",
@@ -178,35 +185,59 @@ struct CheckInView: View {
 
             ScrollView {
                 VStack(spacing: 20) {
-                    // Centered result card
-                    VStack(spacing: 12) {
-                        Text(result.message)
-                            .font(SproutFont.body(14.5))
+                    Spacer()
+                        .frame(height: 0)
+
+                    // Centered icon circle + headline
+                    VStack(spacing: 16) {
+                        ZStack {
+                            Circle()
+                                .fill(presentation.tint.opacity(0.12))
+                                .frame(width: 100, height: 100)
+
+                            Image(presentation.icon.rawValue)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(
+                                    width: 46 * presentation.iconScale,
+                                    height: 46 * presentation.iconScale
+                                )
+                                .foregroundStyle(presentation.tint)
+                        }
+
+                        Text(presentation.headline)
+                            .font(SproutFont.display(23))
                             .foregroundStyle(SproutTheme.ink)
                             .multilineTextAlignment(.center)
+                            .lineSpacing(0.25)
                     }
-                    .padding(.top, 20)
+                    .frame(maxWidth: .infinity)
 
-                    // Next watering row
-                    VStack(spacing: 0) {
-                        HStack(spacing: 12) {
-                            Text(result.didWater ? "Next watering" : "Check back")
-                                .font(SproutFont.body(17))
-                                .foregroundStyle(SproutTheme.ink)
+                    // Next watering row with NEXT eyebrow
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionEyebrow(text: "NEXT")
+                            .padding(.horizontal, 20)
 
-                            Spacer()
+                        VStack(spacing: 0) {
+                            HStack(spacing: 12) {
+                                Text("Next watering")
+                                    .font(SproutFont.body(17))
+                                    .foregroundStyle(SproutTheme.ink)
 
-                            Text(result.nextDue.formatted(.dateTime.day().month().year()))
-                                .font(SproutFont.display(17, weight: .semibold))
-                                .foregroundStyle(SproutTheme.brandGreen)
+                                Spacer()
+
+                                Text(result.nextDue.formatted(.dateTime.day().month().year()))
+                                    .font(SproutFont.display(17, weight: .bold))
+                                    .foregroundStyle(SproutTheme.brandGreen)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 13)
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 13)
+                        .background(SproutTheme.cardSurface)
+                        .cornerRadius(SproutTheme.Radius.row)
+                        .cardShadow()
+                        .padding(.horizontal, 20)
                     }
-                    .background(SproutTheme.cardSurface)
-                    .cornerRadius(SproutTheme.Radius.row)
-                    .cardShadow()
-                    .padding(.horizontal, 20)
 
                     Spacer()
                 }
@@ -217,4 +248,166 @@ struct CheckInView: View {
         .background(SproutTheme.paper)
         .sproutSheetBackground()
     }
+}
+
+// Preview for recommendation result — water now
+#Preview("Result: Water Now") {
+    let waterNow = RecommendationPresentation.present(
+        WateringRecommendation(action: .waterNow, reason: .onTargetDry, days: 3),
+        nextDue: Date().addingTimeInterval(7 * 86400),
+        calendar: Calendar.current,
+        now: Date()
+    )
+
+    return VStack(spacing: 0) {
+        SproutSheetHeader(
+            title: "Recommendation",
+            confirmLabel: "Done",
+            onCancel: {},
+            onConfirm: {}
+        )
+
+        ScrollView {
+            VStack(spacing: 20) {
+                Spacer()
+                    .frame(height: 0)
+
+                VStack(spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .fill(waterNow.tint.opacity(0.12))
+                            .frame(width: 100, height: 100)
+
+                        Image(waterNow.icon.rawValue)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(
+                                width: 46 * waterNow.iconScale,
+                                height: 46 * waterNow.iconScale
+                            )
+                            .foregroundStyle(waterNow.tint)
+                    }
+
+                    Text(waterNow.headline)
+                        .font(SproutFont.display(23))
+                        .foregroundStyle(SproutTheme.ink)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(0.25)
+                }
+                .frame(maxWidth: .infinity)
+
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionEyebrow(text: "NEXT")
+                        .padding(.horizontal, 20)
+
+                    VStack(spacing: 0) {
+                        HStack(spacing: 12) {
+                            Text("Next watering")
+                                .font(SproutFont.body(17))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Spacer()
+
+                            Text("Jul 24, 2026")
+                                .font(SproutFont.display(17, weight: .bold))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 13)
+                    }
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(SproutTheme.Radius.row)
+                    .cardShadow()
+                    .padding(.horizontal, 20)
+                }
+
+                Spacer()
+            }
+        }
+
+        Spacer()
+    }
+    .background(SproutTheme.paper)
+    .sproutSheetBackground()
+}
+
+// Preview for recommendation result — skip
+#Preview("Result: Skip") {
+    let skip = RecommendationPresentation.present(
+        WateringRecommendation(action: .skip, reason: .stillWet, days: 5),
+        nextDue: Date().addingTimeInterval(5 * 86400),
+        calendar: Calendar.current,
+        now: Date()
+    )
+
+    return VStack(spacing: 0) {
+        SproutSheetHeader(
+            title: "Recommendation",
+            confirmLabel: "Done",
+            onCancel: {},
+            onConfirm: {}
+        )
+
+        ScrollView {
+            VStack(spacing: 20) {
+                Spacer()
+                    .frame(height: 0)
+
+                VStack(spacing: 16) {
+                    ZStack {
+                        Circle()
+                            .fill(skip.tint.opacity(0.12))
+                            .frame(width: 100, height: 100)
+
+                        Image(skip.icon.rawValue)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(
+                                width: 46 * skip.iconScale,
+                                height: 46 * skip.iconScale
+                            )
+                            .foregroundStyle(skip.tint)
+                    }
+
+                    Text(skip.headline)
+                        .font(SproutFont.display(23))
+                        .foregroundStyle(SproutTheme.ink)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(0.25)
+                }
+                .frame(maxWidth: .infinity)
+
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionEyebrow(text: "NEXT")
+                        .padding(.horizontal, 20)
+
+                    VStack(spacing: 0) {
+                        HStack(spacing: 12) {
+                            Text("Next watering")
+                                .font(SproutFont.body(17))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Spacer()
+
+                            Text("Jul 22, 2026")
+                                .font(SproutFont.display(17, weight: .bold))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 13)
+                    }
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(SproutTheme.Radius.row)
+                    .cardShadow()
+                    .padding(.horizontal, 20)
+                }
+
+                Spacer()
+            }
+        }
+
+        Spacer()
+    }
+    .background(SproutTheme.paper)
+    .sproutSheetBackground()
 }
