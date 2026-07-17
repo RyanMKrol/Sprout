@@ -980,7 +980,7 @@
     {
       "id": "T036",
       "title": "Camera diagnostics restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003",
