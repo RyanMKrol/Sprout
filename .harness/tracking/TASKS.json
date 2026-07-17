@@ -437,7 +437,7 @@
     {
       "id": "T017",
       "title": "My Plants list restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T007",
