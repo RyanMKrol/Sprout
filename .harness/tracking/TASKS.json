@@ -47,7 +47,7 @@
     {
       "id": "T003",
       "title": "SproutTheme design tokens (colors, radii, shadows)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T001"
       ],
