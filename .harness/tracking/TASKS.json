@@ -1163,7 +1163,7 @@
     {
       "id": "T042",
       "title": "Edit Plant form + delete confirmation (redesign chrome)",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T005",
         "T010",
