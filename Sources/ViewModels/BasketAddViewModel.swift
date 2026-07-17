@@ -26,16 +26,21 @@ enum BasketAddError: Error, Equatable {
 /// All logic lives here behind a testable surface; the view is pure presentation.
 @MainActor
 final class BasketAddViewModel: ObservableObject {
-    /// One pending plant in the basket: a chosen species and its (editable) nickname.
+    /// One pending plant in the basket: a chosen species, its (editable) nickname,
+    /// and the (editable) Phosphor icon it'll be created with — T023 lets the icon
+    /// picker be opened on a still-pending entry, persisting the choice into the
+    /// entry so it's carried through to the plant `commit()` creates.
     struct Entry: Identifiable, Equatable {
         let id: UUID
         var species: String
         var nickname: String
+        var icon: PlantIcon
 
-        init(id: UUID = UUID(), species: String, nickname: String) {
+        init(id: UUID = UUID(), species: String, nickname: String, icon: PlantIcon? = nil) {
             self.id = id
             self.species = species
             self.nickname = nickname
+            self.icon = icon ?? PlantIcon.default(forSpecies: species)
         }
     }
 
@@ -145,6 +150,13 @@ final class BasketAddViewModel: ObservableObject {
         basket[i].nickname = nicknameProvider.next(avoiding: takenNames())
     }
 
+    /// Set the icon a still-pending basket entry will be created with (the icon
+    /// picker opened from a basket row's token, T023).
+    func updateIcon(_ icon: PlantIcon, for entry: Entry) {
+        guard let i = basket.firstIndex(where: { $0.id == entry.id }) else { return }
+        basket[i].icon = icon
+    }
+
     /// Existing plant nicknames ∪ current basket nicknames — what auto-naming avoids.
     private func takenNames() -> Set<String> {
         let existing = (try? repository.allPlants())?.map(\.nickname) ?? []
@@ -191,7 +203,8 @@ final class BasketAddViewModel: ObservableObject {
                 species: entry.species,
                 lastWatered: now,
                 nextDue: nextDue,
-                roomID: selectedRoom?.id
+                roomID: selectedRoom?.id,
+                icon: entry.icon
             )
             try repository.add(plant)
             created.append(plant)

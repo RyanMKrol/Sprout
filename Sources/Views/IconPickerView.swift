@@ -3,17 +3,53 @@ import SwiftUI
 /// The **Icon picker** sheet (T021). Allows the user to choose a Phosphor glyph
 /// to represent the plant. Displays all 16 icons in a 4-column grid with a live
 /// preview token showing the currently-selected icon.
+///
+/// Works over a *preview identity* (name/species/token-id) rather than a `Plant`
+/// directly, so it can be opened both on an already-persisted plant (the
+/// `plant:repository:` init, which saves straight through the repository) and on
+/// a still-pending basket entry (T023's `icon:name:species:tokenID:onSave:` init,
+/// which hands the choice back to the caller to fold into its own pending state).
 struct IconPickerView: View {
     @State private var selectedIcon: PlantIcon
-    private let plant: Plant
-    private let repository: PlantRepository
+    private let previewName: String
+    private let previewSpecies: String
+    private let previewTokenID: UUID
+    private let onSave: (PlantIcon) -> Void
     private let onFinish: () -> Void
 
+    /// For a plant already persisted via the repository (Edit Plant's "Change icon").
     init(plant: Plant, repository: PlantRepository, onFinish: @escaping () -> Void = {}) {
-        self.plant = plant
-        self.repository = repository
+        self.init(
+            icon: plant.icon,
+            name: plant.nickname,
+            species: plant.species,
+            tokenID: plant.id,
+            onSave: { icon in
+                var updated = plant
+                updated.icon = icon
+                try? repository.update(updated)
+            },
+            onFinish: onFinish
+        )
+    }
+
+    /// For a still-pending entry (e.g. a basket row, T023) that isn't persisted
+    /// yet — `onSave` hands the chosen icon back to the caller to fold into its
+    /// own pending state instead of writing through a repository.
+    init(
+        icon: PlantIcon,
+        name: String,
+        species: String,
+        tokenID: UUID,
+        onSave: @escaping (PlantIcon) -> Void,
+        onFinish: @escaping () -> Void = {}
+    ) {
+        self.previewName = name
+        self.previewSpecies = species
+        self.previewTokenID = tokenID
+        self.onSave = onSave
         self.onFinish = onFinish
-        _selectedIcon = State(initialValue: plant.icon)
+        _selectedIcon = State(initialValue: icon)
     }
 
     var body: some View {
@@ -29,18 +65,18 @@ struct IconPickerView: View {
                 VStack(spacing: 24) {
                     // Preview section
                     VStack(spacing: 12) {
-                        PlantToken(
+                        FixedGlyphPlantToken(
                             icon: selectedIcon,
-                            duo: PlantTokenPalette.duo(for: plant.id),
+                            duo: PlantTokenPalette.duo(for: previewTokenID),
                             size: 88
                         )
 
                         VStack(spacing: 4) {
-                            Text(plant.nickname)
+                            Text(previewName)
                                 .font(SproutFont.display(20))
                                 .foregroundStyle(SproutTheme.ink)
 
-                            Text(plant.species)
+                            Text(previewSpecies)
                                 .font(SproutFont.bodyItalic(14))
                                 .foregroundStyle(SproutTheme.textSecondary)
                         }
@@ -92,15 +128,8 @@ struct IconPickerView: View {
     }
 
     private func saveAndFinish() {
-        var updatedPlant = plant
-        updatedPlant.icon = selectedIcon
-        do {
-            try repository.update(updatedPlant)
-            onFinish()
-        } catch {
-            // In a production app, surface the error. For now, silently fail and dismiss.
-            onFinish()
-        }
+        onSave(selectedIcon)
+        onFinish()
     }
 }
 

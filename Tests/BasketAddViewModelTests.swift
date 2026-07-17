@@ -93,6 +93,35 @@ final class BasketAddViewModelTests: XCTestCase {
         XCTAssertNotEqual(vm.basket[0].nickname, before)
     }
 
+    // MARK: icon (T023 — icon picker on a pending basket entry)
+
+    func testAddAssignsTheSpeciesDefaultIcon() {
+        let vm = makeVM()
+        vm.add(profile("Snake Plant"))
+        XCTAssertEqual(vm.basket[0].icon, PlantIcon.default(forSpecies: "Snake Plant"))
+    }
+
+    func testUpdateIconChangesThePendingEntrysIcon() {
+        let vm = makeVM()
+        vm.add(profile("Pothos"))
+        let entry = vm.basket[0]
+        let newIcon: PlantIcon = entry.icon == .cactus ? .leaf : .cactus
+
+        vm.updateIcon(newIcon, for: entry)
+
+        XCTAssertEqual(vm.basket[0].icon, newIcon)
+    }
+
+    func testCommitCarriesTheEntrysIconIntoTheCreatedPlant() throws {
+        let vm = makeVM()
+        vm.add(profile("Pothos"))
+        vm.updateIcon(.cactus, for: vm.basket[0])
+
+        let created = try vm.commit()
+
+        XCTAssertEqual(created[0].icon, .cactus)
+    }
+
     func testRemoveDropsEntry() {
         let vm = makeVM()
         vm.add(profile("Pothos"))
