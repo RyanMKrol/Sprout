@@ -126,7 +126,7 @@
     {
       "id": "T006",
       "title": "DueChip + DueStatus",
-      "status": "pending",
+      "status": "blocked",
       "dependsOn": [
         "T002",
         "T003"
