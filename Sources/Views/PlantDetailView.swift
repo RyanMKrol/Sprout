@@ -1,7 +1,16 @@
 import SwiftUI
 
-/// The **Plant Detail** screen (T008). Shows a plant's photo + name as a prominent
-/// header, its current watering schedule (tappable to override the cadence by hand),
+private extension Color {
+    init(hex: UInt32) {
+        let red = Double((hex >> 16) & 0xFF) / 255.0
+        let green = Double((hex >> 8) & 0xFF) / 255.0
+        let blue = Double(hex & 0xFF) / 255.0
+        self.init(red: red, green: green, blue: blue)
+    }
+}
+
+/// The **Plant Detail** screen (T018). Shows a plant's photo + name as a prominent
+/// centered header, its current watering schedule with rhythm visualization,
 /// and its chronological check-in history. An **Edit** button (top right) opens the
 /// edit form to change the nickname, room, or photo. Reached by tapping a card in the
 /// My Plants list, and verified by the `-seedDemoData YES` screenshot convention
@@ -43,31 +52,40 @@ struct PlantDetailView: View {
                     description: Text("This plant could not be loaded.")
                 )
             } else {
-                Form {
-                    header
-                    scheduleSection
-                    if makeCheckIn != nil { checkInSection }
-                    historySection
+                ScrollView {
+                    VStack(spacing: 20) {
+                        header
+                        scheduleCard
+                        if makeCheckIn != nil { checkInButton }
+                        historySection
+                    }
+                    .padding(18)
                 }
-                // Pull the form up under the bar so the photo isn't floating in empty space.
-                .contentMargins(.top, 8, for: .scrollContent)
+                .background(SproutTheme.paper)
             }
         }
-        // No title text in the bar: the big in-content header already names the plant,
-        // so a bar title would just duplicate it. (Inline + empty keeps the back chevron.)
-        .navigationTitle(viewModel.loadFailed ? "Plant" : "")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Label("Plants", systemImage: "chevron.left")
+                    .labelStyle(.iconOnly)
+                    .foregroundStyle(SproutTheme.brandGreen)
+                    .font(.system(size: 17, weight: .semibold))
+            }
             if makeEditor != nil, !viewModel.loadFailed {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Edit") { editingPlant = true }
+                    Button("Edit") {
+                        editingPlant = true
+                    }
+                    .font(SproutFont.body(17, weight: .semibold))
+                    .foregroundStyle(SproutTheme.brandGreen)
                 }
             }
         }
         .sheet(isPresented: $checkingIn) {
             if let makeCheckIn {
                 CheckInView(viewModel: makeCheckIn(viewModel.plantID)) {
-                    // Reload so the updated schedule + new history row show.
                     viewModel.load()
                 }
             }
@@ -75,7 +93,6 @@ struct PlantDetailView: View {
         .sheet(isPresented: $editingPlant) {
             if let makeEditor {
                 PlantEditView(viewModel: makeEditor(.edit(plantID: viewModel.plantID))) {
-                    // Reload so an edited nickname / room / photo shows immediately.
                     editingPlant = false
                     viewModel.load()
                 }
@@ -97,82 +114,150 @@ struct PlantDetailView: View {
 
     // MARK: - Sections
 
-    /// The prominent header: a photo, the nickname, and the species below it. Flush at
-    /// the top (no extra section padding) so it doesn't float in empty space.
+    /// Centered header: 112 token, display name (32), italic species (16).
     private var header: some View {
-        Section {
-            VStack(spacing: 12) {
-                PlantThumbnail(
-                    photoData: viewModel.photoData,
-                    tint: PlantPalette.color(for: viewModel.plantID),
-                    size: 170
-                )
-                VStack(spacing: 4) {
-                    Text(viewModel.nickname)
-                        .font(.largeTitle.bold())
-                        .multilineTextAlignment(.center)
-                    Text(viewModel.species.capitalisedWords)
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                }
+        VStack(spacing: 12) {
+            PlantThumbnail(
+                photoData: viewModel.photoData,
+                tint: PlantPalette.color(for: viewModel.plantID),
+                size: 112
+            )
+            VStack(spacing: 4) {
+                Text(viewModel.nickname)
+                    .font(SproutFont.display(32, weight: .bold))
+                    .foregroundStyle(SproutTheme.ink)
+                    .multilineTextAlignment(.center)
+                Text(viewModel.species.capitalisedWords)
+                    .font(SproutFont.bodyItalic(16))
+                    .foregroundStyle(Color(hex: 0x7C8173))
+                    .multilineTextAlignment(.center)
             }
-            .frame(maxWidth: .infinity)
-            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 4, trailing: 16))
-            .listRowBackground(Color.clear)
         }
+        .frame(maxWidth: .infinity)
     }
 
-    private var scheduleSection: some View {
-        Section("Schedule") {
+    /// Three-zone schedule card: due status, rhythm band, and why sentence.
+    private var scheduleCard: some View {
+        VStack(spacing: 0) {
+            // Zone 1: Due status
             Button {
                 scheduleDays = viewModel.daysUntilDue
                 editingSchedule = true
             } label: {
-                HStack {
-                    Image(systemName: "drop.fill")
-                        .foregroundStyle(dueColor)
-                        .accessibilityHidden(true)
-                    Text(viewModel.due.label)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(dueColor)
+                HStack(spacing: 12) {
+                    VStack(spacing: 0) {
+                        ZStack {
+                            Circle()
+                                .fill(SproutTheme.softGreenFill)
+                                .frame(width: 34, height: 34)
+
+                            ChromeIcon.droplet.image
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(dueColor)
+                        }
+
+                        VStack(spacing: 2) {
+                            Text(viewModel.due.label)
+                                .font(SproutFont.display(17, weight: .bold))
+                                .foregroundStyle(dueColor)
+                            Text("Tap to adjust when it's next due")
+                                .font(SproutFont.body(12))
+                                .foregroundStyle(Color(hex: 0x9AA090))
+                        }
+                    }
+
                     Spacer()
-                    Image(systemName: "pencil")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+
+                    ChromeIcon.pencil.image
+                        .font(.system(size: 14))
+                        .foregroundStyle(SproutTheme.taupe)
+                }
+                .padding(16)
+            }
+
+            Divider()
+                .padding(.horizontal, 16)
+
+            // Zone 2: Rhythm Band
+            RhythmBand(
+                minDays: viewModel.minDays,
+                maxDays: viewModel.maxDays,
+                baseDays: viewModel.baseDays ?? viewModel.minDays,
+                effectiveDays: viewModel.effectiveDays
+            )
+            .padding(16)
+
+            Divider()
+                .padding(.horizontal, 16)
+
+            // Zone 3: Why sentence
+            VStack(alignment: .leading, spacing: 8) {
+                if let explanation = viewModel.explanation {
+                    Text(explanation.sentence)
+                        .font(SproutFont.body(13))
+                        .foregroundStyle(Color(hex: 0x6E7A63))
+                        .lineLimit(4)
+                } else {
+                    Text(viewModel.scheduleSummary)
+                        .font(SproutFont.body(13))
+                        .foregroundStyle(Color(hex: 0x6E7A63))
                 }
             }
-            .tint(.primary)
-            .accessibilityHint("Adjust when this plant is next due")
-
-            Text(viewModel.explanation?.sentence ?? viewModel.scheduleSummary)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
         }
+        .sproutCard(radius: 20)
     }
 
-    private var checkInSection: some View {
-        Section {
-            Button {
-                checkingIn = true
-            } label: {
-                Label("Check in", systemImage: "checkmark.circle")
+    /// Primary button for check-in action.
+    private var checkInButton: some View {
+        Button {
+            checkingIn = true
+        } label: {
+            HStack {
+                Text("✓ Check in on \(viewModel.nickname)")
+                    .font(SproutFont.body(17, weight: .semibold))
                     .frame(maxWidth: .infinity)
-                    .fontWeight(.semibold)
             }
+            .foregroundStyle(.white)
+            .padding(17)
+            .background(SproutTheme.brandGreen)
+            .cornerRadius(16)
+            .shadow(
+                color: SproutTheme.brandGreen.opacity(0.34),
+                radius: 12, x: 0, y: 4
+            )
         }
     }
 
+    /// History section with eyebrow and white card rows.
     private var historySection: some View {
-        Section("Check-in history") {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("CHECK-IN HISTORY")
+                .font(SproutFont.body(11, weight: .bold))
+                .tracking(1.4)
+                .foregroundStyle(SproutTheme.taupe)
+                .textCase(.uppercase)
+
             if viewModel.hasHistory {
-                ForEach(viewModel.history) { item in
-                    CheckInRow(item: item)
+                VStack(spacing: 0) {
+                    ForEach(viewModel.history) { (item: PlantDetailViewModel.HistoryItem) in
+                        CheckInRow(item: item)
+                        if item.id != viewModel.history.last?.id {
+                            Divider()
+                                .padding(.horizontal, 16)
+                        }
+                    }
                 }
+                .sproutCard(radius: 18)
             } else {
                 Text("No check-ins yet.")
-                    .foregroundStyle(.secondary)
+                    .font(SproutFont.body(14))
+                    .foregroundStyle(SproutTheme.textMuted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// Screenshot deep-link (T002 convention): when launched with
@@ -186,13 +271,17 @@ struct PlantDetailView: View {
         }
     }
 
-    /// Maps the (pure) due status to a presentation colour — matching the list pill.
+    /// Maps the (pure) due status to a presentation colour.
     private var dueColor: Color {
         switch viewModel.due {
-        case .overdue: return .red
-        case .dueToday: return .orange
-        case .due: return .blue
-        case .unscheduled: return .secondary
+        case .overdue:
+            return Color(hex: 0xC4553B)
+        case .dueToday:
+            return Color(hex: 0xB4832F)
+        case .due:
+            return SproutTheme.brandGreen
+        case .unscheduled:
+            return SproutTheme.textTertiary
         }
     }
 }
@@ -262,29 +351,34 @@ private struct ScheduleEditorSheet: View {
     }
 }
 
-/// One row of check-in history: when, what the soil/leaves looked like, and whether
-/// the user watered.
+/// One row of check-in history: date, soil/leaves observation, and watered indicator.
 private struct CheckInRow: View {
     let item: PlantDetailViewModel.HistoryItem
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(item.date, format: .dateTime.day().month().year())
-                    .font(.subheadline.weight(.medium))
-                Spacer()
-                if item.watered {
-                    Label("Watered", systemImage: "drop.fill")
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.blue)
-                        .accessibilityLabel("Watered")
-                }
+                    .font(SproutFont.body(15, weight: .semibold))
+                    .foregroundStyle(SproutTheme.ink)
+
+                Text("Soil \(soilLabel) · Leaves \(leafLabel)")
+                    .font(SproutFont.body(12.5))
+                    .foregroundStyle(SproutTheme.textMuted)
             }
-            Text("Soil \(soilLabel) · Leaves \(leafLabel)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+
+            Spacer()
+
+            if item.watered {
+                HStack(spacing: 4) {
+                    Text("💧")
+                    Text("Watered")
+                        .font(SproutFont.body(12.5, weight: .bold))
+                }
+                .foregroundStyle(SproutTheme.brandGreen)
+            }
         }
-        .padding(.vertical, 2)
+        .padding(16)
         .accessibilityElement(children: .combine)
     }
 

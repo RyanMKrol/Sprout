@@ -32,6 +32,14 @@ final class PlantDetailViewModel: ObservableObject {
     /// The species' starting cadence in days (from the care DB), if the species
     /// resolves to a record — shown in the schedule placeholder. `nil` otherwise.
     @Published private(set) var baseIntervalDays: Int?
+    /// Minimum watering interval in days from the care profile's minimum interval.
+    @Published private(set) var minDays: Int = 1
+    /// Maximum watering interval in days from the care profile's maximum interval.
+    @Published private(set) var maxDays: Int = 30
+    /// Base watering interval (species starting cadence) in days.
+    @Published private(set) var baseDays: Int?
+    /// Effective (current) watering interval in days, derived from nextDue.
+    @Published private(set) var effectiveDays: Int = 7
     /// The "why this schedule" explanation (T012), built from the species' care
     /// profile, the plant's learned `adj`, and its most recent check-in. `nil` when
     /// the species has no care record to anchor the cadence.
@@ -77,6 +85,10 @@ final class PlantDetailViewModel: ObservableObject {
             species = ""
             due = .unscheduled
             baseIntervalDays = nil
+            minDays = 1
+            maxDays = 30
+            baseDays = nil
+            effectiveDays = 7
             explanation = nil
             history = []
             photoData = nil
@@ -90,6 +102,21 @@ final class PlantDetailViewModel: ObservableObject {
 
         let profile = careDatabase.profile(forSpecies: plant.species)
         baseIntervalDays = profile?.baseIntervalDays
+        minDays = profile?.minIntervalDays ?? 1
+        maxDays = profile?.maxIntervalDays ?? 30
+        baseDays = profile?.baseIntervalDays
+
+        // Calculate effective days from nextDue
+        if let nextDue = plant.nextDue {
+            let calendar = Calendar.current
+            let nextDueStart = calendar.startOfDay(for: nextDue)
+            let nowStart = calendar.startOfDay(for: now)
+            let days = calendar.dateComponents([.day], from: nowStart, to: nextDueStart).day ?? 0
+            effectiveDays = max(1, days)
+        } else {
+            effectiveDays = profile?.baseIntervalDays ?? 7
+        }
+
         explanation = profile.map { profile in
             explanationBuilder.explanation(
                 species: plant.species,

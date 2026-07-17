@@ -155,6 +155,57 @@ final class PlantDetailViewModelTests: XCTestCase {
         XCTAssertEqual(vm.scheduleSummary, "Watering schedule coming soon.")
     }
 
+    // MARK: rhythm inputs
+
+    func testRhythmInputsExposedFromCareProfile() throws {
+        let plant = Plant(nickname: "Lily", species: "Peace Lily", nextDue: day(3))
+        try repo.add(plant)
+
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+
+        XCTAssertEqual(vm.minDays, 4)
+        XCTAssertEqual(vm.maxDays, 12)
+        XCTAssertEqual(vm.baseDays, 7)
+        XCTAssertEqual(vm.effectiveDays, 3)
+    }
+
+    func testEffectiveDaysCalculatedFromNextDue() throws {
+        let plant = Plant(nickname: "Snake", species: "Snake Plant", nextDue: day(5))
+        try repo.add(plant)
+
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+
+        // Effective should be 5 days from now
+        XCTAssertEqual(vm.effectiveDays, 5)
+        XCTAssertEqual(vm.baseDays, 21)
+    }
+
+    func testRhythmInputsWithoutCareProfile() throws {
+        let plant = Plant(nickname: "Mystery", species: "Unknown Plant", nextDue: day(7))
+        try repo.add(plant)
+
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+
+        XCTAssertEqual(vm.minDays, 1)
+        XCTAssertEqual(vm.maxDays, 30)
+        XCTAssertNil(vm.baseDays)
+        XCTAssertEqual(vm.effectiveDays, 7)
+    }
+
+    func testEffectiveDaysForOverduePlant() throws {
+        let plant = Plant(nickname: "Dry", species: "Peace Lily", nextDue: day(-2))
+        try repo.add(plant)
+
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+
+        // Overdue plants show as 1 day (minimum)
+        XCTAssertEqual(vm.effectiveDays, 1)
+    }
+
     // MARK: failure
 
     func testMissingPlantSetsLoadFailed() {
