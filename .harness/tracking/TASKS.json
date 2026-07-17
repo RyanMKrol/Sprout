@@ -1099,7 +1099,7 @@
     {
       "id": "T040",
       "title": "DueChip + DueStatus (resolve name collision with existing enum)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T002",
         "T003"
