@@ -6,12 +6,21 @@ import XCTest
 /// drive their — and the My Plants tile's — subtitles.
 final class HomeTileTextTests: XCTestCase {
     func testPlantsSubtitleEmptyPrompts() {
-        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 0), "Add your first plant")
+        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 0), "None yet")
     }
 
     func testPlantsSubtitleSingularAndPlural() {
-        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 1), "1 plant")
-        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 4), "4 plants")
+        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 1), "1 growing")
+        XCTAssertEqual(HomeTileText.plantsSubtitle(count: 4), "4 growing")
+    }
+
+    func testRoomsSubtitleEmptyPrompts() {
+        XCTAssertEqual(HomeTileText.roomsSubtitle(count: 0), "Set one up")
+    }
+
+    func testRoomsSubtitleSingularAndPlural() {
+        XCTAssertEqual(HomeTileText.roomsSubtitle(count: 1), "1 space")
+        XCTAssertEqual(HomeTileText.roomsSubtitle(count: 3), "3 spaces")
     }
 
     func testWaterSubtitleReflectsDueCount() {

@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// The **home** landing screen: a status-aware greeting over a **bento layout** of
-/// vibrant gradient tiles — two square "place" tiles (My Plants, Rooms), a full-width
-/// **Add plants** call-to-action, and a "Today" row of two watering actions (**Water**
-/// — plants due now, with a count badge — and **Full check-in** — every plant) — plus a
-/// Settings gear. It owns the app's `NavigationStack`; `PlantListView` and `RoomsView`
-/// are pushed as destinations (they no longer carry their own stacks).
+/// The **home** landing screen (Botanical Editorial redesign, T016): a logo lockup +
+/// toolbar top bar, a time/status-aware greeting, the `HomeHeroCard` (due / empty /
+/// all-watered), a sage/oat bento row (My Plants, Rooms), and a ghost-button row
+/// (Add a plant, Check in). It owns the app's `NavigationStack`; `PlantListView` and
+/// `RoomsView` are pushed as destinations (they no longer carry their own stacks).
 struct HomeView: View {
     @StateObject private var listViewModel: PlantListViewModel
     /// Notification-permission state for the bell indicator + "reminders off" banner.
@@ -18,6 +17,10 @@ struct HomeView: View {
     private let makeRooms: () -> RoomsViewModel
     private let makeSettings: () -> SettingsViewModel
     private let makeGuidedWatering: (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
+
+    /// Backs the Rooms bento tile's "{N} spaces" subtitle — a second, independent
+    /// instance of the same view model the Rooms screen itself uses.
+    @StateObject private var roomsViewModel: RoomsViewModel
 
     @State private var path = NavigationPath()
     @State private var settingsPresented = false
@@ -68,6 +71,7 @@ struct HomeView: View {
     ) {
         _listViewModel = StateObject(wrappedValue: listViewModel)
         _gatekeeper = ObservedObject(wrappedValue: gatekeeper)
+        _roomsViewModel = StateObject(wrappedValue: makeRooms())
         self.makeEditor = makeEditor
         self.makeBasket = makeBasket
         self.makePhotoCapture = makePhotoCapture
@@ -81,96 +85,91 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
-                VStack(spacing: 16) {
-                    // A friendly, status-aware greeting so the screen feels alive.
-                    Text(HomeTileText.statusLine(dueCount: listViewModel.dueCount,
-                                                 total: listViewModel.items.count))
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.bottom, 2)
+                VStack(alignment: .leading, spacing: 18) {
+                    HStack {
+                        HomeLogoLockup()
+                        Spacer()
+                        if gatekeeper.needsAttention {
+                            CircularToolbarButton(icon: .bellSlash, tint: SproutTheme.warningTerracotta) {
+                                Task { await gatekeeper.enable() }
+                            }
+                            .accessibilityLabel("Notifications are off — tap to enable")
+                        }
+                        CircularToolbarButton(icon: .gear, tint: HomeView.gearTint) {
+                            settingsPresented = true
+                        }
+                        .accessibilityLabel("Settings")
+                    }
+
+                    let greeting = HomeHeroCard.greeting(for: heroState, hour: Calendar.current.component(.hour, from: Date()))
+                    VStack(alignment: .leading, spacing: 6) {
+                        SectionEyebrow(text: greeting.eyebrow)
+                        Text(greeting.headline)
+                            .font(SproutFont.display(31, weight: .bold))
+                            .foregroundStyle(SproutTheme.ink)
+                            .lineSpacing(2)
+                    }
 
                     // Visible warning when reminders are off — tapping it prompts / opens Settings.
                     if gatekeeper.needsAttention {
-                        NotificationsOffBanner { Task { await gatekeeper.enable() } }
+                        HomeRemindersOffBanner { Task { await gatekeeper.enable() } }
                     }
 
-                    // Top row: the two "places" — your plants and your rooms.
+                    HomeHeroCard(state: heroState, onPrimaryTap: heroPrimaryTapped)
+                        .frame(minHeight: 300)
+
+                    // Bento row: My Plants (sage) + Rooms (oat).
                     HStack(spacing: 16) {
-                        HomeSquareTile(
+                        HomeBentoTile(
+                            surface: .sage,
                             title: "My Plants",
-                            caption: HomeTileText.plantsSubtitle(count: listViewModel.items.count),
-                            systemImage: "leaf.fill",
-                            style: .plants
-                        ) { path.append(Route.plants) }
+                            subtitle: HomeTileText.plantsSubtitle(count: listViewModel.items.count),
+                            leading: { HomePlantStack(plants: heroPlants) },
+                            action: { path.append(Route.plants) }
+                        )
 
-                        HomeSquareTile(
+                        HomeBentoTile(
+                            surface: .oat,
                             title: "Rooms",
-                            caption: "Light & humidity",
-                            systemImage: "house.fill",
-                            style: .rooms
-                        ) { path.append(Route.rooms) }
+                            subtitle: HomeTileText.roomsSubtitle(count: roomsViewModel.items.count),
+                            leading: { HomeBentoIconBubble(icon: .house, tint: SproutTheme.oatIcon) },
+                            action: { path.append(Route.rooms) }
+                        )
                     }
 
-                    // Full-width primary call-to-action.
-                    HomeWideTile(
-                        title: "Add plants",
-                        subtitle: "Pick a room, then add its plants",
-                        systemImage: "plus.circle.fill",
-                        style: .add
-                    ) { addFlowPresented = true }
+                    // Ghost row: add a plant / check in on everything.
+                    HStack(spacing: 12) {
+                        Button {
+                            addFlowPresented = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                ChromeIcon.plus.image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 14, height: 14)
+                                Text("Add a plant")
+                            }
+                        }
+                        .buttonStyle(SproutGhostButtonStyle())
 
-                    // Section heading for the two watering actions.
-                    Text("Today")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, 4)
-
-                    // Bottom row: the two distinct watering actions.
-                    HStack(spacing: 16) {
-                        HomeActionTile(
-                            title: "Water",
-                            subtitle: HomeTileText.waterSubtitle(dueCount: listViewModel.dueCount),
-                            systemImage: "drop.fill",
-                            style: .water,
-                            badge: listViewModel.dueCount > 0 ? "\(listViewModel.dueCount)" : nil,
-                            // Draw the eye to watering when something's actually due.
-                            pulsing: listViewModel.dueCount > 0
-                        ) { startGuided(.due) }
-
-                        HomeActionTile(
-                            title: "Full check-in",
-                            subtitle: HomeTileText.checkInSubtitle(total: listViewModel.items.count),
-                            systemImage: "checklist",
-                            style: .checkIn,
-                            badge: nil,
-                            pulsing: false
-                        ) { startGuided(.all) }
+                        Button {
+                            startGuided(.all)
+                        } label: {
+                            HStack(spacing: 8) {
+                                ChromeIcon.listCheck.image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 14, height: 14)
+                                Text("Check in")
+                            }
+                        }
+                        .buttonStyle(SproutGhostButtonStyle())
                     }
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground), ignoresSafeAreaEdges: .all)
-            .navigationTitle("Sprout")
-            .toolbar {
-                // A bell with a slash next to the title when reminders are off — tap to
-                // enable (prompt, or open Settings if previously denied).
-                if gatekeeper.needsAttention {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button { Task { await gatekeeper.enable() } } label: {
-                            Image(systemName: "bell.slash.fill")
-                                .foregroundStyle(.orange)
-                        }
-                        .accessibilityLabel("Notifications are off — tap to enable")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { settingsPresented = true } label: {
-                        Label("Settings", systemImage: "gearshape")
-                    }
-                }
-            }
+            .background(SproutTheme.paper, ignoresSafeAreaEdges: .all)
+            .navigationBarHidden(true)
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .plants:
@@ -232,7 +231,64 @@ struct HomeView: View {
         }
         .onAppear {
             listViewModel.load()
+            roomsViewModel.load()
             deepLinkIfRequested()
+        }
+    }
+
+    /// Gear icon tint (`#4A5142`) — a design-token color not needed elsewhere in the
+    /// shared `SproutTheme`, so it lives beside its one use.
+    private static let gearTint = Color(red: 74.0 / 255, green: 81.0 / 255, blue: 66.0 / 255)
+
+    /// The plants that need water now, in list order — feeds both the hero card's
+    /// avatar stack and the My Plants bento tile's token stack.
+    private var heroPlants: [Plant] {
+        listViewModel.items
+            .filter { $0.due.needsWater }
+            .map(HomeView.plant(from:))
+    }
+
+    /// Reconstructs a display-only `Plant` from a list item (the view model doesn't
+    /// retain the original `icon`/room fields, so this uses the species' default icon
+    /// — acceptable since the token prefers the plant's photo when one exists).
+    private static func plant(from item: PlantListViewModel.Item) -> Plant {
+        Plant(id: item.id, nickname: item.nickname, species: item.species, photoData: item.photoData)
+    }
+
+    /// The soonest-scheduled plant among those *not* needing water now, for the
+    /// all-watered hero's "Next up: {plant} in {N} days." line.
+    private var soonestScheduled: (name: String, days: Int)? {
+        for item in listViewModel.items {
+            if case let .due(days) = item.due {
+                return (item.nickname, days)
+            }
+        }
+        return nil
+    }
+
+    /// The hero card's state, derived from the list's due data (T016 spec §3, screens
+    /// 02/03/03b): no plants → empty; some due → due; none due → all watered.
+    private var heroState: HomeHeroState {
+        if listViewModel.items.isEmpty {
+            return .empty
+        }
+        let due = heroPlants
+        if !due.isEmpty {
+            return .due(count: due.count, plants: due)
+        }
+        return .allWatered(next: soonestScheduled)
+    }
+
+    /// The hero card's primary button routes to guided watering when plants are due,
+    /// or the add flow when the garden is empty; it has no button in the all-watered state.
+    private func heroPrimaryTapped() {
+        switch heroState {
+        case .due:
+            startGuided(.due)
+        case .empty:
+            addFlowPresented = true
+        case .allWatered:
+            break
         }
     }
 
@@ -241,6 +297,7 @@ struct HomeView: View {
     /// only once the sheet has fully gone.
     private func offerPhotosIfJustCreated() {
         listViewModel.load()
+        roomsViewModel.load()
         if makePhotoCapture != nil, !promptTargets.isEmpty {
             photoPromptPresented = true
         }
@@ -296,7 +353,13 @@ struct HomeView: View {
 /// without instantiating the SwiftUI view (T222).
 enum HomeTileText {
     static func plantsSubtitle(count: Int) -> String {
-        count == 0 ? "Add your first plant" : "\(count) \(count == 1 ? "plant" : "plants")"
+        count == 0 ? "None yet" : "\(count) growing"
+    }
+
+    /// The Rooms bento tile's subtitle (T016 §3): "{N} spaces" once any room
+    /// exists, else a nudge to set one up.
+    static func roomsSubtitle(count: Int) -> String {
+        count == 0 ? "Set one up" : "\(count) \(count == 1 ? "space" : "spaces")"
     }
 
     static func waterSubtitle(dueCount: Int) -> String {
@@ -480,39 +543,5 @@ private struct HomeActionTile: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(badge.map { "\(title), \($0), \(subtitle)" } ?? "\(title), \(subtitle)")
-    }
-}
-
-/// A tappable "reminders are off" warning shown on the home when notifications aren't
-/// authorised, so the user understands why they're not getting watering reminders.
-private struct NotificationsOffBanner: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: "bell.slash.fill")
-                    .font(.headline)
-                    .foregroundStyle(.orange)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Reminders are off")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text("Turn on notifications so Sprout can remind you to water.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.leading)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption.bold())
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(14)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(.orange.opacity(0.4), lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-        .accessibilityHint("Enable notifications")
     }
 }

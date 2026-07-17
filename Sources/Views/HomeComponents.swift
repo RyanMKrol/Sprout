@@ -6,6 +6,45 @@ enum HomeHeroState {
     case allWatered(next: (name: String, days: Int)?)
 }
 
+/// A single plant's circular token, sized to `size` — used by the hero card's avatar
+/// stack and the My Plants bento tile's token stack.
+///
+/// Delegates to `PlantToken` for the photo case (its `Image(uiImage:)` branch is
+/// already `.resizable()` and renders correctly), but draws its own gradient + glyph
+/// for the icon fallback: `PlantToken`'s icon there isn't `.resizable()`, so on a real
+/// bundled asset (not an SF Symbol) it renders at the asset's native size and spills
+/// across the surrounding UI instead of sitting inside the token.
+struct HomePlantAvatar: View {
+    let plant: Plant
+    let size: CGFloat
+
+    var body: some View {
+        Group {
+            if let photo = plant.photoData.flatMap(UIImage.init) {
+                PlantToken(icon: plant.icon, duo: PlantTokenPalette.duo(for: plant.id), size: size, photo: photo)
+            } else {
+                let duo = PlantTokenPalette.duo(for: plant.id)
+                ZStack {
+                    RadialGradient(
+                        gradient: Gradient(colors: [duo.light, duo.dark]),
+                        center: UnitPoint(x: 0.3, y: 0.25),
+                        startRadius: 0,
+                        endRadius: size * 0.75
+                    )
+                    plant.icon.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: size * 0.45, height: size * 0.45)
+                        .foregroundStyle(Color.white)
+                }
+                .shadow(color: duo.dark.opacity(0.28), radius: 5, y: 2)
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(Circle())
+    }
+}
+
 struct HomeHeroCard: View {
     let state: HomeHeroState
     let onPrimaryTap: () -> Void
@@ -41,16 +80,11 @@ struct HomeHeroCard: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: -12) {
                         ForEach(Array(plants.prefix(4)), id: \.id) { plant in
-                            PlantToken(
-                                icon: plant.icon,
-                                duo: PlantTokenPalette.duo(for: plant.id),
-                                size: 36,
-                                photo: plant.photoData.flatMap(UIImage.init)
-                            )
-                            .overlay(
-                                Circle()
-                                    .stroke(Color(hex: 0x285A40), lineWidth: 2.5)
-                            )
+                            HomePlantAvatar(plant: plant, size: 36)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color(hex: 0x285A40), lineWidth: 2.5)
+                                )
                         }
                         Spacer()
                     }
@@ -164,6 +198,152 @@ struct HomeHeroCard: View {
             return "Water all \(count)"
         }
     }
+}
+
+/// The top-bar logo lockup: gradient icon tile + wordmark (redesign spec §3, 02/03).
+struct HomeLogoLockup: View {
+    var body: some View {
+        HStack(spacing: 10) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 11, style: .continuous)
+                    .fill(SproutTheme.logoGradient)
+                ChromeIcon.seedling.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 18, height: 18)
+                    .foregroundStyle(Color.white)
+            }
+            .frame(width: 34, height: 34)
+
+            Text("Sprout")
+                .font(SproutFont.display(22, weight: .bold))
+                .foregroundStyle(SproutTheme.ink)
+        }
+    }
+}
+
+/// A restyled "reminders are off" row (redesign spec §3, 02/03): white card, terracotta
+/// border/icon, same tap behaviour as before (enable / open Settings).
+struct HomeRemindersOffBanner: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                ChromeIcon.bellSlash.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 18, height: 18)
+                    .foregroundStyle(SproutTheme.warningTerracotta)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Reminders are off")
+                        .font(SproutFont.body(15, weight: .semibold))
+                        .foregroundStyle(SproutTheme.ink)
+                    Text("Turn them on so Sprout can nudge you.")
+                        .font(SproutFont.body(12.5))
+                        .foregroundStyle(SproutTheme.textHint)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                ChromeIcon.chevronRight.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 11, height: 11)
+                    .foregroundStyle(SproutTheme.textTertiary)
+            }
+            .padding(14)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: SproutTheme.Radius.field, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: SproutTheme.Radius.field, style: .continuous)
+                    .stroke(SproutTheme.warningTerracotta.opacity(0.32), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Reminders are off")
+        .accessibilityHint("Turn them on so Sprout can nudge you.")
+    }
+}
+
+/// A 40×40 white, rounded icon bubble used as a bento tile's leading glyph when it
+/// has no token stack to show (e.g. Rooms).
+struct HomeBentoIconBubble: View {
+    let icon: ChromeIcon
+    let tint: Color
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white)
+            icon.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
+                .foregroundStyle(tint)
+        }
+        .frame(width: 40, height: 40)
+    }
+}
+
+/// The My Plants bento tile's leading glyph: an overlapping stack of up to 3 plant
+/// tokens (or the bubble fallback when there are none yet).
+struct HomePlantStack: View {
+    let plants: [Plant]
+
+    var body: some View {
+        if plants.isEmpty {
+            HomeBentoIconBubble(icon: .seedling, tint: SproutTheme.brandGreen)
+        } else {
+            HStack(spacing: -12) {
+                ForEach(Array(plants.prefix(3)), id: \.id) { plant in
+                    HomePlantAvatar(plant: plant, size: 38)
+                        .overlay(Circle().stroke(SproutTheme.sageSurface, lineWidth: 2.5))
+                }
+            }
+        }
+    }
+}
+
+/// A sage/oat bento tile: leading glyph (icon bubble or token stack), title, subtitle.
+struct HomeBentoTile<Leading: View>: View {
+    enum Surface { case sage, oat }
+
+    let surface: Surface
+    let title: String
+    let subtitle: String
+    @ViewBuilder let leading: () -> Leading
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 10) {
+                leading()
+                Text(title)
+                    .font(SproutFont.display(18, weight: .bold))
+                    .foregroundStyle(titleColor)
+                Text(subtitle)
+                    .font(SproutFont.body(13, weight: .semibold))
+                    .foregroundStyle(subtitleColor)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
+            .background(surfaceColor, in: RoundedRectangle(cornerRadius: SproutTheme.Radius.bento, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: SproutTheme.Radius.bento, style: .continuous)
+                    .stroke(borderColor, lineWidth: 1)
+            )
+            .bentoShadow()
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(subtitle)")
+    }
+
+    private var surfaceColor: Color { surface == .sage ? SproutTheme.sageSurface : SproutTheme.oatSurface }
+    private var borderColor: Color { surface == .sage ? SproutTheme.sageBorder : SproutTheme.oatBorder }
+    private var titleColor: Color { surface == .sage ? SproutTheme.sageTitle : SproutTheme.oatTitle }
+    private var subtitleColor: Color { surface == .sage ? SproutTheme.sageSubtitle : SproutTheme.oatSubtitle }
 }
 
 extension HomeHeroCard {
