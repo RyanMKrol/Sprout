@@ -896,7 +896,7 @@
     {
       "id": "T033",
       "title": "Guided watering: report + action screens restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T009",
