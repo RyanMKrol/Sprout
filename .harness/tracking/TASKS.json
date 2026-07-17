@@ -291,7 +291,7 @@
     {
       "id": "T012",
       "title": "Plant.icon on the model (schema + repository + demo seed)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T004"
       ],
