@@ -497,7 +497,7 @@
     {
       "id": "T019",
       "title": "Adjust-schedule sheet restyle",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T010"
       ],
