@@ -1316,7 +1316,7 @@
     {
       "id": "T047",
       "title": "Guided watering completion: thread Mode through, mode-aware body (no Info.plist)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T033"
       ],
