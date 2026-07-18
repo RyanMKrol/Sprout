@@ -28,5 +28,10 @@
     "failed": true,
     "reason": "review-failed: superseded by T045 — added Sources/ContentView.swift to scope defensively (rung-0 gratuitous out-of-scope edit; routing actually lives in HomeView already)",
     "at": "2026-07-18T09:17:50Z"
+  },
+  "T042": {
+    "failed": true,
+    "reason": "review-failed: superseded by T046 — added Sources/Info.plist + project.yml to scope (2nd scope-creep, camera-flow touched Info.plist); mirrors T014's proven scope",
+    "at": "2026-07-18T09:17:52Z"
   }
 }
