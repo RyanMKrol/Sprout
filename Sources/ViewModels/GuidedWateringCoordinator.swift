@@ -18,6 +18,7 @@ final class GuidedWateringCoordinator: ObservableObject, Identifiable {
     nonisolated let id = UUID()
 
     let plants: [Plant]
+    let mode: Mode
     /// The user's report for the current plant.
     @Published var soil: SoilMoisture = .moist
     @Published var leaves: LeafState = .fine
@@ -37,10 +38,12 @@ final class GuidedWateringCoordinator: ObservableObject, Identifiable {
         plants: [Plant],
         repository: PlantRepository,
         careDatabase: CareDatabase,
+        mode: Mode = .all,
         engine: AdaptiveEngine = AdaptiveEngine(),
         environmentFactor: @escaping (Plant) -> Double = { _ in ScheduleEngine.defaultWeatherFactor }
     ) {
         self.plants = plants
+        self.mode = mode
         self.repository = repository
         self.careDatabase = careDatabase
         self.engine = engine
@@ -49,6 +52,16 @@ final class GuidedWateringCoordinator: ObservableObject, Identifiable {
     }
 
     // MARK: - Presentation
+
+    /// Completion message text based on mode.
+    static func completionBody(for mode: Mode) -> String {
+        switch mode {
+        case .due:
+            return "You've been through every plant that needed water today."
+        case .all:
+            return "You've checked in on every plant."
+        }
+    }
 
     /// The plant currently being checked, or `nil` when finished.
     var current: Plant? { index < plants.count ? plants[index] : nil }

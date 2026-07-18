@@ -160,6 +160,7 @@ struct ContentView: View {
             plants: plants,
             repository: repository,
             careDatabase: careDatabase,
+            mode: mode,
             environmentFactor: { Self.environmentFactor(for: $0, repository: repository) }
         )
     }

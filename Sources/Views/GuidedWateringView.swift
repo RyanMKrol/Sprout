@@ -247,6 +247,8 @@ struct GuidedWateringView: View {
 
     // MARK: - Completion step (screen 22)
 
+    @State private var checkmarkScale: CGFloat = 0.5
+
     private var completionStep: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -254,7 +256,7 @@ struct GuidedWateringView: View {
                     VStack(spacing: 16) {
                         ZStack {
                             Circle()
-                                .fill(SproutTheme.brandGreen)
+                                .fill(PlantTokenPalette.success.light)
                                 .frame(width: 104, height: 104)
 
                             ChromeIcon.circleCheck.image
@@ -262,14 +264,16 @@ struct GuidedWateringView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 46, height: 46)
                                 .foregroundStyle(Color.white)
+                                .scaleEffect(checkmarkScale)
+                                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: checkmarkScale)
                         }
 
                         Text("All done 🌿")
                             .font(SproutFont.display(27, weight: .bold))
                             .foregroundStyle(SproutTheme.ink)
 
-                        Text("You've been through every plant that needed water today.")
-                            .font(SproutFont.body(15))
+                        Text(GuidedWateringCoordinator.completionBody(for: coordinator.mode))
+                            .font(SproutFont.body(16))
                             .foregroundStyle(SproutTheme.textMuted)
                             .multilineTextAlignment(.center)
                     }
@@ -287,5 +291,36 @@ struct GuidedWateringView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
+        .onAppear {
+            checkmarkScale = 1.1
+        }
     }
+}
+
+#Preview("All mode") {
+    let db = CareDatabase(profiles: [
+        CareProfile(species: "Pothos", baseIntervalDays: 7, minIntervalDays: 5, maxIntervalDays: 14, moisture: .evenlyMoist),
+    ])
+    let plants = [Plant(nickname: "Plant A", species: "Pothos")]
+    let coordinator = GuidedWateringCoordinator(
+        plants: [],
+        repository: try! PlantStore.inMemory(),
+        careDatabase: db,
+        mode: .all
+    )
+    return GuidedWateringView(coordinator: coordinator)
+}
+
+#Preview("Due mode") {
+    let db = CareDatabase(profiles: [
+        CareProfile(species: "Snake Plant", baseIntervalDays: 14, minIntervalDays: 10, maxIntervalDays: 28, moisture: .driesOut),
+    ])
+    let plants = [Plant(nickname: "Plant B", species: "Snake Plant")]
+    let coordinator = GuidedWateringCoordinator(
+        plants: [],
+        repository: try! PlantStore.inMemory(),
+        careDatabase: db,
+        mode: .due
+    )
+    return GuidedWateringView(coordinator: coordinator)
 }

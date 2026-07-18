@@ -94,4 +94,14 @@ final class GuidedWateringCoordinatorTests: XCTestCase {
         XCTAssertEqual(c.soil, .moist, "soil resets for the next plant")
         XCTAssertEqual(c.leaves, .fine, "leaves reset for the next plant")
     }
+
+    func testCompletionBodyForDueMode() {
+        let body = GuidedWateringCoordinator.completionBody(for: .due)
+        XCTAssertEqual(body, "You've been through every plant that needed water today.")
+    }
+
+    func testCompletionBodyForAllMode() {
+        let body = GuidedWateringCoordinator.completionBody(for: .all)
+        XCTAssertEqual(body, "You've checked in on every plant.")
+    }
 }
