@@ -50,7 +50,7 @@ final class PlantEditViewModel: ObservableObject {
     @Published private(set) var photoData: Data?
 
     let mode: Mode
-    private let repository: PlantRepository
+    let repository: PlantRepository
     /// Retained for source compatibility with the presenter (`ContentView.makeEditor`)
     /// and any future add path; the edit form no longer reads the care database.
     private let careDatabase: CareDatabase
@@ -63,6 +63,10 @@ final class PlantEditViewModel: ObservableObject {
     /// The plant's species — **fixed once the plant exists** (T218). Loaded from the
     /// plant in *edit* mode and preserved verbatim on save; the form never changes it.
     private var species: String = ""
+    /// The plant's current icon, editable.
+    @Published var plantIcon: PlantIcon = .leaf
+    /// The plant's ID, needed for the redesigned view (token colors + icon picker).
+    @Published private(set) var plantID: UUID = UUID()
 
     init(
         mode: Mode,
@@ -76,12 +80,14 @@ final class PlantEditViewModel: ObservableObject {
         self.camera = camera
         availableRooms = (try? repository.allRooms()) ?? []
         if case let .edit(plantID) = mode {
+            self.plantID = plantID
             if let plant = (try? repository.plant(id: plantID)) ?? nil {
                 editingPlant = plant
                 nickname = plant.nickname
                 species = plant.species
                 selectedRoomID = plant.roomID
                 photoData = plant.photoData
+                self.plantIcon = plant.icon
             } else {
                 loadFailed = true
             }
@@ -128,7 +134,7 @@ final class PlantEditViewModel: ObservableObject {
     /// no longer part of form completeness (T218).
     var canSave: Bool { !trimmedNickname.isEmpty }
 
-    /// Persist the plant via the repository — updating nickname/room (preserving
+    /// Persist the plant via the repository — updating nickname/room/icon (preserving
     /// species and scheduling state) in edit mode. Returns the saved plant.
     /// - Throws: `PlantEditError.incomplete` if `canSave` is `false`, or a
     ///   `PlantRepositoryError` from the store.
@@ -141,6 +147,7 @@ final class PlantEditViewModel: ObservableObject {
             plant.nickname = trimmedNickname
             plant.roomID = selectedRoomID
             plant.photoData = photoData // staged by changePhoto() (T219)
+            plant.icon = plantIcon
             // species + scheduling state (adj/lastWatered/nextDue/checkIns) untouched.
             try repository.update(plant)
             editingPlant = plant
@@ -150,10 +157,27 @@ final class PlantEditViewModel: ObservableObject {
                 nickname: trimmedNickname,
                 species: species,
                 photoData: photoData,
-                roomID: selectedRoomID
+                roomID: selectedRoomID,
+                icon: plantIcon
             )
             try repository.add(plant)
             return plant
+        }
+    }
+
+    /// Return the plant for the icon picker (with current values).
+    func plantForIconPicker(repository: PlantRepository) -> Plant {
+        if var plant = editingPlant {
+            plant.nickname = trimmedNickname
+            plant.icon = plantIcon
+            return plant
+        } else {
+            return Plant(
+                id: plantID,
+                nickname: trimmedNickname,
+                species: species,
+                icon: plantIcon
+            )
         }
     }
 }

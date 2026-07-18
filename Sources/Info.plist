@@ -37,10 +37,7 @@
 		<string>hanken-grotesk-v12-latin-regular.ttf</string>
 	</array>
 	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string>LaunchBrandGreen</string>
-	</dict>
+	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
