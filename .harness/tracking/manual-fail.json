@@ -23,5 +23,10 @@
     "failed": true,
     "reason": "review-failed: superseded by T044 — widened scope to DesignSystem with a reuse-existing-primitives directive and a style facet",
     "at": "2026-07-17T19:54:55Z"
+  },
+  "T028": {
+    "failed": true,
+    "reason": "review-failed: superseded by T045 — added Sources/ContentView.swift to scope defensively (rung-0 gratuitous out-of-scope edit; routing actually lives in HomeView already)",
+    "at": "2026-07-18T09:17:50Z"
   }
 }
