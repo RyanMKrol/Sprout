@@ -1368,6 +1368,30 @@
         "workType": "style",
         "risk": []
       }
+    },
+    {
+      "id": "T049",
+      "title": "Make launch-screen colour durable (move LaunchBrandGreen into project.yml)",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "build",
+        "launch-splash"
+      ],
+      "facets": {
+        "layer": "build",
+        "workType": "bugfix",
+        "risk": []
+      },
+      "scope": [
+        "project.yml",
+        "Sources/Info.plist"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T049.md"
     }
   ]
 }
