@@ -1372,7 +1372,7 @@
     {
       "id": "T049",
       "title": "Make launch-screen colour durable (move LaunchBrandGreen into project.yml)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
