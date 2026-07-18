@@ -1283,7 +1283,7 @@
     {
       "id": "T046",
       "title": "Edit Plant form + delete confirmation (redesign chrome) — scope +Info.plist",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T005",
         "T010",
