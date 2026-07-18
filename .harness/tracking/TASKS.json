@@ -1392,6 +1392,285 @@
       "verify": [],
       "expectsTest": false,
       "spec": ".harness/tasks/T049.md"
+    },
+    {
+      "id": "T050",
+      "title": "Fix broken button/border corners (ghost button style + PlantEditView one-off)",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "polish",
+        "bugfix",
+        "design-system"
+      ],
+      "scope": [
+        "Sources/DesignSystem/Buttons.swift",
+        "Sources/Views/PlantEditView.swift"
+      ],
+      "design": null,
+      "verify": [
+        "swiftlint lint",
+        "grep -rn \"\\.border(\" Sources/ ; test -z \"$(grep -rn '\\.border(' Sources/)\"",
+        "./build_run.sh Sprout-Claude -seedDemoData YES"
+      ],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T050.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T051",
+      "title": "Fix oversized asset-catalog glyphs on plant detail (droplet + pencil)",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "bugfix",
+        "redesign-chrome",
+        "glyph-sizing"
+      ],
+      "scope": [
+        "Sources/Views/PlantDetailView.swift"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T051.md",
+      "facets": {
+        "layer": "views",
+        "workType": "bugfix",
+        "risk": []
+      }
+    },
+    {
+      "id": "T052",
+      "title": "Standardise pushed-screen back button on plant list + plant detail (match RoomDetailView)",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "bugfix",
+        "navigation",
+        "redesign-chrome"
+      ],
+      "scope": [
+        "Sources/Views/PlantListView.swift",
+        "Sources/Views/PlantDetailView.swift"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T052.md",
+      "facets": {
+        "layer": "views",
+        "workType": "bugfix",
+        "risk": []
+      }
+    },
+    {
+      "id": "T053",
+      "title": "Centre SproutSheetHeader title across the full bar width",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "bugfix",
+        "design-system"
+      ],
+      "scope": [
+        "Sources/DesignSystem/SheetScaffold.swift"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T053.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T054",
+      "title": "Keep guided-watering header title on one line",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "bugfix"
+      ],
+      "scope": [
+        "Sources/Views/GuidedWateringView.swift"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T054.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T055",
+      "title": "Add LeafState.crispy model case",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "model",
+        "check-in",
+        "leaf-state"
+      ],
+      "scope": [
+        "Sources/Model/**",
+        "Sources/Persistence/**",
+        "Tests/**"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T055.md",
+      "facets": {
+        "layer": "data",
+        "workType": "feature",
+        "risk": [
+          "touches-schema",
+          "cross-cutting"
+        ]
+      }
+    },
+    {
+      "id": "T056",
+      "title": "Engine + recommendation copy for Crispy leaves",
+      "status": "pending",
+      "dependsOn": [
+        "T055"
+      ],
+      "gate": null,
+      "tags": [
+        "engine",
+        "adaptive",
+        "check-in",
+        "leaf-state"
+      ],
+      "scope": [
+        "Sources/Engine/**",
+        "Sources/Support/**",
+        "Tests/**"
+      ],
+      "design": null,
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T056.md",
+      "facets": {
+        "layer": "engine",
+        "workType": "feature",
+        "risk": [
+          "cross-cutting"
+        ]
+      }
+    },
+    {
+      "id": "T057",
+      "title": "Reword leaf question + add Crispy picker segment",
+      "status": "pending",
+      "dependsOn": [
+        "T055",
+        "T056"
+      ],
+      "gate": null,
+      "tags": [
+        "views",
+        "check-in",
+        "guided-watering",
+        "leaf-state",
+        "copy"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Tests/**"
+      ],
+      "design": null,
+      "verify": [
+        "build_run.sh screenshot of the check-in / guided-watering leaf picker showing the three segments Crispy / Fine / Droopy"
+      ],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T057.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T058",
+      "title": "Add Room: show editable sun/humidity levers on preset rooms",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "rooms",
+        "add-room"
+      ],
+      "scope": [
+        "Sources/Views/AddRoomView.swift"
+      ],
+      "design": null,
+      "verify": [
+        "swiftlint lint",
+        "xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=Sprout-Claude'",
+        "./build_run.sh Sprout-Claude -seedDemoData YES with SPROUT_SCREEN=addroom, then Read screenshots/latest.png to confirm the editable Direct Sun / Indirect Sun / Humidity segmented controls appear on a preset room, pre-filled from the preset"
+      ],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T058.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T059",
+      "title": "Shuffle button rerolls token colour + glyph too (not just the nickname)",
+      "status": "pending",
+      "dependsOn": [],
+      "gate": null,
+      "tags": [
+        "ui",
+        "basket",
+        "feature",
+        "add-flow"
+      ],
+      "scope": [
+        "Sources/ViewModels/BasketAddViewModel.swift",
+        "Sources/Views/AddFlowView.swift"
+      ],
+      "design": null,
+      "verify": [
+        "swiftlint lint",
+        "xcodegen generate && xcodebuild test -project Sprout.xcodeproj -scheme Sprout -destination 'platform=iOS Simulator,name=Sprout-Claude'",
+        "./build_run.sh Sprout-Claude -seedDemoData YES"
+      ],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T059.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
     }
   ]
 }
