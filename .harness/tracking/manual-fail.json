@@ -38,5 +38,10 @@
     "failed": true,
     "reason": "review-failed: superseded by T047 — narrowed Views scope + explicit no-Info.plist fence (2nd failure was an unforced out-of-scope Info.plist edit)",
     "at": "2026-07-18T09:17:53Z"
+  },
+  "T044": {
+    "failed": true,
+    "reason": "review-failed: superseded by T048 — hard fence forbidding Info.plist/notification edits (2nd failure strayed into test-reminder plumbing)",
+    "at": "2026-07-18T09:17:55Z"
   }
 }
