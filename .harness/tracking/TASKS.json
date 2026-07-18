@@ -1344,7 +1344,7 @@
     {
       "id": "T048",
       "title": "Settings sheet restyle + delete-all confirmation (redesign, fenced)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T007",
         "T010"
