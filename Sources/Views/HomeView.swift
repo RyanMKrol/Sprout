@@ -15,6 +15,7 @@ struct HomeView: View {
     private let makeDetail: ((UUID) -> PlantDetailViewModel)?
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
     private let makeRooms: () -> RoomsViewModel
+    private let makeRoomDetail: (UUID) -> RoomDetailViewModel
     private let makeSettings: () -> SettingsViewModel
     private let makeGuidedWatering: (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
 
@@ -66,6 +67,7 @@ struct HomeView: View {
         makeDetail: @escaping (UUID) -> PlantDetailViewModel,
         makeCheckIn: @escaping (UUID) -> CheckInViewModel,
         makeRooms: @escaping () -> RoomsViewModel,
+        makeRoomDetail: @escaping (UUID) -> RoomDetailViewModel,
         makeSettings: @escaping () -> SettingsViewModel,
         makeGuidedWatering: @escaping (GuidedWateringCoordinator.Mode) -> GuidedWateringCoordinator
     ) {
@@ -78,6 +80,7 @@ struct HomeView: View {
         self.makeDetail = makeDetail
         self.makeCheckIn = makeCheckIn
         self.makeRooms = makeRooms
+        self.makeRoomDetail = makeRoomDetail
         self.makeSettings = makeSettings
         self.makeGuidedWatering = makeGuidedWatering
     }
@@ -184,6 +187,14 @@ struct HomeView: View {
                 case .rooms:
                     RoomsView(viewModel: makeRooms())
                 }
+            }
+            .navigationDestination(for: RoomDetailRoute.self) { route in
+                RoomDetailView(
+                    viewModel: makeRoomDetail(route.roomID),
+                    makeDetail: makeDetail,
+                    makeEditor: makeEditor,
+                    makeCheckIn: makeCheckIn
+                )
             }
         }
         .sheet(isPresented: $settingsPresented) {
@@ -332,6 +343,12 @@ struct HomeView: View {
         case "rooms", "roomeditor", "addroom":
             // `roomeditor`/`addroom` push Rooms, which then auto-opens its editor / add flow.
             path.append(Route.rooms)
+        case "roomdetail":
+            // Push Rooms, then the first room's detail (screen 15).
+            path.append(Route.rooms)
+            if let first = roomsViewModel.items.first?.room.id {
+                path.append(RoomDetailRoute(roomID: first))
+            }
         case "settings":
             settingsPresented = true
         case "plants", "add", "basket", "addflow", "camera", "photoprompt", "edit":

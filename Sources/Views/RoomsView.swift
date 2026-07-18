@@ -35,9 +35,9 @@ struct RoomsView: View {
             } else {
                 List {
                     ForEach(viewModel.items) { item in
-                        Button {
-                            editor = .edit(item.room)
-                        } label: {
+                        // Tap → room detail (screen 15), NOT the editor. Editing now lives
+                        // behind the detail screen's "Edit" button.
+                        NavigationLink(value: RoomDetailRoute(roomID: item.room.id)) {
                             RoomRow(item: item)
                         }
                         .tint(.primary)
