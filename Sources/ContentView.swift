@@ -55,6 +55,7 @@ struct ContentView: View {
                 makeDetail: makeDetail,
                 makeCheckIn: makeCheckIn,
                 makeRooms: makeRooms,
+                makeRoomDetail: makeRoomDetail,
                 makeSettings: makeSettings,
                 makeGuidedWatering: makeGuidedWatering
             )
@@ -147,6 +148,10 @@ struct ContentView: View {
     /// Build the Rooms view model (T213) against the shared repository.
     private func makeRooms() -> RoomsViewModel {
         RoomsViewModel(repository: repository)
+    }
+
+    private func makeRoomDetail(_ roomID: UUID) -> RoomDetailViewModel {
+        RoomDetailViewModel(roomID: roomID, repository: repository)
     }
 
     /// Build the guided-watering coordinator (T215) for a mode: all plants, or only
