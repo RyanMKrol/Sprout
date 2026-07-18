@@ -752,7 +752,7 @@
     {
       "id": "T028",
       "title": "Room detail screen (NEW) + roomdetail hook + environment copy",
-      "status": "blocked",
+      "status": "failed",
       "dependsOn": [
         "T005",
         "T008",
@@ -1163,7 +1163,7 @@
     {
       "id": "T042",
       "title": "Edit Plant form + delete confirmation (redesign chrome)",
-      "status": "blocked",
+      "status": "failed",
       "dependsOn": [
         "T005",
         "T010",
@@ -1194,7 +1194,7 @@
     {
       "id": "T043",
       "title": "Guided watering: completion screen restyle (mode-aware body)",
-      "status": "blocked",
+      "status": "failed",
       "dependsOn": [
         "T033"
       ],
@@ -1222,7 +1222,7 @@
     {
       "id": "T044",
       "title": "Settings sheet restyle + delete-all confirmation (redesign)",
-      "status": "blocked",
+      "status": "failed",
       "dependsOn": [
         "T007",
         "T010"
