@@ -727,7 +727,7 @@
       "dependsOn": [
         "T008",
         "T010",
-        "T028"
+        "T045"
       ],
       "gate": null,
       "tags": [
@@ -1052,9 +1052,9 @@
         "T036",
         "T037",
         "T041",
-        "T042",
-        "T043",
-        "T044"
+        "T046",
+        "T047",
+        "T048"
       ],
       "gate": null,
       "tags": [
@@ -1242,6 +1242,127 @@
       "verify": [],
       "expectsTest": false,
       "spec": ".harness/tasks/T044.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T045",
+      "title": "Room detail screen (NEW) + roomdetail hook + environment copy",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T008",
+        "T040"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Sources/Support/**",
+        "Sources/ContentView.swift",
+        "Sources/DemoSeed.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T045.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T046",
+      "title": "Edit Plant form + delete confirmation (redesign chrome) — scope +Info.plist",
+      "status": "pending",
+      "dependsOn": [
+        "T005",
+        "T010",
+        "T012",
+        "T021"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/**",
+        "Sources/ViewModels/**",
+        "Sources/ContentView.swift",
+        "Sources/Info.plist",
+        "project.yml",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T046.md",
+      "facets": {
+        "layer": "views",
+        "workType": "feature",
+        "risk": []
+      }
+    },
+    {
+      "id": "T047",
+      "title": "Guided watering completion: thread Mode through, mode-aware body (no Info.plist)",
+      "status": "pending",
+      "dependsOn": [
+        "T033"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/GuidedWateringView.swift",
+        "Sources/ViewModels/GuidedWateringCoordinator.swift",
+        "Sources/ContentView.swift",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": true,
+      "spec": ".harness/tasks/T047.md",
+      "facets": {
+        "layer": "views",
+        "workType": "style",
+        "risk": []
+      }
+    },
+    {
+      "id": "T048",
+      "title": "Settings sheet restyle + delete-all confirmation (redesign, fenced)",
+      "status": "pending",
+      "dependsOn": [
+        "T007",
+        "T010"
+      ],
+      "gate": null,
+      "tags": [
+        "redesign",
+        "screen"
+      ],
+      "scope": [
+        "Sources/Views/SettingsView.swift",
+        "Sources/DesignSystem/**",
+        "Tests/**"
+      ],
+      "design": ".harness/docs/designs/redesign-spec.md",
+      "verify": [],
+      "expectsTest": false,
+      "spec": ".harness/tasks/T048.md",
       "facets": {
         "layer": "views",
         "workType": "style",
