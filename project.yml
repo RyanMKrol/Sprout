@@ -36,7 +36,8 @@ targets:
           - hanken-grotesk-v12-latin-700.ttf
           - hanken-grotesk-v12-latin-italic.ttf
           - hanken-grotesk-v12-latin-regular.ttf
-        UILaunchScreen: {}
+        UILaunchScreen:
+          UIColorName: LaunchBrandGreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         # T015: weather adaptation reads the device location to fetch a local forecast.
