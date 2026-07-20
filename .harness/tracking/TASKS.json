@@ -723,7 +723,7 @@
     {
       "id": "T027",
       "title": "Rooms list restyle + room delete confirmation",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T008",
         "T010",
