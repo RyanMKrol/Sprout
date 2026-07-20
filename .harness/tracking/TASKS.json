@@ -1477,7 +1477,7 @@
     {
       "id": "T053",
       "title": "Centre SproutSheetHeader title across the full bar width",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
