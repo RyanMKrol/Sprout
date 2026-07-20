@@ -93,6 +93,34 @@ final class BasketAddViewModelTests: XCTestCase {
         XCTAssertNotEqual(vm.basket[0].nickname, before)
     }
 
+    func testRerollChangesNameIconAndColourDeterministically() {
+        // One shuffle tap rerolls all three of name + glyph + colour, drawn from the
+        // injected seedable RNG (not a fresh SystemRandomNumberGenerator).
+        func rolled(seed: UInt64) -> (after: (name: String, icon: PlantIcon, palette: Int),
+                                      before: (name: String, icon: PlantIcon, palette: Int)) {
+            let vm = makeVM(seed: seed)
+            vm.add(profile("Pothos"))
+            let before = (vm.basket[0].nickname, vm.basket[0].icon, vm.basket[0].paletteIndex)
+            vm.reroll(vm.basket[0])
+            let after = (vm.basket[0].nickname, vm.basket[0].icon, vm.basket[0].paletteIndex)
+            return (after, before)
+        }
+
+        let a = rolled(seed: 7)
+        // All three changed.
+        XCTAssertNotEqual(a.after.name, a.before.name)
+        XCTAssertNotEqual(a.after.icon, a.before.icon)
+        XCTAssertNotEqual(a.after.palette, a.before.palette)
+
+        // Seed-determinism: a second run with the same seed reproduces the RNG-driven
+        // name + icon — proof the reroll draws from the injected seeded generator, not
+        // a fresh SystemRandomNumberGenerator. (The palette's starting value derives
+        // from the entry's random UUID, so only name + icon are cross-run reproducible.)
+        let b = rolled(seed: 7)
+        XCTAssertEqual(a.after.name, b.after.name)
+        XCTAssertEqual(a.after.icon, b.after.icon)
+    }
+
     // MARK: icon (T023 — icon picker on a pending basket entry)
 
     func testAddAssignsTheSpeciesDefaultIcon() {
