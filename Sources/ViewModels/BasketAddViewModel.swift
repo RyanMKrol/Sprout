@@ -39,12 +39,12 @@ final class BasketAddViewModel: ObservableObject {
         /// derived from `id` (a stable first render) and is rerolled by `reroll`.
         var paletteIndex: Int
 
-        init(id: UUID = UUID(), species: String, nickname: String, icon: PlantIcon? = nil) {
+        init(id: UUID = UUID(), species: String, nickname: String, icon: PlantIcon? = nil, paletteIndex: Int? = nil) {
             self.id = id
             self.species = species
             self.nickname = nickname
             self.icon = icon ?? PlantIcon.default(forSpecies: species)
-            self.paletteIndex = PlantTokenPalette.indexOfDuo(for: id)
+            self.paletteIndex = paletteIndex ?? PlantTokenPalette.indexOfDuo(for: id)
         }
 
         /// This entry's token colour, resolved from its stored `paletteIndex`.
@@ -132,11 +132,21 @@ final class BasketAddViewModel: ObservableObject {
 
     // MARK: - Basket editing
 
-    /// Drop one plant of `profile` into the basket with a fresh unique random name.
-    /// Adding the same species again is allowed and yields a distinct name.
+    /// Drop one plant of `profile` into the basket with a fresh unique random name,
+    /// a random token colour, and a random glyph. Colour and glyph are drawn from the
+    /// injected RNG and differ from the previously-added entry's where the pool allows
+    /// — so a batch gets varied, non-repeating looks instead of a hash of the plant id
+    /// (which clustered into duplicate colours). Adding the same species again is
+    /// allowed and yields a distinct name/colour/glyph.
     func add(_ profile: CareProfile) {
         let name = nicknameProvider.next(avoiding: takenNames())
-        basket.append(Entry(species: profile.species, nickname: name))
+        let previous = basket.last
+        basket.append(Entry(
+            species: profile.species,
+            nickname: name,
+            icon: randomIcon(avoiding: previous?.icon),
+            paletteIndex: randomPaletteIndex(avoiding: previous?.paletteIndex)
+        ))
     }
 
     /// Remove a basket entry.
@@ -166,22 +176,23 @@ final class BasketAddViewModel: ObservableObject {
     func reroll(_ entry: Entry) {
         guard let i = basket.firstIndex(where: { $0.id == entry.id }) else { return }
         basket[i].nickname = nicknameProvider.next(avoiding: takenNames())
-        basket[i].icon = rerolledIcon(from: basket[i].icon)
-        basket[i].paletteIndex = rerolledPaletteIndex(from: basket[i].paletteIndex)
+        basket[i].icon = randomIcon(avoiding: basket[i].icon)
+        basket[i].paletteIndex = randomPaletteIndex(avoiding: basket[i].paletteIndex)
     }
 
-    /// A random `PlantIcon` drawn from the injected RNG, differing from `current`
-    /// where the pool allows (falls back to `current` only if the pool is a singleton).
-    private func rerolledIcon(from current: PlantIcon) -> PlantIcon {
-        let options = PlantIcon.allCases.filter { $0 != current }
-        return options.randomElement(using: &rng) ?? current
+    /// A random `PlantIcon` drawn from the injected RNG, differing from `avoiding`
+    /// where the pool allows (falls back to any icon when `avoiding` is nil / the pool
+    /// is a singleton).
+    private func randomIcon(avoiding: PlantIcon?) -> PlantIcon {
+        let options = PlantIcon.allCases.filter { $0 != avoiding }
+        return options.randomElement(using: &rng) ?? avoiding ?? PlantIcon.allCases[0]
     }
 
-    /// A random palette index drawn from the injected RNG, differing from `current`
+    /// A random palette index drawn from the injected RNG, differing from `avoiding`
     /// where the pool allows.
-    private func rerolledPaletteIndex(from current: Int) -> Int {
-        let options = PlantTokenPalette.duos.indices.filter { $0 != current }
-        return options.randomElement(using: &rng) ?? current
+    private func randomPaletteIndex(avoiding: Int?) -> Int {
+        let options = PlantTokenPalette.duos.indices.filter { $0 != avoiding }
+        return options.randomElement(using: &rng) ?? avoiding ?? 0
     }
 
     /// Set the icon a still-pending basket entry will be created with (the icon
