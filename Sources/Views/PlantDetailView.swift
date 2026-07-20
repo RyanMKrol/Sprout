@@ -189,10 +189,9 @@ struct PlantDetailView: View {
 
             // Zone 2: Rhythm Band
             RhythmBand(
-                minDays: viewModel.minDays,
-                maxDays: viewModel.maxDays,
-                baseDays: viewModel.baseDays ?? viewModel.minDays,
-                effectiveDays: viewModel.effectiveDays
+                effectiveDays: viewModel.effectiveDays,
+                daysUntilDue: viewModel.daysUntilDue,
+                isOverdue: isOverdue
             )
             .padding(16)
 
@@ -278,6 +277,12 @@ struct PlantDetailView: View {
         if DemoSeed.requestedScreen == "checkin", makeCheckIn != nil {
             checkingIn = true
         }
+    }
+
+    /// Whether the plant is past due — pins the rhythm gauge marker at "Water now".
+    private var isOverdue: Bool {
+        if case .overdue = viewModel.due { return true }
+        return false
     }
 
     /// Maps the (pure) due status to a presentation colour.
