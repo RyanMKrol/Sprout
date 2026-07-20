@@ -81,18 +81,18 @@ final class GuidedWateringCoordinator: ObservableObject, Identifiable {
     var message: String {
         guard let recommendation else { return "" }
         switch recommendation.reason {
-        case .stillWet: return "Skip — the soil's still wet. Check back in \(recommendation.days) days."
-        case .driedEarly: return "Water now — it dried out faster than expected."
-        case .onTargetDry: return "Water now — right on schedule."
-        case .dontDryOut: return "Water now — this one likes to stay moist."
-        case .onTargetMoist: return "A light water — it's on track."
-        case .touchEarly: return "A light top-up — a touch early but fine."
-        case .droopyDry: return "Water now — it's drooping and dry."
-        case .droopyWet: return "Skip — drooping but the soil's wet; let it dry out."
-        case .droopyMoist: return "Hold off — keep an eye on it."
-        case .crispyDry: return "Water now — it's crisping up and dry."
-        case .crispyMoist: return "Water now — crispy leaves even though the soil's damp."
-        case .crispyWet: return "A light water — crispy leaves but the soil's wet."
+        case .stillWet: return "Skip. The soil's still wet. Check back in \(recommendation.days) days."
+        case .driedEarly: return "Water now, it dried out faster than expected."
+        case .onTargetDry: return "Water now, right on schedule."
+        case .dontDryOut: return "Water now, this one likes to stay moist."
+        case .onTargetMoist: return "A light water, it's on track."
+        case .touchEarly: return "A light top-up, a touch early but fine."
+        case .droopyDry: return "Water now, it's drooping and dry."
+        case .droopyWet: return "Skip. Drooping but the soil's wet; let it dry out."
+        case .droopyMoist: return "Hold off, keep an eye on it."
+        case .crispyDry: return "Water now, it's crisping up and dry."
+        case .crispyMoist: return "Water now, crispy leaves even though the soil's damp."
+        case .crispyWet: return "A light water, crispy leaves but the soil's wet."
         }
     }
 

@@ -116,7 +116,7 @@ struct AddRoomView: View {
 
                 Text(
                     "Pick a common room and Sprout fills in typical light and "
-                        + "humidity — fine-tune it later by editing the room."
+                        + "humidity, fine-tune it later by editing the room."
                 )
                     .font(SproutFont.body(12.5))
                     .foregroundStyle(SproutTheme.textHint)
@@ -147,7 +147,7 @@ struct AddRoomView: View {
             VStack(alignment: .leading, spacing: 8) {
                 RoomInfoHeader(
                     title: "Direct Sun",
-                    help: "How much direct sunlight lands on the plants — e.g. an "
+                    help: "How much direct sunlight lands on the plants, e.g. an "
                         + "unobstructed south-facing windowsill. Direct sun dries the "
                         + "soil fastest."
                 )
@@ -163,7 +163,7 @@ struct AddRoomView: View {
                 RoomInfoHeader(
                     title: "Indirect Sun",
                     help: "The ambient daylight in the room with no direct beam on "
-                        + "the leaves — bright rooms away from a window still get "
+                        + "the leaves, bright rooms away from a window still get "
                         + "plenty."
                 )
 

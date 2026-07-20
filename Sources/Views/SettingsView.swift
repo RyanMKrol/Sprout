@@ -87,8 +87,8 @@ struct SettingsView: View {
                         .padding(.horizontal, 20)
 
                         Text(
-                            "Watering reminders arrive at this time on the day a plant is due — " +
-                            "pick a window you're usually home."
+                            "Watering reminders arrive at this time on the day a plant is due. " +
+                            "Pick a window you're usually home."
                         )
                             .font(SproutFont.body(13))
                             .foregroundStyle(SproutTheme.textHint)

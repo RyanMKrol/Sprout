@@ -321,7 +321,7 @@ struct RoomEditorView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         RoomInfoHeader(
                             title: "Direct Sun",
-                            help: "How much direct sunlight lands on the plants — e.g. an "
+                            help: "How much direct sunlight lands on the plants, e.g. an "
                                 + "unobstructed south-facing windowsill. Direct sun dries the soil fastest."
                         )
 
@@ -336,7 +336,7 @@ struct RoomEditorView: View {
                         RoomInfoHeader(
                             title: "Indirect Sun",
                             help: "The ambient daylight in the room with no direct beam on the "
-                                + "leaves — bright rooms away from a window still get plenty."
+                                + "leaves, bright rooms away from a window still get plenty."
                         )
 
                         SproutSegmentedPicker(

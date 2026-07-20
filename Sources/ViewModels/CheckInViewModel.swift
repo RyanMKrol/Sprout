@@ -59,29 +59,29 @@ final class CheckInViewModel: ObservableObject {
         var message: String {
             switch recommendation.reason {
             case .stillWet:
-                return "Skip — the soil's still wet. Check back in \(recommendation.days) days."
+                return "Skip. The soil's still wet. Check back in \(recommendation.days) days."
             case .driedEarly:
-                return "Water now — it dried out faster than expected."
+                return "Water now, it dried out faster than expected."
             case .onTargetDry:
-                return "Water now — right on schedule."
+                return "Water now, right on schedule."
             case .dontDryOut:
-                return "Water now — let's not let it dry out next time."
+                return "Water now, let's not let it dry out next time."
             case .onTargetMoist:
-                return "Water lightly — right on schedule."
+                return "Water lightly, right on schedule."
             case .touchEarly:
                 return "A touch early, but fine to top up."
             case .droopyDry:
-                return "Water now — the leaves are drooping."
+                return "Water now, the leaves are drooping."
             case .droopyWet:
-                return "Leaves droop but the soil's wet — let it dry out; it may be overwatered."
+                return "Leaves droop but the soil's wet, let it dry out; it may be overwatered."
             case .droopyMoist:
-                return "Keep an eye on it — check back in \(recommendation.days) days."
+                return "Keep an eye on it, check back in \(recommendation.days) days."
             case .crispyDry:
-                return "Water now — the leaves are crisping up."
+                return "Water now, the leaves are crisping up."
             case .crispyMoist:
-                return "Water now — crispy leaves even though the soil's damp."
+                return "Water now, crispy leaves even though the soil's damp."
             case .crispyWet:
-                return "A light water — crispy leaves but the soil's wet."
+                return "A light water, crispy leaves but the soil's wet."
             }
         }
     }

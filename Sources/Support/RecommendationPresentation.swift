@@ -48,19 +48,19 @@ struct RecommendationPresentation: Equatable {
         let headline: String
         switch reason {
         case .onTargetDry:
-            headline = "Water now — right on schedule."
+            headline = "Water now, right on schedule."
         case .driedEarly:
-            headline = "Water now — it dried out faster than expected."
+            headline = "Water now, it dried out faster than expected."
         case .dontDryOut:
-            headline = "Water now — let's not let it dry out next time."
+            headline = "Water now, let's not let it dry out next time."
         case .droopyDry:
-            headline = "Water now — the leaves are drooping."
+            headline = "Water now, the leaves are drooping."
         case .crispyDry:
-            headline = "Water now — the leaves are crisping up."
+            headline = "Water now, the leaves are crisping up."
         case .crispyMoist:
-            headline = "Water now — crispy leaves even though the soil's damp."
+            headline = "Water now, crispy leaves even though the soil's damp."
         default:
-            headline = "Water now — the soil's dry."
+            headline = "Water now, the soil's dry."
         }
 
         return RecommendationPresentation(
@@ -80,13 +80,13 @@ struct RecommendationPresentation: Equatable {
         let headline: String
         switch reason {
         case .onTargetMoist:
-            headline = "Water lightly — the soil's moist."
+            headline = "Water lightly, the soil's moist."
         case .touchEarly:
-            headline = "Water lightly — a touch early, but fine to top up."
+            headline = "Water lightly, a touch early, but fine to top up."
         case .crispyWet:
-            headline = "Water lightly — the leaves are crisping despite wet soil."
+            headline = "Water lightly, the leaves are crisping despite wet soil."
         default:
-            headline = "Water lightly — the soil isn't fully dry yet."
+            headline = "Water lightly, the soil isn't fully dry yet."
         }
 
         return RecommendationPresentation(
@@ -108,11 +108,11 @@ struct RecommendationPresentation: Equatable {
         let headline: String
         switch reason {
         case .stillWet:
-            headline = "Skip today — the soil's still wet. Back in about \(days) days."
+            headline = "Skip today. The soil's still wet. Back in about \(days) days."
         case .droopyWet:
-            headline = "All set — the soil's wet. Back in about \(days) days."
+            headline = "All set. The soil's wet. Back in about \(days) days."
         default:
-            headline = "Skip today — the soil's still wet. Back in about \(days) days."
+            headline = "Skip today. The soil's still wet. Back in about \(days) days."
         }
 
         return RecommendationPresentation(
@@ -134,9 +134,9 @@ struct RecommendationPresentation: Equatable {
         let headline: String
         switch reason {
         case .droopyMoist:
-            headline = "Hold off — droopy leaves but damp soil. Check again tomorrow."
+            headline = "Hold off. Droopy leaves but damp soil. Check again tomorrow."
         default:
-            headline = "Nothing to do — looking fine. Check again soon."
+            headline = "Nothing to do. Looking fine. Check again soon."
         }
 
         return RecommendationPresentation(

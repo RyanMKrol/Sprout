@@ -125,7 +125,7 @@ struct AddFlowView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Body copy
-                    Text("First pick the room these plants live in — its light and humidity set how often they're watered.")
+                    Text("First pick the room these plants live in. Its light and humidity set how often they're watered.")
                         .font(SproutFont.body(14))
                         .foregroundStyle(SproutTheme.textMuted)
                         .padding(.horizontal, 20)
@@ -201,7 +201,7 @@ struct AddFlowView: View {
                         .buttonStyle(SproutGhostButtonStyle())
                         .padding(.horizontal, 20)
 
-                        Button("Skip — no room for now") {
+                        Button("Skip, no room for now") {
                             viewModel.chooseRoom(nil)
                         }
                         .font(SproutFont.body(15, weight: .medium))

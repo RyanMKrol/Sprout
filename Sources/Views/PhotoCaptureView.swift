@@ -162,7 +162,7 @@ struct PhotoCaptureView: View {
                             .delay(0),
                         value: showSuccess
                     )
-                Text("Saved — next plant")
+                Text("Saved, next plant")
                     .font(SproutFont.display(18))
                     .foregroundStyle(.white)
             }
