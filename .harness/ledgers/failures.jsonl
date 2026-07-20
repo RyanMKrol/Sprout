@@ -16,3 +16,4 @@
 {"id":"T044","ts":"2026-07-17T22:56:39Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"style","risk":[]},"detail":"Sources/Info.plist"}
 {"id":"T045","ts":"2026-07-18T09:35:56Z","kind":"scope-creep","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":"Sources/Info.plist"}
 {"id":"T048","ts":"2026-07-18T10:09:33Z","kind":"audit-fail","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"style","risk":[]},"detail":""}
+{"id":"T030","ts":"2026-07-20T01:14:28Z","kind":"ci-indeterminate","rung":0,"attempt":0,"model":"claude-haiku-4-5","effort":"","facets":{"layer":"views","workType":"feature","risk":[]},"detail":"CI produced no definitive result (cancelled/skipped/no-run)"}

@@ -810,7 +810,7 @@
     {
       "id": "T030",
       "title": "Edit Room sheet restyle + delete row",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T009",
         "T010",
