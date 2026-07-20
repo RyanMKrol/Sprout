@@ -33,7 +33,9 @@ struct LaunchSplashView: View {
 
                             // Seedling icon (58pt in cream)
                             ChromeIcon.seedling.image
-                                .font(.system(size: 58))
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 58, height: 58)
                                 .foregroundColor(SproutTheme.cream)
                         }
                         .frame(width: 114, height: 114)

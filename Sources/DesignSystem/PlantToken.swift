@@ -72,12 +72,19 @@ struct PlantToken: View {
                 )
                 .clipShape(Circle())
 
+                // `icon.image` is an asset-catalog template image, NOT an SF Symbol,
+                // so `.font(.system(size:))` does not size it — it would render at the
+                // asset's native size and spill out over the surrounding UI. Size it
+                // with `.resizable()` + an explicit frame (mirrors HomePlantAvatar).
                 icon.image
-                    .font(.system(size: size * 0.45))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size * 0.45, height: size * 0.45)
                     .foregroundStyle(.white)
             }
         }
         .frame(width: size, height: size)
+        .clipShape(Circle())
         .shadow(color: duo.dark.opacity(0.28), radius: 5, y: 2)
     }
 }
