@@ -25,7 +25,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 1.0)
         XCTAssertEqual(presentation.tint, Color(hex: 0x2F6B4C))
-        XCTAssertEqual(presentation.headline, "Water now — right on schedule.")
+        XCTAssertEqual(presentation.headline, "Water now, right on schedule.")
     }
 
     func testWaterNowDriedEarly() {
@@ -45,7 +45,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 1.0)
         XCTAssertEqual(presentation.tint, Color(hex: 0x2F6B4C))
-        XCTAssertEqual(presentation.headline, "Water now — it dried out faster than expected.")
+        XCTAssertEqual(presentation.headline, "Water now, it dried out faster than expected.")
     }
 
     func testWaterNowDontDryOut() {
@@ -64,7 +64,7 @@ final class RecommendationPresentationTests: XCTestCase {
 
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 1.0)
-        XCTAssertEqual(presentation.headline, "Water now — let's not let it dry out next time.")
+        XCTAssertEqual(presentation.headline, "Water now, let's not let it dry out next time.")
     }
 
     func testWaterNowDroopyDry() {
@@ -83,7 +83,7 @@ final class RecommendationPresentationTests: XCTestCase {
 
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 1.0)
-        XCTAssertEqual(presentation.headline, "Water now — the leaves are drooping.")
+        XCTAssertEqual(presentation.headline, "Water now, the leaves are drooping.")
     }
 
     // MARK: Water lightly cases
@@ -105,7 +105,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 0.8)
         XCTAssertEqual(presentation.tint, Color(hex: 0x5FB4A2))
-        XCTAssertEqual(presentation.headline, "Water lightly — the soil's moist.")
+        XCTAssertEqual(presentation.headline, "Water lightly, the soil's moist.")
     }
 
     func testWaterLightlyTouchEarly() {
@@ -125,7 +125,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .droplet)
         XCTAssertEqual(presentation.iconScale, 0.8)
         XCTAssertEqual(presentation.tint, Color(hex: 0x5FB4A2))
-        XCTAssertEqual(presentation.headline, "Water lightly — a touch early, but fine to top up.")
+        XCTAssertEqual(presentation.headline, "Water lightly, a touch early, but fine to top up.")
     }
 
     // MARK: Skip cases
@@ -147,7 +147,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .circleCheck)
         XCTAssertEqual(presentation.iconScale, 1.0)
         XCTAssertEqual(presentation.tint, Color(hex: 0xB4832F))
-        XCTAssertEqual(presentation.headline, "Skip today — the soil's still wet. Back in about 3 days.")
+        XCTAssertEqual(presentation.headline, "Skip today. The soil's still wet. Back in about 3 days.")
     }
 
     func testSkipDroopyWet() {
@@ -167,7 +167,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .circleCheck)
         XCTAssertEqual(presentation.iconScale, 1.0)
         XCTAssertEqual(presentation.tint, Color(hex: 0xB4832F))
-        XCTAssertEqual(presentation.headline, "All set — the soil's wet. Back in about 4 days.")
+        XCTAssertEqual(presentation.headline, "All set. The soil's wet. Back in about 4 days.")
     }
 
     // MARK: Monitor cases
@@ -189,7 +189,7 @@ final class RecommendationPresentationTests: XCTestCase {
         XCTAssertEqual(presentation.icon, .circleInfo)
         XCTAssertEqual(presentation.iconScale, 1.0)
         XCTAssertEqual(presentation.tint, Color(hex: 0x7C8173))
-        XCTAssertEqual(presentation.headline, "Hold off — droopy leaves but damp soil. Check again tomorrow.")
+        XCTAssertEqual(presentation.headline, "Hold off. Droopy leaves but damp soil. Check again tomorrow.")
     }
 
     // MARK: All cases covered
@@ -249,10 +249,6 @@ final class RecommendationPresentationTests: XCTestCase {
             XCTAssertNotNil(presentation.headline)
             XCTAssertFalse(presentation.headline.isEmpty)
             XCTAssert(presentation.headline.hasSuffix("."), "Headline must end with period")
-            XCTAssert(
-                presentation.headline.contains(" — "),
-                "Headline must contain ' — ' separator"
-            )
         }
     }
 

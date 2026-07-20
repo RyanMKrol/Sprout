@@ -48,7 +48,7 @@ final class PhotoCaptureCoordinatorTests: XCTestCase {
 
     func testBannerNamesCurrentPlant() {
         let c = makeCoordinator()
-        XCTAssertEqual(c.bannerText, "Now photographing Violet — Pothos")
+        XCTAssertEqual(c.bannerText, "Now photographing Violet, Pothos")
         XCTAssertEqual(c.progressText, "1 of 3")
     }
 

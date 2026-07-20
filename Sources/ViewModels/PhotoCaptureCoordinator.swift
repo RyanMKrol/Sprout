@@ -64,7 +64,7 @@ final class PhotoCaptureCoordinator: ObservableObject, Identifiable {
     /// Overlay banner naming the current plant.
     var bannerText: String {
         guard let current else { return "" }
-        return "Now photographing \(current.nickname) — \(current.species)"
+        return "Now photographing \(current.nickname), \(current.species)"
     }
 
     /// Progress label, e.g. "2 of 5".

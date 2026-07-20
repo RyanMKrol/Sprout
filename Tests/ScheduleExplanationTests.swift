@@ -29,7 +29,7 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.baseDays, 6)
         XCTAssertEqual(e.direction, .unchanged)
         XCTAssertEqual(e.cause, .startingCadence)
-        XCTAssertEqual(e.sentence, "Every 6 days — the starting cadence for Peace Lily.")
+        XCTAssertEqual(e.sentence, "Every 6 days, the starting cadence for Peace Lily.")
         XCTAssertEqual(e.pillSummary, "Every 6d")
     }
 
@@ -42,7 +42,7 @@ final class ScheduleExplanationTests: XCTestCase {
         )
         XCTAssertEqual(e.direction, .unchanged)
         XCTAssertEqual(e.cause, .settled)
-        XCTAssertEqual(e.sentence, "Every 6 days — settled back to its usual cadence.")
+        XCTAssertEqual(e.sentence, "Every 6 days, settled back to its usual cadence.")
     }
 
     func testShortenedDriedOut() {
@@ -56,7 +56,7 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.effectiveDays, 4)
         XCTAssertEqual(e.direction, .shortened)
         XCTAssertEqual(e.cause, .driedOut)
-        XCTAssertEqual(e.sentence, "Every 4 days — shortened from 6 because it dried out faster than expected.")
+        XCTAssertEqual(e.sentence, "Every 4 days, shortened from 6 because it dried out faster than expected.")
         XCTAssertEqual(e.pillSummary, "Every 4d · shortened")
     }
 
@@ -71,7 +71,7 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.effectiveDays, 9)
         XCTAssertEqual(e.direction, .lengthened)
         XCTAssertEqual(e.cause, .stayedWet)
-        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because the soil was still wet last time.")
+        XCTAssertEqual(e.sentence, "Every 9 days, stretched from 6 because the soil was still wet last time.")
         XCTAssertEqual(e.pillSummary, "Every 9d · stretched")
     }
 
@@ -83,7 +83,7 @@ final class ScheduleExplanationTests: XCTestCase {
             lastCheckIn: checkIn(soil: .moist, leaves: .fine)
         )
         XCTAssertEqual(e.cause, .stillMoist)
-        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because the soil was still moist last time.")
+        XCTAssertEqual(e.sentence, "Every 9 days, stretched from 6 because the soil was still moist last time.")
     }
 
     func testDroopingShortens() {
@@ -95,7 +95,7 @@ final class ScheduleExplanationTests: XCTestCase {
         )
         XCTAssertEqual(e.cause, .drooping)
         XCTAssertEqual(e.direction, .shortened)
-        XCTAssertEqual(e.sentence, "Every 5 days — shortened from 6 because its leaves were drooping.")
+        XCTAssertEqual(e.sentence, "Every 5 days, shortened from 6 because its leaves were drooping.")
     }
 
     func testOverwateredLengthens() {
@@ -106,7 +106,7 @@ final class ScheduleExplanationTests: XCTestCase {
             lastCheckIn: checkIn(soil: .wet, leaves: .droopy)
         )
         XCTAssertEqual(e.cause, .overwatered)
-        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because it looked overwatered.")
+        XCTAssertEqual(e.sentence, "Every 9 days, stretched from 6 because it looked overwatered.")
     }
 
     // MARK: room environment factor (T212 — replaces the weather hook)
@@ -123,7 +123,7 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.effectiveDays, 4) // round(6 × 0.5) = 3 → clamped to min 4
         XCTAssertEqual(e.direction, .shortened)
         XCTAssertEqual(e.cause, .driesFaster)
-        XCTAssertEqual(e.sentence, "Every 4 days — shortened from 6 because its spot dries out faster than average.")
+        XCTAssertEqual(e.sentence, "Every 4 days, shortened from 6 because its spot dries out faster than average.")
     }
 
     func testLowLightHumidRoomLengthens() {
@@ -137,7 +137,7 @@ final class ScheduleExplanationTests: XCTestCase {
         XCTAssertEqual(e.effectiveDays, 9)
         XCTAssertEqual(e.direction, .lengthened)
         XCTAssertEqual(e.cause, .driesSlower)
-        XCTAssertEqual(e.sentence, "Every 9 days — stretched from 6 because its spot dries out more slowly than average.")
+        XCTAssertEqual(e.sentence, "Every 9 days, stretched from 6 because its spot dries out more slowly than average.")
     }
 
     func testCheckInDrivenAdjTakesPrecedenceOverRoom() {
@@ -170,6 +170,6 @@ final class ScheduleExplanationTests: XCTestCase {
     func testSingularDayWording() {
         let oneDay = CareProfile(species: "Thirsty", baseIntervalDays: 1, minIntervalDays: 1, maxIntervalDays: 3, moisture: .staysMoist)
         let e = builder.explanation(species: "Thirsty", profile: oneDay, adj: 1.0, lastCheckIn: nil)
-        XCTAssertEqual(e.sentence, "Every 1 day — the starting cadence for Thirsty.")
+        XCTAssertEqual(e.sentence, "Every 1 day, the starting cadence for Thirsty.")
     }
 }

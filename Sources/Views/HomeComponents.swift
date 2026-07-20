@@ -112,7 +112,7 @@ struct HomeHeroCard: View {
     private var emptyCard: some View {
         HeroCard(watermark: .seedling, watermarkPosition: .bottomTrailing) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Your garden's\nempty — for now.")
+                Text("Your garden's\nempty, for now.")
                     .font(SproutFont.display(24, weight: .bold))
                     .foregroundStyle(Color.white)
 

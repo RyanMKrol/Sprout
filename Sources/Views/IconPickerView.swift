@@ -115,7 +115,7 @@ struct IconPickerView: View {
                 Divider()
                     .padding(.bottom, 16)
 
-                Text("Set the look now — you can change it anytime from the plant's page.")
+                Text("Set the look now. You can change it anytime from the plant's page.")
                     .font(SproutFont.body(12.5))
                     .foregroundStyle(SproutTheme.textHint)
                     .lineLimit(3)

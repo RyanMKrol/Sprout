@@ -12,11 +12,11 @@ enum RoomImpactCopy {
     static func impactLine(factor: Double) -> String {
         let percent = Int((abs(1 - factor) * 100).rounded())
         if percent == 0 {
-            return "Balanced light and humidity — no adjustment to watering here."
+            return "Balanced light and humidity, no adjustment to watering here."
         }
         if factor < 1 {
-            return "Bright light dries soil faster — plants here are watered about \(percent)% more often."
+            return "Bright light dries soil faster, plants here are watered about \(percent)% more often."
         }
-        return "Low light holds moisture longer — plants here are watered about \(percent)% less often."
+        return "Low light holds moisture longer, plants here are watered about \(percent)% less often."
     }
 }

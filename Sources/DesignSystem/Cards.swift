@@ -300,7 +300,7 @@ struct SproutFAB: View {
         // Info Banner
         InfoBanner(
             icon: .arrowTrendUp,
-            text: "Bright light dries soil faster — plants here are watered about 20% more often."
+            text: "Bright light dries soil faster, plants here are watered about 20% more often."
         )
 
         // Toolbar Buttons

@@ -151,7 +151,7 @@ struct GuidedWateringView: View {
                     .buttonStyle(SproutPrimaryButtonStyle())
 
                     Button(action: { coordinator.confirm(watered: false) }) {
-                        Text("Didn't water — next")
+                        Text("Didn't water, next")
                     }
                     .font(SproutFont.body(17, weight: .semibold))
                     .foregroundStyle(SproutTheme.brandGreen)

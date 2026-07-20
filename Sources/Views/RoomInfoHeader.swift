@@ -20,7 +20,7 @@ struct RoomInfoHeader: View {
                     .frame(width: 14, height: 14)
             }
             .buttonStyle(.borderless)
-            .accessibilityLabel("\(title) — what's this?")
+            .accessibilityLabel("\(title), what's this?")
             .popover(isPresented: $showing) {
                 Text(help)
                     .font(.callout)

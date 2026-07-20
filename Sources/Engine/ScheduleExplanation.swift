@@ -63,15 +63,15 @@ struct ScheduleExplanation: Equatable, Sendable {
         case .unchanged:
             switch cause {
             case .startingCadence:
-                return "\(every) — the starting cadence for \(species)."
+                return "\(every), the starting cadence for \(species)."
             case .settled:
-                return "\(every) — settled back to its usual cadence."
+                return "\(every), settled back to its usual cadence."
             default:
-                return "\(every) — holding at \(species)'s usual cadence."
+                return "\(every), holding at \(species)'s usual cadence."
             }
         case .shortened, .lengthened:
             let verb = direction == .shortened ? "shortened" : "stretched"
-            return "\(every) — \(verb) from \(baseDays) because \(causeClause)."
+            return "\(every), \(verb) from \(baseDays) because \(causeClause)."
         }
     }
 

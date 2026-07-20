@@ -96,7 +96,7 @@ struct HomeView: View {
                             CircularToolbarButton(icon: .bellSlash, tint: SproutTheme.warningTerracotta) {
                                 Task { await gatekeeper.enable() }
                             }
-                            .accessibilityLabel("Notifications are off — tap to enable")
+                            .accessibilityLabel("Notifications are off, tap to enable")
                         }
                         CircularToolbarButton(icon: .gear, tint: HomeView.gearTint) {
                             settingsPresented = true
@@ -390,7 +390,7 @@ enum HomeTileText {
     /// The friendly, status-aware greeting line shown above the tiles.
     static func statusLine(dueCount: Int, total: Int) -> String {
         if total == 0 { return "Let's add your first plant 🌱" }
-        if dueCount == 0 { return "Everything's watered — nice work 🌿" }
+        if dueCount == 0 { return "Everything's watered, nice work 🌿" }
         return "\(dueCount) \(dueCount == 1 ? "plant needs" : "plants need") water today 💧"
     }
 }
