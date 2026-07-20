@@ -1645,7 +1645,7 @@
     {
       "id": "T059",
       "title": "Shuffle button rerolls token colour + glyph too (not just the nickname)",
-      "status": "blocked",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [

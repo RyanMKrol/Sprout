@@ -27,8 +27,19 @@ struct PlantTokenPalette {
     static let duos: [Duo] = [green, purple, blue, gold, teal, pink]
 
     static func duo(for id: UUID) -> Duo {
+        duos[indexOfDuo(for: id)]
+    }
+
+    /// Stable index into `duos` derived from a UUID — the hash `duo(for:)` uses, so
+    /// a token's initial colour is unchanged until it's explicitly rerolled.
+    static func indexOfDuo(for id: UUID) -> Int {
         let sum = id.uuidString.unicodeScalars.reduce(0) { $0 + Int($1.value) }
-        return duos[sum % duos.count]
+        return sum % duos.count
+    }
+
+    /// The duo at a stored palette index, wrapping defensively so any Int is valid.
+    static func duo(atIndex index: Int) -> Duo {
+        duos[((index % duos.count) + duos.count) % duos.count]
     }
 }
 

@@ -310,7 +310,7 @@ struct AddFlowView: View {
             Button {
                 editingIconEntry = entry
             } label: {
-                FixedGlyphPlantToken(icon: entry.icon, duo: PlantTokenPalette.duo(for: entry.id), size: 34)
+                FixedGlyphPlantToken(icon: entry.icon, duo: entry.duo, size: 34)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Change icon for \(entry.nickname)")
@@ -336,7 +336,7 @@ struct AddFlowView: View {
                     .frame(width: 15, height: 15)
                     .foregroundStyle(SproutTheme.brandGreen)
             }
-            .accessibilityLabel("New random name")
+            .accessibilityLabel("Shuffle name, icon and colour")
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)

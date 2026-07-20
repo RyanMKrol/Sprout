@@ -35,13 +35,20 @@ final class BasketAddViewModel: ObservableObject {
         var species: String
         var nickname: String
         var icon: PlantIcon
+        /// Index into `PlantTokenPalette.duos` for this entry's token colour. Starts
+        /// derived from `id` (a stable first render) and is rerolled by `reroll`.
+        var paletteIndex: Int
 
         init(id: UUID = UUID(), species: String, nickname: String, icon: PlantIcon? = nil) {
             self.id = id
             self.species = species
             self.nickname = nickname
             self.icon = icon ?? PlantIcon.default(forSpecies: species)
+            self.paletteIndex = PlantTokenPalette.indexOfDuo(for: id)
         }
+
+        /// This entry's token colour, resolved from its stored `paletteIndex`.
+        var duo: PlantTokenPalette.Duo { PlantTokenPalette.duo(atIndex: paletteIndex) }
     }
 
     /// The two ordered stages of the **room-first** add flow (T221): first choose or
@@ -66,6 +73,11 @@ final class BasketAddViewModel: ObservableObject {
     private let repository: PlantRepository
     private let careDatabase: CareDatabase
     private var nicknameProvider: RandomNicknameProvider<AnyRandomNumberGenerator>
+    /// The view model's own handle on the injected generator, used by `reroll` to
+    /// pick a random icon + palette colour. Seeded from the SAME injected `rng` as
+    /// the nickname provider (not a fresh `SystemRandomNumberGenerator`), so a
+    /// fixed-seed run stays fully deterministic in tests and DemoSeed.
+    private var rng: AnyRandomNumberGenerator
     private let schedule = ScheduleEngine()
 
     init(
@@ -75,7 +87,9 @@ final class BasketAddViewModel: ObservableObject {
     ) {
         self.repository = repository
         self.careDatabase = careDatabase
-        self.nicknameProvider = RandomNicknameProvider(rng: AnyRandomNumberGenerator(rng))
+        let anyRng = AnyRandomNumberGenerator(rng)
+        self.nicknameProvider = RandomNicknameProvider(rng: anyRng)
+        self.rng = anyRng
     }
 
     /// Load the rooms available for assignment (call on appear).
@@ -142,12 +156,32 @@ final class BasketAddViewModel: ObservableObject {
         basket[i].nickname = newName
     }
 
-    /// Reassign a fresh unique random name to an entry. The current name stays in
-    /// the avoided set (it's still in the basket), so the reroll yields a *different*
-    /// name while the pool has room.
+    /// Reroll an entry's name **and** its look — a fresh unique random nickname, a new
+    /// token glyph, and a new token colour — in one tap, all drawn from the injected
+    /// seedable RNG. The current name stays in the avoided set (it's still in the
+    /// basket), so the reroll yields a *different* name while the pool has room; the
+    /// icon and colour likewise differ from their current value where the pool allows.
+    /// The rerolled colour is basket-preview-only (it is not persisted onto the
+    /// created plant — see T059).
     func reroll(_ entry: Entry) {
         guard let i = basket.firstIndex(where: { $0.id == entry.id }) else { return }
         basket[i].nickname = nicknameProvider.next(avoiding: takenNames())
+        basket[i].icon = rerolledIcon(from: basket[i].icon)
+        basket[i].paletteIndex = rerolledPaletteIndex(from: basket[i].paletteIndex)
+    }
+
+    /// A random `PlantIcon` drawn from the injected RNG, differing from `current`
+    /// where the pool allows (falls back to `current` only if the pool is a singleton).
+    private func rerolledIcon(from current: PlantIcon) -> PlantIcon {
+        let options = PlantIcon.allCases.filter { $0 != current }
+        return options.randomElement(using: &rng) ?? current
+    }
+
+    /// A random palette index drawn from the injected RNG, differing from `current`
+    /// where the pool allows.
+    private func rerolledPaletteIndex(from current: Int) -> Int {
+        let options = PlantTokenPalette.duos.indices.filter { $0 != current }
+        return options.randomElement(using: &rng) ?? current
     }
 
     /// Set the icon a still-pending basket entry will be created with (the icon
