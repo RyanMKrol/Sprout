@@ -123,10 +123,17 @@ final class BasketAddViewModelTests: XCTestCase {
 
     // MARK: icon (T023 — icon picker on a pending basket entry)
 
-    func testAddAssignsTheSpeciesDefaultIcon() {
-        let vm = makeVM()
-        vm.add(profile("Snake Plant"))
-        XCTAssertEqual(vm.basket[0].icon, PlantIcon.default(forSpecies: "Snake Plant"))
+    func testAddAssignsARandomColourAndGlyph() {
+        let vm = makeVM(seed: 7)
+        vm.add(profile("Pothos"))
+        vm.add(profile("Pothos"))
+
+        // Colour + glyph come from the pools (not a fixed species default or an id
+        // hash), and consecutive adds differ — pseudo-random with no adjacent repeats.
+        XCTAssertTrue(PlantIcon.allCases.contains(vm.basket[0].icon))
+        XCTAssertTrue(PlantTokenPalette.duos.indices.contains(vm.basket[0].paletteIndex))
+        XCTAssertNotEqual(vm.basket[0].icon, vm.basket[1].icon)
+        XCTAssertNotEqual(vm.basket[0].paletteIndex, vm.basket[1].paletteIndex)
     }
 
     func testUpdateIconChangesThePendingEntrysIcon() {
