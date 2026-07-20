@@ -95,11 +95,15 @@ struct PlantDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $editingPlant) {
+        .sheet(isPresented: $editingPlant, onDismiss: {
+            // Reload after the edit sheet closes; if the plant was deleted from the
+            // edit form, pop back to the list instead of showing "Plant unavailable".
+            viewModel.load()
+            if viewModel.loadFailed { dismiss() }
+        }) {
             if let makeEditor {
                 PlantEditView(viewModel: makeEditor(.edit(plantID: viewModel.plantID))) {
                     editingPlant = false
-                    viewModel.load()
                 }
             }
         }

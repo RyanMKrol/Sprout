@@ -106,18 +106,23 @@ struct AddFlowView: View {
                     .padding(.top, 12)
             }
 
-            // Header with Cancel on right
-            HStack(spacing: 16) {
-                Spacer()
-                Text("Where do they\nlive?")
-                    .font(SproutFont.display(28))
+            // Header: full-width centred title with Cancel overlaid on the right, so
+            // the title uses the whole width and stays on one line.
+            ZStack(alignment: .center) {
+                Text("Where do they live?")
+                    .font(SproutFont.display(24))
                     .foregroundStyle(SproutTheme.ink)
-                    .lineLimit(2)
+                    .frame(maxWidth: .infinity)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                     .multilineTextAlignment(.center)
-                Spacer()
-                Button("Cancel") { onFinish(.cancelled) }
-                    .font(SproutFont.body(17))
-                    .foregroundStyle(SproutTheme.brandGreen)
+
+                HStack {
+                    Spacer()
+                    Button("Cancel") { onFinish(.cancelled) }
+                        .font(SproutFont.body(17))
+                        .foregroundStyle(SproutTheme.brandGreen)
+                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
