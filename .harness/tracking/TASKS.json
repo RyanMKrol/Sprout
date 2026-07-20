@@ -1617,7 +1617,7 @@
     {
       "id": "T058",
       "title": "Add Room: show editable sun/humidity levers on preset rooms",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
