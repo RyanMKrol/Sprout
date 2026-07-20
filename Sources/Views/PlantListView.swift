@@ -25,6 +25,7 @@ struct PlantListView: View {
     /// Builds the check-in view model for a plant (T011), threaded through to the
     /// detail screen's "Check in" affordance. When `nil`, detail hides check-in.
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
+    @Environment(\.dismiss) private var dismiss
     @State private var editorMode: PlantEditViewModel.Mode?
     @State private var basketPresented = false
     @State private var didDeepLink = false
@@ -65,7 +66,7 @@ struct PlantListView: View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
                 Button {
-                    /* dismiss or navigate back */
+                    dismiss()
                 } label: {
                     HStack(spacing: 4) {
                         ChromeIcon.chevronLeft.image
@@ -119,6 +120,7 @@ struct PlantListView: View {
             .background(SproutTheme.paper)
         }
         .background(SproutTheme.paper)
+        .navigationBarBackButtonHidden(true)
         .navigationDestination(for: UUID.self) { plantID in
             if let makeDetail {
                 PlantDetailView(

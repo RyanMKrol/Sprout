@@ -27,6 +27,7 @@ struct PlantDetailView: View {
     /// Builds the check-in view model (T011) for this plant. When `nil`, the
     /// "Check in" affordance is hidden — keeps the detail screen usable on its own.
     private let makeCheckIn: ((UUID) -> CheckInViewModel)?
+    @Environment(\.dismiss) private var dismiss
     @State private var checkingIn = false
     @State private var editingPlant = false
     @State private var editingSchedule = false
@@ -67,12 +68,15 @@ struct PlantDetailView: View {
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Label("Plants", systemImage: "chevron.left")
-                    .labelStyle(.iconOnly)
-                    .foregroundStyle(SproutTheme.brandGreen)
-                    .font(.system(size: 17, weight: .semibold))
+                Button { dismiss() } label: {
+                    Label("Plants", systemImage: "chevron.left").labelStyle(.iconOnly)
+                }
+                .foregroundStyle(SproutTheme.brandGreen)
+                .font(.system(size: 17, weight: .semibold))
+                .accessibilityLabel("Plants")
             }
             if makeEditor != nil, !viewModel.loadFailed {
                 ToolbarItem(placement: .primaryAction) {
