@@ -11,6 +11,9 @@ enum SoilMoisture: String, Codable, CaseIterable, Equatable, Sendable {
 /// A quick, measurable read of the leaves at check-in time. We deliberately do
 /// **not** model abstract "plant health" — only this observable state.
 enum LeafState: String, Codable, CaseIterable, Equatable, Sendable {
+    /// Dry / dehydrated leaves — under-watered, distinct from `droopy`. Ordered
+    /// first so `allCases` matches the on-screen order (Crispy, Fine, Droopy).
+    case crispy
     case fine
     case droopy
 }

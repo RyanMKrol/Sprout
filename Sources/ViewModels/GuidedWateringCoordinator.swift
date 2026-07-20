@@ -90,6 +90,9 @@ final class GuidedWateringCoordinator: ObservableObject, Identifiable {
         case .droopyDry: return "Water now — it's drooping and dry."
         case .droopyWet: return "Skip — drooping but the soil's wet; let it dry out."
         case .droopyMoist: return "Hold off — keep an eye on it."
+        case .crispyDry: return "Water now — it's crisping up and dry."
+        case .crispyMoist: return "Water now — crispy leaves even though the soil's damp."
+        case .crispyWet: return "A light water — crispy leaves but the soil's wet."
         }
     }
 

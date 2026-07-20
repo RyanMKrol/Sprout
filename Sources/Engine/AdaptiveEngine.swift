@@ -55,6 +55,12 @@ struct WateringRecommendation: Equatable, Sendable {
         case droopyWet
         /// Droopy + moist — keep an eye on it.
         case droopyMoist
+        /// Crispy + dry — dehydrated and dry; water now and shorten hard.
+        case crispyDry
+        /// Crispy + moist — dehydrated despite damp soil; still water now and shorten.
+        case crispyMoist
+        /// Crispy + wet — crisping despite wet soil; water lightly, mild shorten.
+        case crispyWet
     }
 
     var action: Action
@@ -207,6 +213,16 @@ struct AdaptiveEngine {
             case .dry:   return (0.80, .waterNow, .droopyDry)
             case .wet:   return (1.20, .skip, .droopyWet)
             case .moist: return (0.95, .monitor, .droopyMoist)
+            }
+        }
+
+        // Crispy leaves signal dehydration — water more urgently than droopy
+        // (shorten harder), keyed purely on the soil read.
+        if leaves == .crispy {
+            switch soil {
+            case .dry:   return (0.75, .waterNow, .crispyDry)
+            case .moist: return (0.85, .waterNow, .crispyMoist)
+            case .wet:   return (0.95, .waterLightly, .crispyWet)
             }
         }
 

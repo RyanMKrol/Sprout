@@ -55,6 +55,10 @@ struct RecommendationPresentation: Equatable {
             headline = "Water now — let's not let it dry out next time."
         case .droopyDry:
             headline = "Water now — the leaves are drooping."
+        case .crispyDry:
+            headline = "Water now — the leaves are crisping up."
+        case .crispyMoist:
+            headline = "Water now — crispy leaves even though the soil's damp."
         default:
             headline = "Water now — the soil's dry."
         }
@@ -79,6 +83,8 @@ struct RecommendationPresentation: Equatable {
             headline = "Water lightly — the soil's moist."
         case .touchEarly:
             headline = "Water lightly — a touch early, but fine to top up."
+        case .crispyWet:
+            headline = "Water lightly — the leaves are crisping despite wet soil."
         default:
             headline = "Water lightly — the soil isn't fully dry yet."
         }

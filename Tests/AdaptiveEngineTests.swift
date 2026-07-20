@@ -179,6 +179,51 @@ final class AdaptiveEngineTests: XCTestCase {
         XCTAssertEqual(r.newAdj, 1.20, accuracy: 1e-9)
     }
 
+    // MARK: - Decision table — crispy overrides (dehydration)
+
+    func testCrispyDryShortensHard() {
+        // Crispy + Dry ⇒ ×0.75, water now — shortens harder than droopyDry's 0.80.
+        let base = plant(adj: 1.0, interval: 14)
+        let r = engine().update(profile: snake, plant: base,
+                                checkIn: checkIn(.dry, .crispy, watered: true, daysFromDue: -3))
+        XCTAssertEqual(r.recommendation.reason, .crispyDry)
+        XCTAssertEqual(r.recommendation.action, .waterNow)
+        XCTAssertEqual(r.newAdj, 0.75, accuracy: 1e-9)
+        XCTAssertLessThan(r.newAdj, base.adj)
+        XCTAssertTrue(r.didWater)
+    }
+
+    func testCrispyMoistWatersAndShortens() {
+        // Crispy + Moist ⇒ ×0.85, water now — dehydrated despite damp soil.
+        let base = plant(adj: 1.0)
+        let r = engine().update(profile: pothos, plant: base,
+                                checkIn: checkIn(.moist, .crispy, watered: true, daysFromDue: 0))
+        XCTAssertEqual(r.recommendation.reason, .crispyMoist)
+        XCTAssertEqual(r.recommendation.action, .waterNow)
+        XCTAssertEqual(r.newAdj, 0.85, accuracy: 1e-9)
+        XCTAssertLessThan(r.newAdj, base.adj)
+        XCTAssertTrue(r.didWater)
+    }
+
+    func testCrispyWetWatersLightlyAndShortensMildly() {
+        // Crispy + Wet ⇒ ×0.95, water lightly — wet soil tempers urgency but the
+        // plant still reads dehydrated, so water lightly and shorten mildly.
+        let base = plant(adj: 1.0)
+        let r = engine().update(profile: pothos, plant: base,
+                                checkIn: checkIn(.wet, .crispy, watered: false, daysFromDue: 0))
+        XCTAssertEqual(r.recommendation.reason, .crispyWet)
+        XCTAssertEqual(r.recommendation.action, .waterLightly)
+        XCTAssertEqual(r.newAdj, 0.95, accuracy: 1e-9)
+        XCTAssertLessThan(r.newAdj, base.adj)
+    }
+
+    func testCrispyOverridesFineWetRow() {
+        // crispy+wet uses the crispy row (×0.95), not the fine-leaf wet row (×1.15).
+        let r = engine().update(profile: snake, plant: plant(adj: 1.0),
+                                checkIn: checkIn(.wet, .crispy, watered: false, daysFromDue: 0))
+        XCTAssertEqual(r.newAdj, 0.95, accuracy: 1e-9)
+    }
+
     // MARK: - adj clamp [0.5, 2.0]
 
     func testAdjClampLowerBound() {
