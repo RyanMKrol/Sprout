@@ -1501,7 +1501,7 @@
     {
       "id": "T054",
       "title": "Keep guided-watering header title on one line",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
