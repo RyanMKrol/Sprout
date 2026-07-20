@@ -71,7 +71,7 @@ struct PlantListView: View {
                         row(for: item)
                             .listRowBackground(SproutTheme.paper)
                             .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 5, leading: 14, bottom: 5, trailing: 14))
+                            .listRowInsets(EdgeInsets(top: 5, leading: 6, bottom: 5, trailing: 6))
                             .swipeActions(edge: .trailing) {
                                 Button("Delete", role: .destructive) {
                                     plantToDelete = item
@@ -221,7 +221,12 @@ struct PlantListView: View {
     @ViewBuilder
     private func row(for item: PlantListViewModel.Item) -> some View {
         if makeDetail != nil {
-            NavigationLink(value: item.id) {
+            // Suppress the List's automatic NavigationLink disclosure chevron on the
+            // custom card: the value-based link sits behind the card at zero opacity
+            // (still fully tappable), and the card itself carries no caret.
+            ZStack {
+                NavigationLink(value: item.id) { EmptyView() }
+                    .opacity(0)
                 PlantCardView(item: item)
             }
         } else {

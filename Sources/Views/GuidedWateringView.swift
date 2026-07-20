@@ -44,7 +44,7 @@ struct GuidedWateringView: View {
                 .foregroundStyle(SproutTheme.brandGreen)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("Water your plants")
+            Text("Check your plants")
                 .font(SproutFont.display(17, weight: .bold))
                 .foregroundStyle(SproutTheme.ink)
                 .lineLimit(1)
