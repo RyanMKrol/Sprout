@@ -160,7 +160,9 @@ private struct IconCell: View {
                 }
 
                 icon.image
-                    .font(.system(size: 28))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 28, height: 28)
                     .foregroundStyle(isSelected ? .white : Color(hex: 0x3A4136))
             }
             .frame(height: 88)

@@ -73,7 +73,9 @@ struct RhythmBand: View {
                                     )
 
                                 ChromeIcon.droplet.image
-                                    .font(.system(size: 11, weight: .bold))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 12, height: 12)
                                     .foregroundStyle(Color.white)
                             }
                             .frame(width: 26, height: 26)
@@ -99,6 +101,11 @@ struct RhythmBand: View {
                     }
                 }
             }
+            // A GeometryReader is greedy and reports no intrinsic height, so without
+            // an explicit frame it collapses in a VStack and its below-track markers
+            // ("base", "now") overflow onto the content beneath. Reserve the height its
+            // content actually needs (MIN/MAX row + 60pt track band + spacing).
+            .frame(height: 90)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

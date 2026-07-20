@@ -27,41 +27,7 @@ struct RoomsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                Button {
-                    // Back button — NavigationStack at HomeView level handles the pop
-                } label: {
-                    HStack(spacing: 4) {
-                        ChromeIcon.chevronLeft.image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
-                        Text("Home")
-                            .font(SproutFont.body(17, weight: .semibold))
-                    }
-                    .foregroundStyle(SproutTheme.brandGreen)
-                }
-
-                Spacer()
-
-                Text("Rooms")
-                    .font(SproutFont.display(32, weight: .bold))
-                    .foregroundStyle(SproutTheme.ink)
-
-                Spacer()
-
-                if viewModel.isEmpty {
-                    Color.clear.frame(width: 40, height: 40)
-                } else {
-                    SproutFAB { editor = .add }
-                }
-            }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 16)
-            .background(SproutTheme.paper)
-
-            Group {
+        Group {
                 if viewModel.isEmpty {
                     VStack(spacing: 24) {
                         VStack(spacing: 16) {
@@ -92,7 +58,16 @@ struct RoomsView: View {
                     .frame(maxHeight: .infinity, alignment: .center)
                 } else {
                     List(viewModel.items) { item in
-                        NavigationLink(value: RoomDetailRoute(roomID: item.room.id)) {
+                        // The row is a custom card, so we suppress the List's automatic
+                        // NavigationLink disclosure chevron: the value-based link sits
+                        // behind the row at zero opacity (still fully tappable), and the
+                        // visible RoomRow carries no caret of its own.
+                        ZStack {
+                            NavigationLink(value: RoomDetailRoute(roomID: item.room.id)) {
+                                EmptyView()
+                            }
+                            .opacity(0)
+
                             RoomRow(item: item)
                         }
                         .listRowBackground(SproutTheme.paper)
@@ -110,9 +85,19 @@ struct RoomsView: View {
                 }
             }
             .background(SproutTheme.paper)
-        }
-        .background(SproutTheme.paper)
-        .navigationDestination(for: RoomDetailRoute.self) { _ in
+            .navigationTitle("Rooms")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { editor = .add } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 17, weight: .semibold))
+                    }
+                    .foregroundStyle(SproutTheme.brandGreen)
+                    .accessibilityLabel("Add room")
+                }
+            }
+            .navigationDestination(for: RoomDetailRoute.self) { _ in
             // HomeView's NavigationStack handles this with proper repository injection
             EmptyView()
         }
