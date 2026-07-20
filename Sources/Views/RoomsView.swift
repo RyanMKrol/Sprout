@@ -124,16 +124,29 @@ struct RoomsView: View {
                     editor = nil
                 } onCancel: { editor = nil }
             case let .edit(room):
-                RoomEditorView(title: "Edit Room", room: room) { name, direct, indirect, hum in
-                    var updated = room
-                    updated.name = name
-                    updated.directSun = direct
-                    updated.indirectSun = indirect
-                    updated.humidity = hum
-                    updated.sunlight = Room.legacySunlight(directSun: direct, indirectSun: indirect)
-                    viewModel.update(updated)
-                    editor = nil
-                } onCancel: { editor = nil }
+                let item = viewModel.items.first { $0.room.id == room.id }
+                RoomEditorView(
+                    title: "Edit Room",
+                    room: room,
+                    plantCount: item?.plantCount ?? 0,
+                    onSave: { name, direct, indirect, hum in
+                        var updated = room
+                        updated.name = name
+                        updated.directSun = direct
+                        updated.indirectSun = indirect
+                        updated.humidity = hum
+                        updated.sunlight = Room.legacySunlight(directSun: direct, indirectSun: indirect)
+                        viewModel.update(updated)
+                        editor = nil
+                    },
+                    onCancel: { editor = nil },
+                    onDelete: {
+                        if let item {
+                            viewModel.delete(item)
+                        }
+                        editor = nil
+                    }
+                )
             }
         }
         .sproutAlert(isPresented: $showDeleteConfirm) {
@@ -256,23 +269,32 @@ struct RoomEditorView: View {
     @State private var directSun: LightLevel
     @State private var indirectSun: LightLevel
     @State private var humidity: RoomHumidity
+    @State private var showDeleteConfirm = false
     let title: String
+    let room: Room
+    let plantCount: Int
     let onSave: (String, LightLevel, LightLevel, RoomHumidity) -> Void
     let onCancel: () -> Void
+    let onDelete: (() -> Void)?
 
     init(
         title: String,
         room: Room,
+        plantCount: Int = 0,
         onSave: @escaping (String, LightLevel, LightLevel, RoomHumidity) -> Void,
-        onCancel: @escaping () -> Void
+        onCancel: @escaping () -> Void,
+        onDelete: (() -> Void)? = nil
     ) {
         self.title = title
+        self.room = room
+        self.plantCount = plantCount
         _name = State(initialValue: room.name)
         _directSun = State(initialValue: room.directSun)
         _indirectSun = State(initialValue: room.indirectSun)
         _humidity = State(initialValue: room.humidity)
         self.onSave = onSave
         self.onCancel = onCancel
+        self.onDelete = onDelete
     }
 
     /// The brightness inferred live from the two pickers — shown so the user sees how
@@ -281,64 +303,181 @@ struct RoomEditorView: View {
         Brightness.inferred(directSun: directSun, indirectSun: indirectSun)
     }
 
+    private var canSave: Bool {
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Name") {
-                    TextField("Room name", text: $name)
-                        .textInputAutocapitalization(.words)
+        VStack(spacing: 0) {
+            SproutSheetHeader(
+                title: "Edit Room",
+                confirmLabel: "Save",
+                confirmEnabled: canSave,
+                onCancel: onCancel,
+                onConfirm: {
+                    onSave(name, directSun, indirectSun, humidity)
                 }
-                Section {
-                    Picker("Direct Sun", selection: $directSun) {
-                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+            )
+
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Name field
+                    VStack(alignment: .leading, spacing: 8) {
+                        TextField("Room name", text: $name)
+                            .font(SproutFont.body(16))
+                            .foregroundStyle(SproutTheme.ink)
+                            .textInputAutocapitalization(.words)
+                            .padding(16)
+                            .background(SproutTheme.cardSurface)
+                            .cornerRadius(SproutTheme.Radius.field)
                     }
-                    .pickerStyle(.segmented)
-                } header: {
-                    RoomInfoHeader(
-                        title: "Direct Sun",
-                        help: "How much direct sunlight lands on the plants — e.g. an unobstructed south-facing windowsill. Direct sun dries the soil fastest."
-                    )
-                }
-                Section {
-                    Picker("Indirect Sun", selection: $indirectSun) {
-                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+
+                    // Direct Sun section
+                    VStack(alignment: .leading, spacing: 8) {
+                        RoomInfoHeader(
+                            title: "Direct Sun",
+                            help: "How much direct sunlight lands on the plants — e.g. an "
+                                + "unobstructed south-facing windowsill. Direct sun dries the soil fastest."
+                        )
+
+                        SproutSegmentedPicker(
+                            selection: $directSun,
+                            options: LightLevel.allCases.map { ($0, $0.label) }
+                        )
                     }
-                    .pickerStyle(.segmented)
-                } header: {
-                    RoomInfoHeader(
-                        title: "Indirect Sun",
-                        help: "The ambient daylight in the room with no direct beam on the leaves — bright rooms away from a window still get plenty."
-                    )
-                }
-                Section {
-                    HStack {
-                        Text("Brightness")
+
+                    // Indirect Sun section
+                    VStack(alignment: .leading, spacing: 8) {
+                        RoomInfoHeader(
+                            title: "Indirect Sun",
+                            help: "The ambient daylight in the room with no direct beam on the "
+                                + "leaves — bright rooms away from a window still get plenty."
+                        )
+
+                        SproutSegmentedPicker(
+                            selection: $indirectSun,
+                            options: LightLevel.allCases.map { ($0, $0.label) }
+                        )
+                    }
+
+                    // Brightness readout card
+                    HStack(spacing: 12) {
+                        ChromeIcon.sun.image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(SproutTheme.sun)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Brightness")
+                                .font(SproutFont.body(16))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Text(
+                                "Inferred from direct + indirect light. Brighter rooms dry out "
+                                    + "faster, so plants there are watered more often."
+                            )
+                                .font(SproutFont.body(12.5))
+                                .foregroundStyle(SproutTheme.textHint)
+                        }
+
                         Spacer()
-                        Text(brightness.label).foregroundStyle(.secondary)
+
+                        Text(brightness.label)
+                            .font(SproutFont.body(11, weight: .semibold))
+                            .foregroundStyle(SproutTheme.brightnessChip)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(Color(red: 217.0 / 255, green: 139.0 / 255, blue: 10.0 / 255, opacity: 0.14))
+                            .cornerRadius(SproutTheme.Radius.chip)
                     }
-                } footer: {
-                    Text("Inferred from direct + indirect light. Brighter rooms dry out faster, so plants there are watered more often.")
-                }
-                Section {
-                    Picker("Humidity", selection: $humidity) {
-                        ForEach(RoomHumidity.allCases, id: \.self) { Text($0.label).tag($0) }
+                    .padding(16)
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(SproutTheme.Radius.field)
+
+                    // Humidity section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("HUMIDITY")
+                            .font(SproutFont.body(11, weight: .semibold))
+                            .tracking(0.56)
+                            .foregroundStyle(SproutTheme.taupe)
+                            .textCase(.uppercase)
+
+                        SproutSegmentedPicker(
+                            selection: $humidity,
+                            options: RoomHumidity.allCases.map { ($0, $0.label) }
+                        )
                     }
-                    .pickerStyle(.segmented)
-                } header: {
-                    Text("Humidity")
                 }
+                .padding(.vertical, 20)
+                .padding(.horizontal, 20)
             }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
+
+            // Delete Room row (only when editing an existing room)
+            if onDelete != nil {
+                VStack(spacing: 0) {
+                    Divider()
+                        .padding(.bottom, 12)
+
+                    Button(
+                        action: { showDeleteConfirm = true },
+                        label: {
+                            HStack(spacing: 12) {
+                                ChromeIcon.trash.image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                    .foregroundStyle(SproutTheme.destructive)
+
+                                Text("Delete Room")
+                                    .font(SproutFont.body(17, weight: .semibold))
+                                    .foregroundStyle(SproutTheme.destructive)
+
+                                Spacer()
+                            }
+                            .padding(16)
+                        }
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(SproutTheme.cardSurface)
+                    .cornerRadius(18)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18)
+                            .stroke(
+                                Color(red: 196.0 / 255, green: 85.0 / 255, blue: 59.0 / 255, opacity: 0.2),
+                                lineWidth: 1
+                            )
+                    )
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { onSave(name, directSun, indirectSun, humidity) }
-                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
+                .background(SproutTheme.paper)
             }
+        }
+        .background(SproutTheme.paper)
+        .sproutSheetBackground()
+        .sproutAlert(isPresented: $showDeleteConfirm) {
+            let message = plantCount == 0
+                ? "This can't be undone."
+                : "Its \(plantCount) \(plantCount == 1 ? "plant" : "plants") stay in your garden "
+                    + "without a room's light and humidity. This can't be undone."
+
+            SproutAlert(
+                icon: .trash,
+                tint: SproutTheme.destructive,
+                title: "Delete \(room.name)?",
+                message: message,
+                confirmLabel: "Delete",
+                confirmRole: .destructive,
+                onConfirm: {
+                    showDeleteConfirm = false
+                    onDelete?()
+                    onCancel()
+                },
+                onCancel: {
+                    showDeleteConfirm = false
+                }
+            )
         }
     }
 }
