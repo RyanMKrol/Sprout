@@ -33,31 +33,33 @@ struct SproutSheetHeader: View {
                     .padding(.top, 12)
             }
 
-            HStack(spacing: 16) {
-                if let cancelLabel {
-                    Button(action: onCancel) {
-                        Text(cancelLabel)
-                            .font(SproutFont.body(17))
-                            .foregroundStyle(SproutTheme.brandGreen)
-                    }
-                }
-
-                Spacer()
-
+            ZStack(alignment: .center) {
                 Text(title)
                     .font(SproutFont.display(18))
                     .foregroundStyle(SproutTheme.ink)
+                    .frame(maxWidth: .infinity)
+                    .multilineTextAlignment(.center)
 
-                Spacer()
-
-                if let confirmLabel {
-                    Button(action: onConfirm) {
-                        Text(confirmLabel)
-                            .font(SproutFont.body(17, weight: .semibold))
-                            .foregroundStyle(SproutTheme.brandGreen)
+                HStack(spacing: 16) {
+                    if let cancelLabel {
+                        Button(action: onCancel) {
+                            Text(cancelLabel)
+                                .font(SproutFont.body(17))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                        }
                     }
-                    .opacity(confirmEnabled ? 1.0 : 0.4)
-                    .disabled(!confirmEnabled)
+
+                    Spacer()
+
+                    if let confirmLabel {
+                        Button(action: onConfirm) {
+                            Text(confirmLabel)
+                                .font(SproutFont.body(17, weight: .semibold))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                        }
+                        .opacity(confirmEnabled ? 1.0 : 0.4)
+                        .disabled(!confirmEnabled)
+                    }
                 }
             }
             .padding(.horizontal, 20)
