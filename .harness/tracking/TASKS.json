@@ -1451,7 +1451,7 @@
     {
       "id": "T052",
       "title": "Standardise pushed-screen back button on plant list + plant detail (match RoomDetailView)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
