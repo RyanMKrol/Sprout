@@ -142,31 +142,26 @@ struct PlantEditView: View {
                         }
                     }
 
-                    // DELETE section (30pt gap before)
-                    VStack(spacing: 0) {
-                        HStack(spacing: 12) {
+                    // DELETE section (30pt gap before) — the whole row is one tappable
+                    // destructive button: red fill, centred white icon + label.
+                    Button(action: { showDeleteConfirm = true }) {
+                        HStack(spacing: 8) {
                             ChromeIcon.trash.image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(SproutTheme.destructive)
+                                .foregroundStyle(Color.white)
 
-                            Button(action: { showDeleteConfirm = true }) {
-                                Text("Delete Plant")
-                                    .font(SproutFont.body(17, weight: .semibold))
-                                    .foregroundStyle(SproutTheme.destructive)
-                            }
-
-                            Spacer()
+                            Text("Delete Plant")
+                                .font(SproutFont.body(17, weight: .semibold))
+                                .foregroundStyle(Color.white)
                         }
-                        .padding(12)
-                        .background(Color.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: SproutTheme.Radius.row, style: .continuous)
-                                .stroke(Color(red: 196.0 / 255, green: 85.0 / 255, blue: 59.0 / 255, opacity: 0.2), lineWidth: 1)
-                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(14)
+                        .background(SproutTheme.destructive)
                         .clipShape(RoundedRectangle(cornerRadius: SproutTheme.Radius.row, style: .continuous))
                     }
+                    .buttonStyle(.plain)
                     .padding(.top, 30)
                 }
                 .padding(20)

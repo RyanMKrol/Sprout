@@ -37,7 +37,12 @@ struct RhythmBand: View {
                             .foregroundStyle(SproutTheme.taupe)
                     }
 
-                    ZStack(alignment: .top) {
+                    // Markers anchor to the track's LEADING edge (`.topLeading`): an
+                    // element at fractional position `p` is offset by `p * trackWidth`
+                    // minus half its own width, putting its centre exactly on `p`. Each
+                    // label is an overlay centred on its marker, so the label's width
+                    // never shifts the marker's position.
+                    ZStack(alignment: .topLeading) {
                         LinearGradient(
                             gradient: Gradient(colors: [
                                 Color(hex: 0xE3EBD6),
@@ -49,56 +54,50 @@ struct RhythmBand: View {
                         .frame(height: 12)
                         .cornerRadius(6)
 
+                        // Base (seed cadence) tick — hidden when it sits under the "now"
+                        // marker so their labels don't collide.
                         if !showCollapsedLabel {
-                            VStack(alignment: .center, spacing: 4) {
-                                RoundedRectangle(cornerRadius: 1)
-                                    .fill(SproutTheme.ink.opacity(0.35))
-                                    .frame(width: 2, height: 12)
-
-                                Text("base \(baseDays)d")
-                                    .font(SproutFont.body(11))
-                                    .foregroundStyle(Color(hex: 0x9AA090))
-                            }
-                            .offset(x: basePosition * trackWidth - 1)
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(SproutTheme.ink.opacity(0.35))
+                                .frame(width: 2, height: 12)
+                                .overlay(alignment: .top) {
+                                    Text("base \(baseDays)d")
+                                        .font(SproutFont.body(11))
+                                        .foregroundStyle(Color(hex: 0x9AA090))
+                                        .fixedSize()
+                                        .offset(y: 16)
+                                }
+                                .offset(x: basePosition * trackWidth - 1)
                         }
 
-                        VStack(alignment: .center, spacing: 4) {
-                            ZStack(alignment: .center) {
-                                Circle()
-                                    .fill(SproutTheme.brandGreen)
-                                    .frame(width: 26, height: 26)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.white, lineWidth: 3)
-                                    )
+                        // "Now" (effective cadence) droplet marker, with its label
+                        // centred beneath it.
+                        ZStack {
+                            Circle()
+                                .fill(SproutTheme.brandGreen)
+                                .frame(width: 26, height: 26)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 3)
+                                )
 
-                                ChromeIcon.droplet.image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 12, height: 12)
-                                    .foregroundStyle(Color.white)
-                            }
-                            .frame(width: 26, height: 26)
-
-                            if !showCollapsedLabel {
-                                Text("now")
-                                    .font(SproutFont.body(11.5, weight: .bold))
-                                    .foregroundStyle(SproutTheme.brandGreen)
-                            }
+                            ChromeIcon.droplet.image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 12, height: 12)
+                                .foregroundStyle(Color.white)
+                        }
+                        .frame(width: 26, height: 26)
+                        .overlay(alignment: .top) {
+                            Text("now")
+                                .font(SproutFont.body(11.5, weight: .bold))
+                                .foregroundStyle(SproutTheme.brandGreen)
+                                .fixedSize()
+                                .offset(y: 30)
                         }
                         .offset(x: nowPosition * trackWidth - 13)
                     }
                     .frame(height: 60)
-
-                    if showCollapsedLabel {
-                        HStack {
-                            Text("now")
-                                .font(SproutFont.body(11.5, weight: .bold))
-                                .foregroundStyle(SproutTheme.brandGreen)
-                            Spacer()
-                        }
-                        .offset(x: nowPosition * trackWidth - 13)
-                    }
                 }
             }
             // A GeometryReader is greedy and reports no intrinsic height, so without
