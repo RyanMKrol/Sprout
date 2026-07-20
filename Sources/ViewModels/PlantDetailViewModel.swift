@@ -106,17 +106,6 @@ final class PlantDetailViewModel: ObservableObject {
         maxDays = profile?.maxIntervalDays ?? 30
         baseDays = profile?.baseIntervalDays
 
-        // Calculate effective days from nextDue
-        if let nextDue = plant.nextDue {
-            let calendar = Calendar.current
-            let nextDueStart = calendar.startOfDay(for: nextDue)
-            let nowStart = calendar.startOfDay(for: now)
-            let days = calendar.dateComponents([.day], from: nowStart, to: nextDueStart).day ?? 0
-            effectiveDays = max(1, days)
-        } else {
-            effectiveDays = profile?.baseIntervalDays ?? 7
-        }
-
         explanation = profile.map { profile in
             explanationBuilder.explanation(
                 species: plant.species,
@@ -126,6 +115,11 @@ final class PlantDetailViewModel: ObservableObject {
                 environmentFactor: environmentFactor
             )
         }
+
+        // The watering-rhythm band shows the effective *interval* (how often we water),
+        // NOT days-until-due — reuse the same effective interval the "why" explanation
+        // computes so the band, its "now" marker, and the sentence all agree.
+        effectiveDays = explanation?.effectiveDays ?? profile?.baseIntervalDays ?? 7
 
         history = plant.checkIns
             .sorted { $0.date > $1.date }

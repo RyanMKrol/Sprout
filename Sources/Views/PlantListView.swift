@@ -63,39 +63,7 @@ struct PlantListView: View {
     /// De-nested: the host (`HomeView`) provides the `NavigationStack`. This view
     /// supplies the list, its plant-detail destination, the add button, and its sheets.
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                Button {
-                    dismiss()
-                } label: {
-                    HStack(spacing: 4) {
-                        ChromeIcon.chevronLeft.image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
-                        Text("Home")
-                            .font(SproutFont.body(17, weight: .medium))
-                    }
-                    .foregroundStyle(SproutTheme.brandGreen)
-                }
-
-                Text("My Plants")
-                    .font(SproutFont.display(32))
-                    .foregroundStyle(SproutTheme.ink)
-
-                Spacer()
-
-                if makeBasket != nil {
-                    SproutFAB {
-                        basketPresented = true
-                    }
-                }
-            }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 16)
-            .background(SproutTheme.paper)
-
-            Group {
+        Group {
                 if viewModel.isEmpty {
                     PlantListEmptyState(onAddPlants: { basketPresented = true })
                 } else {
@@ -103,6 +71,7 @@ struct PlantListView: View {
                         row(for: item)
                             .listRowBackground(SproutTheme.paper)
                             .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 5, leading: 14, bottom: 5, trailing: 14))
                             .swipeActions(edge: .trailing) {
                                 Button("Delete", role: .destructive) {
                                     plantToDelete = item
@@ -118,10 +87,21 @@ struct PlantListView: View {
                 }
             }
             .background(SproutTheme.paper)
-        }
-        .background(SproutTheme.paper)
-        .navigationBarBackButtonHidden(true)
-        .navigationDestination(for: UUID.self) { plantID in
+            .navigationTitle("My Plants")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if makeBasket != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { basketPresented = true } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 17, weight: .semibold))
+                        }
+                        .foregroundStyle(SproutTheme.brandGreen)
+                        .accessibilityLabel("Add plants")
+                    }
+                }
+            }
+            .navigationDestination(for: UUID.self) { plantID in
             if let makeDetail {
                 PlantDetailView(
                     viewModel: makeDetail(plantID),
@@ -347,8 +327,6 @@ struct PlantCardView: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 13)
         .sproutCard()
-        .padding(.horizontal, 18)
-        .padding(.vertical, 5.5)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }
