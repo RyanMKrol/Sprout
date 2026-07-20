@@ -1426,7 +1426,7 @@
     {
       "id": "T051",
       "title": "Fix oversized asset-catalog glyphs on plant detail (droplet + pencil)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
