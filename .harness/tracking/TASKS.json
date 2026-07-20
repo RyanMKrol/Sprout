@@ -1396,7 +1396,7 @@
     {
       "id": "T050",
       "title": "Fix broken button/border corners (ghost button style + PlantEditView one-off)",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
