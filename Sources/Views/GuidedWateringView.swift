@@ -47,6 +47,8 @@ struct GuidedWateringView: View {
             Text("Water your plants")
                 .font(SproutFont.display(17, weight: .bold))
                 .foregroundStyle(SproutTheme.ink)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
 
             if coordinator.current != nil {
                 Button("Skip", action: { coordinator.skip() })
