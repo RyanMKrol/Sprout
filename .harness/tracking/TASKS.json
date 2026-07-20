@@ -1035,7 +1035,7 @@
     {
       "id": "T038",
       "title": "Redesign cleanup sweep: delete dead styling",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T016",
         "T017",
