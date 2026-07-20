@@ -23,8 +23,10 @@ struct PhotoPromptView: View {
                         .fill(SproutTheme.logoGradient)
                         .frame(width: 104, height: 104)
 
-                    Image(systemName: "camera.fill")
-                        .font(.system(size: 40))
+                    ChromeIcon.camera.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 40, height: 40)
                         .foregroundStyle(SproutTheme.cream)
                 }
 

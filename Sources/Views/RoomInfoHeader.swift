@@ -12,7 +12,10 @@ struct RoomInfoHeader: View {
         HStack(spacing: 6) {
             Text(title)
             Button { showing = true } label: {
-                Image(systemName: "info.circle")
+                ChromeIcon.circleInfo.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 14, height: 14)
             }
             .buttonStyle(.borderless)
             .accessibilityLabel("\(title) — what's this?")

@@ -151,8 +151,10 @@ struct PhotoCaptureView: View {
         ZStack {
             Color(red: 63.0 / 255, green: 126.0 / 255, blue: 88.0 / 255, opacity: 0.5)
             VStack(spacing: 10) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 72))
+                ChromeIcon.circleCheck.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 72, height: 72)
                     .foregroundStyle(.white)
                     .scaleEffect(1.1)
                     .animation(
@@ -173,8 +175,10 @@ struct PhotoCaptureView: View {
         ZStack {
             Color(red: 0.1, green: 0.1, blue: 0.1)
             VStack(spacing: 12) {
-                Image(systemName: "camera.fill")
-                    .font(.system(size: 56))
+                ChromeIcon.camera.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 56, height: 56)
                     .foregroundStyle(.white.opacity(0.5))
                 Text("Camera preview unavailable here")
                     .font(.footnote)

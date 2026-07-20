@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 private extension Color {
     init(hex: UInt32) {
@@ -117,10 +118,11 @@ struct PlantDetailView: View {
     /// Centered header: 112 token, display name (32), italic species (16).
     private var header: some View {
         VStack(spacing: 12) {
-            PlantThumbnail(
-                photoData: viewModel.photoData,
-                tint: PlantPalette.color(for: viewModel.plantID),
-                size: 112
+            PlantToken(
+                icon: .flower,
+                duo: PlantTokenPalette.duo(for: viewModel.plantID),
+                size: 112,
+                photo: viewModel.photoData.flatMap { UIImage(data: $0) }
             )
             VStack(spacing: 4) {
                 Text(viewModel.nickname)

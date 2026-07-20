@@ -381,34 +381,6 @@ struct PlantCardView: View {
     }
 }
 
-/// A small rounded plant photo, or a tinted leaf placeholder when there's no photo
-/// (T214). Shared by the list card and other compact contexts.
-struct PlantThumbnail: View {
-    let photoData: Data?
-    var tint: Color = .green
-    var size: CGFloat = 44
-
-    var body: some View {
-        Group {
-            if let photoData, let image = UIImage(data: photoData) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                ZStack {
-                    tint.opacity(0.15)
-                    Image(systemName: "leaf.fill")
-                        .font(.system(size: size * 0.4))
-                        .foregroundStyle(tint)
-                }
-            }
-        }
-        .frame(width: size, height: size)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .accessibilityHidden(true)
-    }
-}
-
 /// The circular plant token (46pt) with photo clipping or gradient + icon.
 private struct PlantTokenView: View {
     let item: PlantListViewModel.Item

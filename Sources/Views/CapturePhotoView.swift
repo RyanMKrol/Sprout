@@ -57,8 +57,10 @@ struct CapturePhotoView: View {
         ZStack {
             Color.white.opacity(0.06)
             VStack(spacing: 12) {
-                Image(systemName: "camera.fill")
-                    .font(.system(size: 56))
+                ChromeIcon.camera.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 56, height: 56)
                     .foregroundStyle(.white.opacity(0.5))
                 Text("Camera preview unavailable here")
                     .font(.footnote)

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The **guided watering** walkthrough screen (screens 20–22, redesign). For each plant it shows
 /// the photo + name, asks how it looks (leaves) and how the soil feels, then previews a
@@ -191,7 +192,12 @@ struct GuidedWateringView: View {
 
     private func heroSection(_ plant: Plant) -> some View {
         VStack(spacing: 12) {
-            PlantThumbnail(photoData: plant.photoData, tint: PlantPalette.color(for: plant.id), size: 120)
+            PlantToken(
+                icon: .flower,
+                duo: PlantTokenPalette.duo(for: plant.id),
+                size: 120,
+                photo: plant.photoData.flatMap { UIImage(data: $0) }
+            )
 
             Text(plant.nickname)
                 .font(SproutFont.display(22, weight: .bold))

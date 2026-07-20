@@ -145,8 +145,10 @@ struct AddFlowView: View {
                                     } label: {
                                         HStack(spacing: 12) {
                                             // Oat bubble with house icon
-                                            Image(systemName: "house.fill")
-                                                .font(.system(size: 16))
+                                            ChromeIcon.house.image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 16, height: 16)
                                                 .foregroundStyle(SproutTheme.oatIcon)
                                                 .frame(width: 40, height: 40)
                                                 .background(
@@ -165,8 +167,10 @@ struct AddFlowView: View {
 
                                             Spacer()
 
-                                            Image(systemName: "chevron.right")
-                                                .font(.system(size: 14, weight: .semibold))
+                                            ChromeIcon.chevronRight.image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 14, height: 14)
                                                 .foregroundStyle(SproutTheme.taupe)
                                         }
                                         .padding(.horizontal, 14)
@@ -187,7 +191,10 @@ struct AddFlowView: View {
                             addingRoom = true
                         } label: {
                             HStack(spacing: 8) {
-                                Image(systemName: "plus")
+                                ChromeIcon.plus.image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 14, height: 14)
                                 Text("Add a new room")
                             }
                         }
@@ -256,8 +263,10 @@ struct AddFlowView: View {
     /// that steps back to room selection without losing the basket.
     private var roomSummaryRow: some View {
         HStack(spacing: 12) {
-            Image(systemName: "house.fill")
-                .font(.system(size: 16))
+            ChromeIcon.house.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 16, height: 16)
                 .foregroundStyle(SproutTheme.oatIcon)
                 .frame(width: 40, height: 40)
                 .background(Color(red: 180.0 / 255, green: 131.0 / 255, blue: 47.0 / 255, opacity: 0.14))
@@ -321,8 +330,10 @@ struct AddFlowView: View {
             Button {
                 viewModel.reroll(entry)
             } label: {
-                Image(systemName: "shuffle")
-                    .font(.system(size: 15, weight: .semibold))
+                ChromeIcon.shuffle.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 15, height: 15)
                     .foregroundStyle(SproutTheme.brandGreen)
             }
             .accessibilityLabel("New random name")
@@ -349,8 +360,10 @@ struct AddFlowView: View {
                 .padding(.horizontal, 20)
 
             HStack(spacing: 10) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 14))
+                ChromeIcon.magnifyingGlass.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 14, height: 14)
                     .foregroundStyle(SproutTheme.textHint)
                 TextField("Search species", text: $viewModel.speciesQuery)
                     .textInputAutocapitalization(.never)
@@ -373,8 +386,10 @@ struct AddFlowView: View {
                                 .font(SproutFont.body(15, weight: .medium))
                                 .foregroundStyle(SproutTheme.ink)
                             Spacer()
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 18))
+                            ChromeIcon.circlePlus.image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 18, height: 18)
                                 .foregroundStyle(SproutTheme.brandGreen)
                                 .accessibilityLabel("Add \(profile.species.capitalisedWords)")
                         }
