@@ -41,6 +41,23 @@ final class ScheduleEngineTests: XCTestCase {
         )
     }
 
+    // MARK: - Inverse: adj for a desired interval (manual "adjust schedule")
+
+    func testAdjForDesiredIntervalRoundTrips() {
+        // A desired interval inside the species band round-trips through effectiveInterval.
+        let adj = engine().adj(forDesiredInterval: 10, profile: pothos)
+        XCTAssertEqual(engine().effectiveInterval(for: pothos, adj: adj), 10)
+    }
+
+    func testAdjForDesiredIntervalClampsToSpeciesBand() {
+        // Beyond the band, the derived adj is clamped so the interval stays in [min, max].
+        let long = engine().adj(forDesiredInterval: 100, profile: pothos)
+        XCTAssertEqual(engine().effectiveInterval(for: pothos, adj: long), pothos.maxIntervalDays)
+
+        let short = engine().adj(forDesiredInterval: 1, profile: pothos)
+        XCTAssertEqual(engine().effectiveInterval(for: pothos, adj: short), pothos.minIntervalDays)
+    }
+
     // MARK: - Effective interval — adj scaling + rounding
 
     func testAdjScalesTheInterval() {

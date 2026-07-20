@@ -337,7 +337,7 @@ private struct ScheduleEditorSheet: View {
                     .tint(SproutTheme.ink)
                     .frame(height: 200)
 
-                    Text("Sets the next-watering date. Future check-ins keep adapting it.")
+                    Text("Sets its watering rhythm from here, kept within this plant's healthy range. Check-ins keep fine-tuning it.")
                         .font(SproutFont.body(13))
                         .foregroundStyle(SproutTheme.textHint)
                         .multilineTextAlignment(.center)

@@ -147,7 +147,23 @@ final class PlantDetailViewModel: ObservableObject {
     func setDueInDays(_ days: Int, now: Date = Date(), calendar: Calendar = .current) {
         guard var plant = (try? repository.plant(id: plantID)) ?? nil else { return }
         let start = calendar.startOfDay(for: now)
-        plant.nextDue = calendar.date(byAdding: .day, value: max(0, days), to: start) ?? now
+
+        if let profile = careDatabase.profile(forSpecies: plant.species) {
+            // Bake the chosen interval into the plant's learned `adj`, so the "watering
+            // rhythm" (Every N days) reflects it and future check-ins adapt from this
+            // cadence rather than reverting to the species default. The engine clamps
+            // it to the species' healthy min/max band.
+            let engine = ScheduleEngine(calendar: calendar)
+            let newAdj = engine.adj(forDesiredInterval: max(0, days), profile: profile, weatherFactor: environmentFactor)
+            let interval = engine.effectiveInterval(for: profile, adj: newAdj, weatherFactor: environmentFactor)
+            plant.adj = newAdj
+            plant.nextDue = calendar.date(byAdding: .day, value: interval, to: start) ?? now
+        } else {
+            // No care profile — can't derive a cadence, so fall back to a plain
+            // one-off next-due override.
+            plant.nextDue = calendar.date(byAdding: .day, value: max(0, days), to: start) ?? now
+        }
+
         try? repository.update(plant)
         load(now: now)
     }

@@ -64,6 +64,22 @@ struct ScheduleEngine {
         return clamp(rounded, lower: profile.minIntervalDays, upper: profile.maxIntervalDays)
     }
 
+    /// The learned `adj` that makes the effective interval land as close as the
+    /// clamps allow to `days` for this species under `weatherFactor` — the inverse of
+    /// `effectiveInterval`, used when the user sets a cadence by hand. The result is
+    /// clamped to `Plant.adjRange`, so the interval it produces stays within the
+    /// species' `[minIntervalDays, maxIntervalDays]` band.
+    func adj(
+        forDesiredInterval days: Int,
+        profile: CareProfile,
+        weatherFactor: Double = defaultWeatherFactor
+    ) -> Double {
+        let base = Double(profile.baseIntervalDays) * weatherFactor
+        guard base > 0 else { return 1.0 }
+        let raw = Double(max(1, days)) / base
+        return clamp(raw, to: Plant.adjRange)
+    }
+
     /// The next-due date: `lastWatered + effectiveInterval days`.
     ///
     /// When the plant has never been watered, the interval is anchored at the
