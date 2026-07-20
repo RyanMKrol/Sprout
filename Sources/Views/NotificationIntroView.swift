@@ -27,7 +27,10 @@ struct NotificationIntroView: View {
                         )
 
                     Image("fa-bell", bundle: nil)
-                        .font(.system(size: 46, weight: .semibold))
+                        .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 46, height: 46)
                         .foregroundStyle(.white)
                 }
                 .accessibilityHidden(true)
