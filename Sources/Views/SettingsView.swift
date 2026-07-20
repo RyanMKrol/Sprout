@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var testReminderSent = false
     @State private var showTimePickerSheet = false
     @State private var selectedTime = Date()
+    @State private var replayingIntro = false
 
     init(viewModel: SettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -159,6 +160,34 @@ struct SettingsView: View {
                                 .background(Color(red: 60.0 / 255, green: 66.0 / 255, blue: 58.0 / 255, opacity: 0.08))
                                 .padding(.horizontal, 16)
 
+                            // Replay welcome intro row — re-shows the first-run intro and
+                            // clears the "seen" flag so it also fires again on next launch.
+                            Button(
+                                action: {
+                                    ContentView.resetIntroSeen()
+                                    replayingIntro = true
+                                },
+                                label: {
+                                    HStack(spacing: 12) {
+                                        ChromeIcon.seedling.image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 16, height: 16)
+                                            .foregroundStyle(SproutTheme.ink)
+                                        Text("Replay welcome intro")
+                                            .font(SproutFont.body(17))
+                                            .foregroundStyle(SproutTheme.ink)
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                }
+                            )
+
+                            Divider()
+                                .background(Color(red: 60.0 / 255, green: 66.0 / 255, blue: 58.0 / 255, opacity: 0.08))
+                                .padding(.horizontal, 16)
+
                             // Delete row
                             Button(
                                 action: { showDeleteAlert = true },
@@ -210,6 +239,12 @@ struct SettingsView: View {
                 }, onCancel: {
                     showDeleteAlert = false
                 }
+            )
+        }
+        .sheet(isPresented: $replayingIntro) {
+            NotificationIntroView(
+                onEnable: { replayingIntro = false },
+                onSkip: { replayingIntro = false }
             )
         }
         .sheet(isPresented: $showTimePickerSheet) {

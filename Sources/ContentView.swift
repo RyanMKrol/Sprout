@@ -132,6 +132,9 @@ struct ContentView: View {
 
     private static var hasSeenIntro: Bool { UserDefaults.standard.bool(forKey: introSeenKey) }
     private static func markIntroSeen() { UserDefaults.standard.set(true, forKey: introSeenKey) }
+    /// Clear the "intro seen" flag so the first-run welcome intro fires again on the
+    /// next cold launch. Invoked by the Settings ▸ Developer "Replay welcome intro" row.
+    static func resetIntroSeen() { UserDefaults.standard.set(false, forKey: introSeenKey) }
 
     /// Recompute the daily watering digest from the current plants.
     private func refreshReminders() async {
