@@ -92,9 +92,26 @@ final class PlantDetailViewModelTests: XCTestCase {
         vm.setDueInDays(5, now: now)
 
         XCTAssertEqual(vm.due, .due(days: 5))
+        // Adjusting the schedule now sets the watering *rhythm* too: the cadence
+        // follows the chosen interval (Peace Lily base 6 → every 5 days).
+        XCTAssertEqual(vm.effectiveDays, 5)
         // Persisted to the repository, not just the view model.
         let saved = try XCTUnwrap(try repo.plant(id: plant.id))
         XCTAssertEqual(WateringDueStatus(nextDue: saved.nextDue, now: now), .due(days: 5))
+    }
+
+    func testSetDueInDaysClampsToSpeciesRange() throws {
+        // Peace Lily's interval band is [4, 12]. Asking for 100 days clamps the cadence
+        // (and the resulting next-due) to the species maximum, not 100.
+        let plant = Plant(nickname: "Lily", species: "Peace Lily", nextDue: day(2))
+        try repo.add(plant)
+        let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
+        vm.load(now: now)
+
+        vm.setDueInDays(100, now: now)
+
+        XCTAssertLessThanOrEqual(vm.effectiveDays, vm.maxDays)
+        XCTAssertEqual(vm.due, .due(days: vm.effectiveDays))
     }
 
     // MARK: check-in history
