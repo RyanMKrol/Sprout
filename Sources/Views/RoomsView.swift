@@ -1,12 +1,14 @@
 import SwiftUI
 
-/// The **Rooms** screen (T213). Lists the user's rooms (name, environment summary,
-/// plant count) and supports add / edit / delete. A room's sunlight + humidity drive
-/// the watering cadence of the plants assigned to it. Pure presentation over
-/// `RoomsViewModel`.
+/// The **Rooms** screen (redesign screen 14, T027). Lists the user's rooms with per-room
+/// icons, plant counts, and tappable rows that navigate to the room detail. Tap navigates
+/// to room detail (screen 15), not the editor. Editor is now behind the detail screen's
+/// "Edit" button. Swipe-to-delete with confirmation alert.
 struct RoomsView: View {
     @StateObject private var viewModel: RoomsViewModel
     @State private var editor: Editor?
+    @State private var showDeleteConfirm = false
+    @State private var deleteItem: RoomsViewModel.Item?
 
     init(viewModel: RoomsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -25,32 +27,94 @@ struct RoomsView: View {
     }
 
     var body: some View {
-        Group {
-            if viewModel.isEmpty {
-                ContentUnavailableView {
-                    Label("No rooms yet", systemImage: "house")
-                } description: {
-                    Text("Add the rooms your plants live in. Their light and humidity set each plant's watering rhythm.")
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Button {
+                    // Back button — NavigationStack at HomeView level handles the pop
+                } label: {
+                    HStack(spacing: 4) {
+                        ChromeIcon.chevronLeft.image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 16, height: 16)
+                        Text("Home")
+                            .font(SproutFont.body(17, weight: .semibold))
+                    }
+                    .foregroundStyle(SproutTheme.brandGreen)
                 }
-            } else {
-                List {
-                    ForEach(viewModel.items) { item in
-                        // Tap → room detail (screen 15), NOT the editor. Editing now lives
-                        // behind the detail screen's "Edit" button.
+
+                Spacer()
+
+                Text("Rooms")
+                    .font(SproutFont.display(32, weight: .bold))
+                    .foregroundStyle(SproutTheme.ink)
+
+                Spacer()
+
+                if viewModel.isEmpty {
+                    Color.clear.frame(width: 40, height: 40)
+                } else {
+                    SproutFAB { editor = .add }
+                }
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
+            .background(SproutTheme.paper)
+
+            Group {
+                if viewModel.isEmpty {
+                    VStack(spacing: 24) {
+                        VStack(spacing: 16) {
+                            Text("No rooms yet")
+                                .font(SproutFont.display(22, weight: .bold))
+                                .foregroundStyle(SproutTheme.ink)
+
+                            Text("Add the rooms your plants live in. Their light and humidity set each plant's watering rhythm.")
+                                .font(SproutFont.body(13))
+                                .foregroundStyle(SproutTheme.textHint)
+                                .multilineTextAlignment(.center)
+                        }
+
+                        Button(
+                            action: { editor = .add },
+                            label: {
+                                Text("Add a room")
+                                    .font(SproutFont.body(15, weight: .semibold))
+                                    .foregroundStyle(Color.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 48)
+                                    .background(SproutTheme.brandGreen)
+                                    .cornerRadius(14)
+                            }
+                        )
+                        .padding(.horizontal, 20)
+                    }
+                    .frame(maxHeight: .infinity, alignment: .center)
+                } else {
+                    List(viewModel.items) { item in
                         NavigationLink(value: RoomDetailRoute(roomID: item.room.id)) {
                             RoomRow(item: item)
                         }
-                        .tint(.primary)
+                        .listRowBackground(SproutTheme.paper)
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                deleteItem = item
+                                showDeleteConfirm = true
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
-                    .onDelete { viewModel.delete(atOffsets: $0) }
+                    .listStyle(.plain)
                 }
             }
+            .background(SproutTheme.paper)
         }
-        .navigationTitle("Rooms")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button { editor = .add } label: { Label("Add Room", systemImage: "plus") }
-            }
+        .background(SproutTheme.paper)
+        .navigationDestination(for: RoomDetailRoute.self) { _ in
+            // HomeView's NavigationStack handles this with proper repository injection
+            EmptyView()
         }
         .sheet(item: $editor) { mode in
             switch mode {
@@ -72,9 +136,37 @@ struct RoomsView: View {
                 } onCancel: { editor = nil }
             }
         }
+        .sproutAlert(isPresented: $showDeleteConfirm) {
+            SproutAlert(
+                icon: .trash,
+                tint: SproutTheme.destructive,
+                title: deleteItem.map { "Delete \($0.room.name)?" } ?? "Delete Room?",
+                message: deleteItem.map { deleteConfirmationMessage(plantCount: $0.plantCount) } ?? "This can't be undone.",
+                confirmLabel: "Delete",
+                confirmRole: .destructive,
+                onConfirm: {
+                    if let item = deleteItem {
+                        viewModel.delete(item)
+                    }
+                    deleteItem = nil
+                },
+                onCancel: {
+                    deleteItem = nil
+                }
+            )
+        }
         .onAppear {
             viewModel.load()
             deepLinkEditorIfRequested()
+        }
+    }
+
+    private func deleteConfirmationMessage(plantCount: Int) -> String {
+        if plantCount == 0 {
+            return "This can't be undone."
+        } else {
+            let plants = plantCount == 1 ? "plant" : "plants"
+            return "Its \(plantCount) \(plants) stay in your garden without a room's light and humidity. This can't be undone."
         }
     }
 
@@ -96,20 +188,61 @@ struct RoomsView: View {
     }
 }
 
-/// One room row: name, the sunlight/humidity summary, and a plant count.
+/// One room row: 44×44 oat icon bubble with room icon, name (Bricolage 18),
+/// env summary (body 12.5), and trailing plant count + chevron.
 private struct RoomRow: View {
     let item: RoomsViewModel.Item
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.room.name).font(.headline)
-                Text(item.room.environmentSummary).font(.caption).foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            // 44×44 oat bubble with per-room icon
+            ZStack {
+                Circle()
+                    .fill(SproutTheme.oatSurface)
+                    .frame(width: 44, height: 44)
+
+                iconForRoom(name: item.room.name)
+                    .image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(SproutTheme.oatIcon)
             }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.room.name)
+                    .font(SproutFont.display(18, weight: .bold))
+                    .foregroundStyle(SproutTheme.ink)
+
+                Text(item.room.environmentSummary)
+                    .font(SproutFont.body(12.5))
+                    .foregroundStyle(SproutTheme.textMuted)
+            }
+
             Spacer()
+
             Text("\(item.plantCount) \(item.plantCount == 1 ? "plant" : "plants")")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(SproutFont.body(13, weight: .semibold))
+                .foregroundStyle(SproutTheme.taupe)
+        }
+        .padding(14)
+        .sproutCard(radius: 20)
+    }
+
+    private func iconForRoom(name: String) -> ChromeIcon {
+        let lowercased = name.lowercased()
+        if lowercased.contains("living") {
+            return .couch
+        } else if lowercased.contains("bed") {
+            return .bed
+        } else if lowercased.contains("bath") {
+            return .bath
+        } else if lowercased.contains("kitchen") {
+            return .utensils
+        } else if lowercased.contains("dining") {
+            return .mugSaucer
+        } else {
+            return .house
         }
     }
 }
@@ -209,4 +342,3 @@ struct RoomEditorView: View {
         }
     }
 }
-

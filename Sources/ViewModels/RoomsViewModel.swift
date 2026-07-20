@@ -71,12 +71,4 @@ final class RoomsViewModel: ObservableObject {
         try? repository.deleteRoom(id: item.room.id)
         load()
     }
-
-    /// Delete rooms at list offsets (swipe-to-delete).
-    func delete(atOffsets offsets: IndexSet) {
-        for index in offsets where items.indices.contains(index) {
-            try? repository.deleteRoom(id: items[index].room.id)
-        }
-        load()
-    }
 }
