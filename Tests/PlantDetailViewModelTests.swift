@@ -167,18 +167,21 @@ final class PlantDetailViewModelTests: XCTestCase {
         XCTAssertEqual(vm.minDays, 4)
         XCTAssertEqual(vm.maxDays, 12)
         XCTAssertEqual(vm.baseDays, 7)
-        XCTAssertEqual(vm.effectiveDays, 3)
+        // effectiveDays is the watering *interval* (not days-until-due). With a neutral
+        // adj and no room, it equals the species base cadence.
+        XCTAssertEqual(vm.effectiveDays, 7)
     }
 
-    func testEffectiveDaysCalculatedFromNextDue() throws {
+    func testEffectiveDaysIsTheWateringInterval() throws {
         let plant = Plant(nickname: "Snake", species: "Snake Plant", nextDue: day(5))
         try repo.add(plant)
 
         let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
         vm.load(now: now)
 
-        // Effective should be 5 days from now
-        XCTAssertEqual(vm.effectiveDays, 5)
+        // The rhythm interval is the effective cadence (base when adj is neutral),
+        // independent of how many days remain until the next watering.
+        XCTAssertEqual(vm.effectiveDays, 21)
         XCTAssertEqual(vm.baseDays, 21)
     }
 
@@ -202,8 +205,9 @@ final class PlantDetailViewModelTests: XCTestCase {
         let vm = PlantDetailViewModel(plantID: plant.id, repository: repo, careDatabase: careDatabase)
         vm.load(now: now)
 
-        // Overdue plants show as 1 day (minimum)
-        XCTAssertEqual(vm.effectiveDays, 1)
+        // Being overdue doesn't change the watering *rhythm* — effectiveDays stays the
+        // effective cadence (base 7 for Peace Lily at neutral adj), not days-until-due.
+        XCTAssertEqual(vm.effectiveDays, 7)
     }
 
     // MARK: failure

@@ -11,6 +11,8 @@ struct RoomInfoHeader: View {
     var body: some View {
         HStack(spacing: 6) {
             Text(title)
+                .font(SproutFont.body(15, weight: .semibold))
+                .foregroundStyle(SproutTheme.ink)
             Button { showing = true } label: {
                 ChromeIcon.circleInfo.image
                     .resizable()

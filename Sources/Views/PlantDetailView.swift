@@ -151,27 +151,26 @@ struct PlantDetailView: View {
                 editingSchedule = true
             } label: {
                 HStack(spacing: 12) {
-                    VStack(spacing: 0) {
-                        ZStack {
-                            Circle()
-                                .fill(SproutTheme.softGreenFill)
-                                .frame(width: 34, height: 34)
-
+                    // Soft-green droplet bubble (34×34, r10) — sits beside the due
+                    // status, per redesign-spec zone 1.
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(SproutTheme.softGreenFill)
+                        .frame(width: 34, height: 34)
+                        .overlay(
                             ChromeIcon.droplet.image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 14, height: 14)
                                 .foregroundStyle(dueColor)
-                        }
+                        )
 
-                        VStack(spacing: 2) {
-                            Text(viewModel.due.label)
-                                .font(SproutFont.display(17, weight: .bold))
-                                .foregroundStyle(dueColor)
-                            Text("Tap to adjust when it's next due")
-                                .font(SproutFont.body(12))
-                                .foregroundStyle(Color(hex: 0x9AA090))
-                        }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(viewModel.due.label)
+                            .font(SproutFont.display(17, weight: .bold))
+                            .foregroundStyle(dueColor)
+                        Text("Tap to adjust when it's next due")
+                            .font(SproutFont.body(12))
+                            .foregroundStyle(Color(hex: 0x9AA090))
                     }
 
                     Spacer()
@@ -320,10 +319,13 @@ private struct ScheduleEditorSheet: View {
 
                     Picker("Days until due", selection: $days) {
                         ForEach(0...365, id: \.self) { day in
-                            Text(day == 0 ? "Today" : "\(day) \(day == 1 ? "day" : "days")").tag(day)
+                            Text(day == 0 ? "Today" : "\(day) \(day == 1 ? "day" : "days")")
+                                .foregroundStyle(SproutTheme.ink)
+                                .tag(day)
                         }
                     }
                     .pickerStyle(.wheel)
+                    .tint(SproutTheme.ink)
                     .frame(height: 200)
 
                     Text("Sets the next-watering date. Future check-ins keep adapting it.")
