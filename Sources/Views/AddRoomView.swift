@@ -139,7 +139,59 @@ struct AddRoomView: View {
         humidity = preset.humidity
     }
 
-    /// White card showing the typical brightness and humidity for the selected preset.
+    /// Editable Direct Sun / Indirect Sun / Humidity levers, shown for both preset and custom paths.
+    @ViewBuilder
+    private func environmentLeversSection() -> some View {
+        VStack(spacing: 16) {
+            // Direct Sun
+            VStack(alignment: .leading, spacing: 8) {
+                RoomInfoHeader(
+                    title: "Direct Sun",
+                    help: "How much direct sunlight lands on the plants — e.g. an "
+                        + "unobstructed south-facing windowsill. Direct sun dries the "
+                        + "soil fastest."
+                )
+
+                Picker("Direct Sun", selection: $directSun) {
+                    ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+            }
+
+            // Indirect Sun
+            VStack(alignment: .leading, spacing: 8) {
+                RoomInfoHeader(
+                    title: "Indirect Sun",
+                    help: "The ambient daylight in the room with no direct beam on "
+                        + "the leaves — bright rooms away from a window still get "
+                        + "plenty."
+                )
+
+                Picker("Indirect Sun", selection: $indirectSun) {
+                    ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+            }
+
+            // Humidity
+            VStack(alignment: .leading, spacing: 8) {
+                RoomInfoHeader(
+                    title: "Humidity",
+                    help: "How much moisture is in the air. Moist rooms (bathrooms, "
+                        + "kitchens) mean slower soil drying; dry rooms (living rooms "
+                        + "with heat) mean faster drying."
+                )
+
+                Picker("Humidity", selection: $humidity) {
+                    ForEach(RoomHumidity.allCases, id: \.self) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+            }
+        }
+    }
+
+    /// White card showing the typical brightness and humidity for the selected preset,
+    /// with editable Direct Sun / Indirect Sun / Humidity controls.
     @ViewBuilder
     private func presetSummarySection(_ preset: RoomPreset) -> some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -151,36 +203,10 @@ struct AddRoomView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
 
-            VStack(spacing: 0) {
-                // Brightness row
-                HStack(spacing: 12) {
-                    Text("Brightness")
-                        .font(SproutFont.body(15))
-                        .foregroundStyle(SproutTheme.ink)
-
-                    Spacer()
-
-                    BrightnessChip(text: preset.brightness.label)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 13)
-
-                Divider()
-                    .padding(.horizontal, 16)
-
-                // Humidity row
-                HStack(spacing: 12) {
-                    Text("Humidity")
-                        .font(SproutFont.body(15))
-                        .foregroundStyle(SproutTheme.ink)
-
-                    Spacer()
-
-                    HumidityChip(text: preset.humidity.label)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 13)
+            VStack(spacing: 16) {
+                environmentLeversSection()
             }
+            .padding(16)
             .background(SproutTheme.cardSurface)
             .cornerRadius(SproutTheme.Radius.row)
             .cardShadow()
@@ -212,50 +238,7 @@ struct AddRoomView: View {
                         .cornerRadius(SproutTheme.Radius.field)
                 }
 
-                // Direct Sun
-                VStack(alignment: .leading, spacing: 8) {
-                    RoomInfoHeader(
-                        title: "Direct Sun",
-                        help: "How much direct sunlight lands on the plants — e.g. an "
-                            + "unobstructed south-facing windowsill. Direct sun dries the "
-                            + "soil fastest."
-                    )
-
-                    Picker("Direct Sun", selection: $directSun) {
-                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                }
-
-                // Indirect Sun
-                VStack(alignment: .leading, spacing: 8) {
-                    RoomInfoHeader(
-                        title: "Indirect Sun",
-                        help: "The ambient daylight in the room with no direct beam on "
-                            + "the leaves — bright rooms away from a window still get "
-                            + "plenty."
-                    )
-
-                    Picker("Indirect Sun", selection: $indirectSun) {
-                        ForEach(LightLevel.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                }
-
-                // Humidity
-                VStack(alignment: .leading, spacing: 8) {
-                    RoomInfoHeader(
-                        title: "Humidity",
-                        help: "How much moisture is in the air. Moist rooms (bathrooms, "
-                            + "kitchens) mean slower soil drying; dry rooms (living rooms "
-                            + "with heat) mean faster drying."
-                    )
-
-                    Picker("Humidity", selection: $humidity) {
-                        ForEach(RoomHumidity.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                }
+                environmentLeversSection()
             }
             .padding(16)
             .background(SproutTheme.cardSurface)
