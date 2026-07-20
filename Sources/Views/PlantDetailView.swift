@@ -154,7 +154,9 @@ struct PlantDetailView: View {
                                 .frame(width: 34, height: 34)
 
                             ChromeIcon.droplet.image
-                                .font(.system(size: 14, weight: .semibold))
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 14, height: 14)
                                 .foregroundStyle(dueColor)
                         }
 
@@ -171,7 +173,9 @@ struct PlantDetailView: View {
                     Spacer()
 
                     ChromeIcon.pencil.image
-                        .font(.system(size: 14))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 14, height: 14)
                         .foregroundStyle(SproutTheme.taupe)
                 }
                 .padding(16)
