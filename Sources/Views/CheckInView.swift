@@ -98,12 +98,13 @@ struct CheckInView: View {
 
                     // LEAVES section
                     VStack(alignment: .leading, spacing: 12) {
-                        SectionEyebrow(text: "Leaves")
+                        SectionEyebrow(text: "How do the leaves look?")
                             .padding(.horizontal, 20)
 
                         SproutSegmentedPicker(
                             selection: $viewModel.leaves,
                             options: [
+                                (value: LeafState.crispy, label: "Crispy"),
                                 (value: LeafState.fine, label: "Fine"),
                                 (value: LeafState.droopy, label: "Droopy")
                             ]

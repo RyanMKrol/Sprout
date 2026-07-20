@@ -1524,7 +1524,7 @@
     {
       "id": "T055",
       "title": "Add LeafState.crispy model case",
-      "status": "blocked",
+      "status": "done",
       "dependsOn": [],
       "gate": null,
       "tags": [
@@ -1553,7 +1553,7 @@
     {
       "id": "T056",
       "title": "Engine + recommendation copy for Crispy leaves",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T055"
       ],
@@ -1584,7 +1584,7 @@
     {
       "id": "T057",
       "title": "Reword leaf question + add Crispy picker segment",
-      "status": "pending",
+      "status": "done",
       "dependsOn": [
         "T055",
         "T056"

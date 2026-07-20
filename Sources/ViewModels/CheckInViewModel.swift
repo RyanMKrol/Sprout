@@ -76,6 +76,12 @@ final class CheckInViewModel: ObservableObject {
                 return "Leaves droop but the soil's wet — let it dry out; it may be overwatered."
             case .droopyMoist:
                 return "Keep an eye on it — check back in \(recommendation.days) days."
+            case .crispyDry:
+                return "Water now — the leaves are crisping up."
+            case .crispyMoist:
+                return "Water now — crispy leaves even though the soil's damp."
+            case .crispyWet:
+                return "A light water — crispy leaves but the soil's wet."
             }
         }
     }

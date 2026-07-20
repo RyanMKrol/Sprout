@@ -13,7 +13,9 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(MoisturePreference.evenlyMoist.rawValue, "evenlyMoist")
         XCTAssertEqual(MoisturePreference.staysMoist.rawValue, "staysMoist")
         XCTAssertEqual(SoilMoisture.allCases, [.dry, .moist, .wet])
-        XCTAssertEqual(LeafState.allCases, [.fine, .droopy])
+        // Crispy leads so `allCases` matches the on-screen order (Crispy, Fine, Droopy).
+        XCTAssertEqual(LeafState.allCases, [.crispy, .fine, .droopy])
+        XCTAssertEqual(LeafState.crispy.rawValue, "crispy")
     }
 
     // MARK: - CareProfile

@@ -216,7 +216,8 @@ final class RecommendationPresentationTests: XCTestCase {
     func testAllReasonsProducedValidHeadline() {
         let reasons: [WateringRecommendation.Reason] = [
             .stillWet, .driedEarly, .onTargetDry, .dontDryOut,
-            .onTargetMoist, .touchEarly, .droopyDry, .droopyWet, .droopyMoist
+            .onTargetMoist, .touchEarly, .droopyDry, .droopyWet, .droopyMoist,
+            .crispyDry, .crispyMoist, .crispyWet
         ]
 
         for reason in reasons {
@@ -224,9 +225,9 @@ final class RecommendationPresentationTests: XCTestCase {
             switch reason {
             case .stillWet, .droopyWet:
                 action = .skip
-            case .driedEarly, .onTargetDry, .dontDryOut, .droopyDry:
+            case .driedEarly, .onTargetDry, .dontDryOut, .droopyDry, .crispyDry, .crispyMoist:
                 action = .waterNow
-            case .onTargetMoist, .touchEarly:
+            case .onTargetMoist, .touchEarly, .crispyWet:
                 action = .waterLightly
             case .droopyMoist:
                 action = .monitor

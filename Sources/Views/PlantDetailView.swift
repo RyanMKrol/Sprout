@@ -402,6 +402,7 @@ private struct CheckInRow: View {
 
     private var leafLabel: String {
         switch item.leaves {
+        case .crispy: return "crispy"
         case .fine: return "fine"
         case .droopy: return "droopy"
         }

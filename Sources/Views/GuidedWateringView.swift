@@ -95,7 +95,7 @@ struct GuidedWateringView: View {
 
                     VStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 8) {
-                            SectionEyebrow(text: "How does it look?")
+                            SectionEyebrow(text: "How do the leaves look?")
                             leavesPicker
                         }
 
@@ -173,6 +173,7 @@ struct GuidedWateringView: View {
         SproutSegmentedPicker(
             selection: $coordinator.leaves,
             options: [
+                (value: LeafState.crispy, label: "Crispy"),
                 (value: LeafState.fine, label: "Fine"),
                 (value: LeafState.droopy, label: "Droopy")
             ]
