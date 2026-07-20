@@ -30,11 +30,11 @@ struct SproutGhostButtonStyle: ButtonStyle {
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
             .background(Color.clear)
-            .border(
-                Color(red: 47.0 / 255, green: 107.0 / 255, blue: 76.0 / 255, opacity: 0.32),
-                width: 1.5
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(Color(red: 47.0 / 255, green: 107.0 / 255, blue: 76.0 / 255, opacity: 0.32), lineWidth: 1.5)
             )
-            .cornerRadius(18)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
 

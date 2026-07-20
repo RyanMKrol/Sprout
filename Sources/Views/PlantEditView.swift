@@ -160,14 +160,12 @@ struct PlantEditView: View {
                             Spacer()
                         }
                         .padding(12)
-                        .background(
-                            Color.white
-                                .border(
-                                    Color(red: 196.0 / 255, green: 85.0 / 255, blue: 59.0 / 255, opacity: 0.2),
-                                    width: 1
-                                )
+                        .background(Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: SproutTheme.Radius.row, style: .continuous)
+                                .stroke(Color(red: 196.0 / 255, green: 85.0 / 255, blue: 59.0 / 255, opacity: 0.2), lineWidth: 1)
                         )
-                        .cornerRadius(SproutTheme.Radius.row)
+                        .clipShape(RoundedRectangle(cornerRadius: SproutTheme.Radius.row, style: .continuous))
                     }
                     .padding(.top, 30)
                 }
