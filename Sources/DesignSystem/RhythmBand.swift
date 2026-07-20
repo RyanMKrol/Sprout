@@ -1,10 +1,27 @@
 import SwiftUI
 
+/// A "time until next water" gauge for the plant detail screen. The track runs from
+/// **"Water now"** on the left to a freshly-watered plant on the right; the droplet
+/// marker sits at `daysUntilDue / interval` and slides left as the due date nears,
+/// with a draining fill behind it. It deliberately hides the MIN/MAX calibration band
+/// — the "Every N days, shortened from M because…" sentence tells that story instead.
 struct RhythmBand: View {
-    let minDays: Int
-    let maxDays: Int
-    let baseDays: Int
+    /// The current effective watering interval, shown as "Every N days".
     let effectiveDays: Int
+    /// Days remaining until the next watering (0 when due today / overdue).
+    let daysUntilDue: Int
+    /// Past due — pins the marker at "Water now" and tints the gauge red.
+    let isOverdue: Bool
+
+    /// 1.0 = freshly watered (a full interval remains) → marker at the right;
+    /// 0.0 = due now → marker at the left "Water now" end.
+    private var fraction: Double {
+        isOverdue ? 0 : Self.position(of: daysUntilDue, min: 0, max: Swift.max(effectiveDays, 1))
+    }
+
+    private var accent: Color {
+        isOverdue ? Color(hex: 0xC4553B) : SproutTheme.brandGreen
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -14,72 +31,41 @@ struct RhythmBand: View {
                 .foregroundStyle(SproutTheme.taupe)
                 .textCase(.uppercase)
 
-            Text("Every \(effectiveDays) days")
+            Text("Every \(effectiveDays) \(effectiveDays == 1 ? "day" : "days")")
                 .font(SproutFont.display(26, weight: .bold))
                 .foregroundStyle(SproutTheme.ink)
 
             GeometryReader { geometry in
                 let trackWidth = geometry.size.width
-                let basePosition = Self.position(of: baseDays, min: minDays, max: maxDays)
-                let nowPosition = Self.position(of: effectiveDays, min: minDays, max: maxDays)
-                let showCollapsedLabel = abs(basePosition - nowPosition) < 0.08
+                let markerRadius: CGFloat = 13
+                // The marker centre travels within an inset span so it never clips the ends.
+                let markerCenter = markerRadius + fraction * (trackWidth - 2 * markerRadius)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 0) {
-                        Text("MIN \(minDays)d")
-                            .font(SproutFont.body(11, weight: .bold))
-                            .foregroundStyle(SproutTheme.taupe)
+                VStack(alignment: .leading, spacing: 10) {
+                    ZStack(alignment: .leading) {
+                        // Track
+                        Capsule()
+                            .fill(Color(hex: 0xE7ECDF))
+                            .frame(height: 10)
 
-                        Spacer()
+                        // Draining fill — the reserve of days left, from the left edge
+                        // up to the marker.
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color(hex: 0xB9D3A2), accent]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: Swift.max(markerCenter, 10), height: 10)
 
-                        Text("MAX \(maxDays)d")
-                            .font(SproutFont.body(11, weight: .bold))
-                            .foregroundStyle(SproutTheme.taupe)
-                    }
-
-                    // Markers anchor to the track's LEADING edge (`.topLeading`): an
-                    // element at fractional position `p` is offset by `p * trackWidth`
-                    // minus half its own width, putting its centre exactly on `p`. Each
-                    // label is an overlay centred on its marker, so the label's width
-                    // never shifts the marker's position.
-                    ZStack(alignment: .topLeading) {
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(hex: 0xE3EBD6),
-                                Color(hex: 0xB9D3A2)
-                            ]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                        .frame(height: 12)
-                        .cornerRadius(6)
-
-                        // Base (seed cadence) tick — hidden when it sits under the "now"
-                        // marker so their labels don't collide.
-                        if !showCollapsedLabel {
-                            RoundedRectangle(cornerRadius: 1)
-                                .fill(SproutTheme.ink.opacity(0.35))
-                                .frame(width: 2, height: 12)
-                                .overlay(alignment: .top) {
-                                    Text("base \(baseDays)d")
-                                        .font(SproutFont.body(11))
-                                        .foregroundStyle(Color(hex: 0x9AA090))
-                                        .fixedSize()
-                                        .offset(y: 16)
-                                }
-                                .offset(x: basePosition * trackWidth - 1)
-                        }
-
-                        // "Now" (effective cadence) droplet marker, with its label
-                        // centred beneath it.
+                        // "Now" droplet marker.
                         ZStack {
                             Circle()
-                                .fill(SproutTheme.brandGreen)
+                                .fill(accent)
                                 .frame(width: 26, height: 26)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.white, lineWidth: 3)
-                                )
+                                .overlay(Circle().stroke(Color.white, lineWidth: 3))
 
                             ChromeIcon.droplet.image
                                 .resizable()
@@ -88,27 +74,21 @@ struct RhythmBand: View {
                                 .foregroundStyle(Color.white)
                         }
                         .frame(width: 26, height: 26)
-                        .overlay(alignment: .top) {
-                            Text("now")
-                                .font(SproutFont.body(11.5, weight: .bold))
-                                .foregroundStyle(SproutTheme.brandGreen)
-                                .fixedSize()
-                                .offset(y: 30)
-                        }
-                        .offset(x: nowPosition * trackWidth - 13)
+                        .offset(x: markerCenter - markerRadius)
                     }
-                    .frame(height: 60)
+                    .frame(height: 26)
+
+                    Text("Water now")
+                        .font(SproutFont.body(11, weight: .semibold))
+                        .foregroundStyle(SproutTheme.taupe)
                 }
             }
-            // A GeometryReader is greedy and reports no intrinsic height, so without
-            // an explicit frame it collapses in a VStack and its below-track markers
-            // ("base", "now") overflow onto the content beneath. Reserve the height its
-            // content actually needs (MIN/MAX row + 60pt track band + spacing).
-            .frame(height: 90)
+            .frame(height: 56)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /// Clamp `value` to a `[0, 1]` fraction of the `[min, max]` span.
     static func position(of value: Int, min: Int, max: Int) -> Double {
         if max <= min {
             return 0.5
@@ -119,9 +99,13 @@ struct RhythmBand: View {
 }
 
 #Preview {
-    RhythmBand(minDays: 4, maxDays: 14, baseDays: 7, effectiveDays: 5)
-        .padding(20)
-        .background(SproutTheme.paper)
+    VStack(spacing: 32) {
+        RhythmBand(effectiveDays: 8, daysUntilDue: 8, isOverdue: false)
+        RhythmBand(effectiveDays: 8, daysUntilDue: 3, isOverdue: false)
+        RhythmBand(effectiveDays: 8, daysUntilDue: 0, isOverdue: true)
+    }
+    .padding(20)
+    .background(SproutTheme.paper)
 }
 
 private extension Color {
